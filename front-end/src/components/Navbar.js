@@ -18,11 +18,12 @@ const Navbar = () => {
         border-b border-gray-200 bg-brandBlue">
           <Image
               src={assets.logo}
-              alt="logo"
+              alt="logo" 
               width={100}
               height={100}
-              className="w-44  py-0"
-          />
+              className="w-44  py-0 cursor-pointer"
+              onClick={() => router.push('/')}
+                />
             <ul className="hidden md:flex gap-3 text-md">
               <li className="group relative">
                 <Link href="/" className="text-black">
