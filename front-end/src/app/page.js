@@ -1,10 +1,13 @@
 import Image from "next/image";
 import Header from "@/components/homePage/Header";
+import SpecialityMenu from "@/components/homePage/SpecialityMenu";
 export default function Home() {
   return (
-    <div className="bg-blue-300 m-10 p-10 rounded-lg">
+    <div className=" ">
       
-      <Header/>
+      <Header />
+
+      <SpecialityMenu/>
     </div>
   );
 }
