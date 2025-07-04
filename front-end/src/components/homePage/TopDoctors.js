@@ -2,25 +2,29 @@
 import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { doctors } from '@/assets/assets'
+import { doctors } from '@/assets/assets';
+import { useRouter } from 'next/navigation';
+import { useSelector } from 'react-redux';
 const TopDoctors = () => {
-    console.log('hellow , here are docctore', doctors)
+    const router = useRouter();
+    const { doctorsList } = useSelector((state) => state.doctors)
+    console.log('hello this is doctorslist', doctorsList)
   return (
-    <div className="flex flex-col items-center my-40">
+    <div className="flex flex-col items-center my-14">
         <h1 className="text-gray-900 text-3xl font-semibold my-2">
             Top Doctors to Book
         </h1>
         <p className="text-gray-800 text-sm py-4">
             Simply browse through our extensive list of trusted doctors.
         </p>
-
         
         <div className="w-full px-3 sm:px-0">
             <div className="lg:mx-20 xl:mx-20 sm:mx-10 my-3 max-w-7xl px-5 xl:px-0">
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
                     {doctors.length > 0 &&
                     doctors.slice(0,10).map((item, index) => (
-                        <div
+                        <div 
+                            onClick={() =>router.push(`/doctors/${item._id}`)}
                         key={index}
                         className="border border-blue-200 rounded-lg cursor-pointer hover:translate-y-[-10px] duration-500 transition-all overflow-hidden"
                         >
