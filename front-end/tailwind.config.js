@@ -11,6 +11,9 @@ module.exports = {
           brandBlue: "#1e40af",
           softRed: "#f87171",
         },
+        gridTemplateColumns: {
+          'auto': 'repeat(auto-fill, minmax(200px, 1fr))'
+        }
       },
     },
     plugins: [],

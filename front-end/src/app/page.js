@@ -9,7 +9,8 @@ export default function Home() {
       <Header />
 
       <SpecialityMenu />
-      <TopDoctors/>
+
+      <TopDoctors />
     </div>
   );
 }
