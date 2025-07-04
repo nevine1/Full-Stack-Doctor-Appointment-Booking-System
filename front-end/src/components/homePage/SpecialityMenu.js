@@ -1,3 +1,4 @@
+"use client"
 import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -10,18 +11,20 @@ const SpecialityMenu = () => {
               Simply browse through our extensive list of trusted doctors, <br/>
               schedule your appointment hassle-free.
           </p>
-          <div className="flex lg:flex-row md:flex-row sm:flex-col gap-6 my-7 ">
+          <div className="flex lg:flex-row md:flex-row sm:flex-col justify-center gap-5 my-7 " onClick={() => scrollTo(0,0)}>
               {
                   specialityData.map((spec, index) => (
                       
-                      <div key={index} className=" text-sm mt-3 hover:-translate-y-4 transition-all duration-500 sm:my-3">
-                          <Link href={`/doctors/${spec.speciality}`}>
+                      <div key={index} className=" mt-3 hover:translate-y-[-10px] transition-all duration-500 sm:my-3">
+                      <Link 
+                          href={`/doctors/${spec.speciality}`}
+                          className="cursor-pointer text-xs flex-shrink-0 ">
                             <Image
                                 src={spec.image}
-                                alt="specialist"
+                                alt="specialist" 
                                 width={100}
                                 height={100}
-                                className="w-16 sm:w-24 mb-3 "
+                                className="w-14 sm:w-20 mb-3 "
                             />
                           
                           {spec.speciality}
