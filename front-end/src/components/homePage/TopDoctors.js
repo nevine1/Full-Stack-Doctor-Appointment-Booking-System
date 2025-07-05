@@ -7,8 +7,8 @@ import { useRouter } from 'next/navigation';
 import { useSelector } from 'react-redux';
 const TopDoctors = () => {
     const router = useRouter();
-    const { doctorsList } = useSelector((state) => state.doctors)
-    console.log('hello this is doctorslist', doctorsList)
+    const { doctors } = useSelector((state) => state.doctors)
+    console.log('hello this is doctorslist', doctors)
   return (
     <div className="flex flex-col items-center my-14">
         <h1 className="text-gray-900 text-3xl font-semibold my-2">

@@ -1,8 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { doctors } from "@/assets/assets";
+import { doctorsList } from "@/assets/assets";
 
 const initialState = { 
-    doctorsList: doctors, 
+    doctors: doctorsList, 
     isLoading: false, 
     error: null
 }

@@ -1,12 +1,15 @@
 "use client"
 import React from 'react'
-import DoctorsList from '@/components/doctors/DoctorsList'
-const page = () => {
-  return (
-    <div>
-      <DoctorsList/>
-    </div>
 
+import DoctorDetails from '@/components/doctors/DoctorDetails';
+const page = () => {
+
+ 
+  return (
+    
+    <div>
+      <DoctorDetails/>
+    </div>
   )
 }
 

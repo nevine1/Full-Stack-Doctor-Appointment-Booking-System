@@ -26,9 +26,9 @@ const Header = () => {
                 schedule your appointment hassle-free.
               </p>
            </div>
-            <div className="flex items-center justify-center  gap-4 px-7 py-3 bg-white rounded-full text-gray-600 m-auto hover:scale-105 transition-all duration-300">
+            <div className="flex items-center justify-center  gap-4 px-7 md:px-6 xs:px-4 py-3 md:py-3 sm:py-2 bg-white rounded-full text-gray-600 m-auto hover:scale-105 transition-all duration-300">
               <Link href="#speciality"
-                  className="flex flex-row gap-2 justify-center">
+                  className="flex flex-row gap-2 justify-center text-lg md:text-md sm:text-[14px] xs:text-[13px]">
                     Book Appointment 
                    
                     <FaArrowRightLong className="mt-1 font-light w-4"/>
@@ -44,7 +44,7 @@ const Header = () => {
                 width={300}
                 height={200}
                 alt="header image"
-                className="w-full md:absolute bottom-0 h-auto"
+                className="w-full md:absolute bottom-0 h-auto lg:w-full md:w-full sm:w-[50%] "
               />
           </div>
     </div>
