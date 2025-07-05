@@ -24,7 +24,7 @@ const TopDoctors = () => {
                     {doctors.length > 0 &&
                     doctors.slice(0,10).map((item, index) => (
                         <div 
-                            onClick={() =>router.push(`/doctors/${item._id}`)}
+                            onClick={() =>router.push(`/doctors/${item.id}`)}
                         key={index}
                         className="border border-blue-200 rounded-lg cursor-pointer hover:translate-y-[-10px] duration-500 transition-all overflow-hidden"
                         >
