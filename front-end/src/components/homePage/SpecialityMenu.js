@@ -17,7 +17,7 @@ const SpecialityMenu = () => {
                       
                       <div key={index} className=" mt-3 hover:translate-y-[-10px] transition-all duration-500 sm:my-3">
                       <Link 
-                          href={`/doctor-speciality/${spec.speciality}`}
+                          href={`/doctors/specialist/${spec.speciality}`}
                           className="cursor-pointer text-xs flex-shrink-0 ">
                             <Image
                                 src={spec.image}

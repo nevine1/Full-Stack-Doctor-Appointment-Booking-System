@@ -23,18 +23,20 @@ const TopDoctors = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
                     {doctors.length > 0 &&
                     doctors.slice(0,10).map((item, index) => (
-                        <div 
-                            onClick={() =>router.push(`/doctors/${item.id}`)}
+                    <div 
+                        onClick={() =>router.push(`/doctors/${item._id}`)}
                         key={index}
                         className="border border-blue-200 rounded-lg cursor-pointer hover:translate-y-[-10px] duration-500 transition-all overflow-hidden"
-                        >
-                        <Image
-                            src={item.image}
-                            alt={item.name}
-                            width={150}
-                            height={300}
-                            className="bg-blue-50 rounded-lg w-full"
-                        />
+                            >
+                        <Link href={`/doctors/${item._id}`}>
+                            <Image
+                                src={item.image}
+                                alt={item.name}
+                                width={150}
+                                height={300}
+                                className="bg-blue-50 rounded-lg w-full"
+                            /> 
+                        </Link>
                         <div className="flex flex-col justify-start p-4">
                             <div className=" flex flex-row gap-2 items-center">
                             <p className="w-2 h-2 rounded-full bg-green-500"></p>
@@ -45,7 +47,7 @@ const TopDoctors = () => {
                             <p className="text-[17px] font-semibold py-1">{item.name}</p>
                             <p className="text-[13px] font-light py-1 text-gray-600">{item.speciality}</p>
                         </div>
-                        </div>
+                    </div>
                     ))}
                                 
                 </div>
