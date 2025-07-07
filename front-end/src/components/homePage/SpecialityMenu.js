@@ -2,8 +2,13 @@
 import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { specialityData } from '@/assets/assets'
+import { specialityData } from '@/assets/assets';
+import { useDispatch } from 'react-redux'
+
 const SpecialityMenu = () => {
+
+  const dispatch = useDispatch();
+
   return (
     <div id="speciality" className="flex flex-col items-center mt-20  mb-6">
           <h1 className="text-black text-3xl font-semibold m-5">Find by Speciality</h1>
@@ -17,7 +22,7 @@ const SpecialityMenu = () => {
                       
                       <div key={index} className=" mt-3 hover:translate-y-[-10px] transition-all duration-500 sm:my-3">
                       <Link 
-                          href={`/doctors/specialist/${spec.speciality}`}
+                        href={`/doctors/specialist/${spec.speciality}`}
                           className="cursor-pointer text-xs flex-shrink-0 ">
                             <Image
                                 src={spec.image}

@@ -10,10 +10,10 @@ const doctorsSlice = createSlice({
     name: "doctors",
     initialState, 
     reducers: {
-
+        
     }
 
 })
 
-export const { } = doctorsSlice.actions;
+export const {  } = doctorsSlice.actions;
 export default doctorsSlice.reducer; 
