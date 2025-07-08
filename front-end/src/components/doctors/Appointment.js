@@ -30,19 +30,46 @@ const Appointment = () => {
             //setting end time with index
             let endTime = new Date();
             endTime.setDate(today.getDate() + 1);
-            endTime.setHours(21, 0, 0, 0)
+            endTime.setHours(21, 0, 0, 0) //end date is 9 pm 
             
-            //setting hours 
+            //setting hours (if date is today )
             if (today.getDate() === currentDate.getDate()) {
                 currentDate.setHours(currentDate.getHours() > 0 ? currentDate.getHours() + 1 : "10");
                 currentDate.setMinutes(currentDate.getMinutes() > 30  ? 30 : 0 )
+            } else {
+                //if date is not today 
+                currentDate.setHours(10);
+                currentDate.setMinutes(0);
             }
+            let timeSlots = [ ] // to store the time 
+            while (currentDate < endTime) {
+                //creating time slot every 30 minutes
+                let formattedTime = currentDate.toLocaleTimeString( [], {hour: '2-digit', minute: '2-digit'})
+                
+                //add slot to array
+                timeSlots.push({
+                    dateTime: new Date(currentDate),
+                    time: formattedTime
+                })
+
+                //after creating current time and date, increment the time by 30 minutes
+                currentDate.setMinutes(currentDate.getMinutes() + 30 )
+            
+            }
+            setDocSlots(prev => [...prev, timeSlots]);
         }
     }
 
+    
     useEffect(() => {
         getAvailableSlot();
-    }, [ doctor ])
+    }, [doctor])
+    
+    console.log('doctor availablity at: ', docSlots)
+    useEffect(() => {
+        console.log(docSlots)
+        getAvailableSlot()
+    }, [])
   return (
       <div className="flex flex-row sm:flex-row gap-5 my-10 mx-4">
           {/* left side  */}
