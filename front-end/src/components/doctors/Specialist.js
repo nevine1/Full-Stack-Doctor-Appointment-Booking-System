@@ -19,8 +19,6 @@ const Specialist = () => {
     ...new Set(doctors.map(doctor => doctor.speciality))
   ];
   
-  
-  
   const applyFilter = (specialist) => {
     if (specialist) {
       
@@ -44,10 +42,9 @@ const Specialist = () => {
         {/* left side */} 
        
         <div>
-        
           {
             specialities.map((spec, index) => (
-              
+
               <div key={index} className="  px-4 py-1">
                 <h1 className={`text-sm py-3 px-5 my-1 border border-blue-200 shadow-md
                           cursor-pointer transition-all duration-500 rounded-sm
@@ -61,6 +58,7 @@ const Specialist = () => {
        
         {/* right side  */}
        
+        
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3  gap-6">
           {filterDoc.length > 0 &&
             filterDoc.map((item, index) => (

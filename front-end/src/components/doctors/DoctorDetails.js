@@ -2,6 +2,7 @@
 import React from 'react'
 import { useParams } from 'next/navigation';
 import { useSelector } from 'react-redux';
+import Link from 'next/link';
 import Image from 'next/image';
 const DoctorDetails = () => {
     const params = useParams();
@@ -12,6 +13,7 @@ const DoctorDetails = () => {
     console.log('doctor here id:', doctor)
   return (
     <div>
+      <Link href={`/appointment/${id}`}>Appoinment</Link>
           <h1>{doctor.name}</h1>
           <Image
               src={doctor.image}
