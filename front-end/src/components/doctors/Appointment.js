@@ -4,14 +4,45 @@ import { useParams, useRouter } from 'next/navigation'
 import { useSelector } from 'react-redux'
 import { assets } from '@/assets/assets'
 import Image from 'next/image'
+import { current } from '@reduxjs/toolkit'
 const Appointment = () => {
     const { doctors } = useSelector((state) => state.doctors)
     const params = useParams();
     const { id } = params; 
-   
     const doctor = doctors.find((doc) => doc._id === id); 
-    console.log('doctor infor at appointment page', doctor)
-    
+
+    const [docSlots, setDocSlots ] = useState([])
+    const [slotIndex, setSlotIndex ] = useState(0)
+    const [slotTime, setSlotTime] = useState('');
+
+    const getAvailableSlot = async () => {
+        //first , clear the previous docSlot 
+        setDocSlots([])
+
+        //getting current date and getting 7 days from today for booking appointment
+        let today = new Date(); 
+
+        for (let i = 0; i < 7; i++){
+            //getting date with index
+            let currentDate = new Date(today); //today date 
+            currentDate.setDate(today.getDate() + i);
+
+            //setting end time with index
+            let endTime = new Date();
+            endTime.setDate(today.getDate() + 1);
+            endTime.setHours(21, 0, 0, 0)
+            
+            //setting hours 
+            if (today.getDate() === currentDate.getDate()) {
+                currentDate.setHours(currentDate.getHours() > 0 ? currentDate.getHours() + 1 : "10");
+                currentDate.setMinutes(currentDate.getMinutes() > 30  ? 30 : 0 )
+            }
+        }
+    }
+
+    useEffect(() => {
+        getAvailableSlot();
+    }, [ doctor ])
   return (
       <div className="flex flex-row sm:flex-row gap-5 my-10 mx-4">
           {/* left side  */}
