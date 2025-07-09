@@ -12,7 +12,7 @@ const Appointment = () => {
   const { id } = params;
     const doctor = doctors.find((doc) => doc._id === id);
     const { doctorSpeciality } = doctor.speciality
-    console.log('doctor speciality is; ', doctorSpeciality)
+    
   const weekDays = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
   const [docSlots, setDocSlots] = useState([]);
   const [slotIndex, setSlotIndex] = useState(0);
@@ -42,8 +42,7 @@ const Appointment = () => {
         }
 
         now.setMinutes(now.getMinutes() + 30);
-        now.setSeconds(0);
-        now.setMilliseconds(0);
+       
 
         const minutes = now.getMinutes();
         now.setMinutes(minutes <= 30 ? 30 : 0);
@@ -56,8 +55,7 @@ const Appointment = () => {
       } else {
         currentDate.setHours(10);
         currentDate.setMinutes(0);
-        currentDate.setSeconds(0);
-        currentDate.setMilliseconds(0);
+        
       }
 
       const endTime = new Date(slotDate);
@@ -192,8 +190,9 @@ const Appointment = () => {
           )}
           <button className="flex items-center sm:ml-71 justify-center text-sm cursor-pointer mt-7 py-3 px-14 text-white bg-blue-500 font-semibold rounded-full w-auto sm:max-w-80">Book an appointment</button>
           <hr />
+          
           {/* related doctors part */} 
-          <h1>doctor speialit yis: {doctor.speciality}</h1>
+         
           <RelatedDoctors speciality={doctor.speciality}  />
       </div>
   );
