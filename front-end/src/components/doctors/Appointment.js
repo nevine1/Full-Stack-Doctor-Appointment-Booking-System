@@ -24,9 +24,7 @@ const Appointment = () => {
     for (let i = 0; i < 7; i++) {
       const slotDate = new Date(today);
       slotDate.setDate(today.getDate() + i);
-
       const currentDate = new Date(slotDate);
-
       if (i === 0) {
         const now = new Date();
         const currentHour = now.getHours();
@@ -40,7 +38,6 @@ const Appointment = () => {
         }
 
         now.setMinutes(now.getMinutes() + 30);
-       
 
         const minutes = now.getMinutes();
         now.setMinutes(minutes <= 30 ? 30 : 0);
@@ -53,7 +50,6 @@ const Appointment = () => {
       } else {
         currentDate.setHours(10);
         currentDate.setMinutes(0);
-        
       }
 
       const endTime = new Date(slotDate);
