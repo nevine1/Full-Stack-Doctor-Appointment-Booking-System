@@ -10,9 +10,7 @@ const Appointment = () => {
   const { doctors } = useSelector((state) => state.doctors);
   const params = useParams();
   const { id } = params;
-    const doctor = doctors.find((doc) => doc._id === id);
-    const { doctorSpeciality } = doctor.speciality
-    
+  const doctor = doctors.find((doc) => doc._id === id);
   const weekDays = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
   const [docSlots, setDocSlots] = useState([]);
   const [slotIndex, setSlotIndex] = useState(0);
@@ -105,8 +103,10 @@ const Appointment = () => {
         <div>
           <Image
             src={doctor.image}
-            alt={doctor.name}
-            className="w-full h-auto shadow-md bg-blue-50 border border-blue-200 rounded-lg"
+            alt={doctor.speciality}
+            width={300}
+            height={350}
+            className="w-full h-auto shadow-md bg-blue-500 border border-blue-200 rounded-lg"
           />
         </div>
         <div className="flex-1 justify-start items-center leading-loose">
@@ -188,12 +188,26 @@ const Appointment = () => {
           ))}
         </div>
           )}
-          <button className="flex items-center sm:ml-71 justify-center text-sm cursor-pointer mt-7 py-3 px-14 text-white bg-blue-500 font-semibold rounded-full w-auto sm:max-w-80">Book an appointment</button>
-          <hr />
+      <button className="flex items-center sm:ml-71 justify-center text-sm cursor-pointer
+           my-7 py-3 px-14 text-white bg-blue-500 font-semibold rounded-full w-auto sm:max-w-80"
+        >Book an appointment
+      </button>
+          <hr className="border border-gray-100"/>
           
-          {/* related doctors part */} 
-         
-          <RelatedDoctors speciality={doctor.speciality}  />
+      {/* related doctors part */} 
+      
+      <div className="flex flex-col mt-8 items-center">
+      
+        {
+          doctor && (
+            <RelatedDoctors
+              speciality={doctor.speciality}
+              docId={doctor._id}
+            />
+          )
+        }
+      </div>
+          
       </div>
   );
 };

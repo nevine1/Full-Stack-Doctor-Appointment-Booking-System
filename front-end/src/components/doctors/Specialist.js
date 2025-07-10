@@ -63,11 +63,11 @@ const Specialist = () => {
           {filterDoc.length > 0 &&
             filterDoc.map((item, index) => (
               <div 
-                onClick={() =>router.push(`/doctors/${item._id}`)}
+                onClick={() =>router.push(`/appointment/${item._id}`)}
                   key={index}
                    className="border border-blue-200 rounded-lg cursor-pointer hover:translate-y-[-10px] duration-500 transition-all overflow-hidden"
                     >
-                    <Link href={`/doctors/${item._id}`}>
+                    <Link href={`/appointment/${item._id}`}>
                       <Image
                         src={item.image}
                         alt={item.name}
