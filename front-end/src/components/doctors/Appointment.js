@@ -20,7 +20,6 @@ const Appointment = () => {
   const getAvailableSlot = async () => {
     const today = new Date();
     const allSlots = [];
-
     for (let i = 0; i < 7; i++) {
       const slotDate = new Date(today);
       slotDate.setDate(today.getDate() + i);
@@ -28,7 +27,6 @@ const Appointment = () => {
       if (i === 0) {
         const now = new Date();
         const currentHour = now.getHours();
-
         if (currentHour < 10 || currentHour >= 21) {
           setDoctorUnavailableNow(true);
           allSlots.push([]); // empty slot for today
@@ -36,27 +34,21 @@ const Appointment = () => {
         } else {
           setDoctorUnavailableNow(false);
         }
-
         now.setMinutes(now.getMinutes() + 30);
-
         const minutes = now.getMinutes();
         now.setMinutes(minutes <= 30 ? 30 : 0);
         if (minutes > 30) {
           now.setHours(now.getHours() + 1);
         }
-
         currentDate.setHours(now.getHours());
         currentDate.setMinutes(now.getMinutes());
       } else {
         currentDate.setHours(10);
         currentDate.setMinutes(0);
       }
-
       const endTime = new Date(slotDate);
       endTime.setHours(21, 0, 0, 0);
-
       const timeSlots = [];
-
       while (currentDate < endTime) {
         const formattedTime = currentDate.toLocaleTimeString([], {
           hour: "2-digit",
@@ -73,10 +65,8 @@ const Appointment = () => {
 
       allSlots.push(timeSlots);
     }
-
     setDocSlots(allSlots);
   };
-
   useEffect(() => {
     if (doctor) {
       getAvailableSlot();
