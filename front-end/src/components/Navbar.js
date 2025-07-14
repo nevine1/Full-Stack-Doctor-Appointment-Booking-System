@@ -7,15 +7,15 @@ import { useRouter } from 'next/navigation'
 import { IoIosArrowDown } from "react-icons/io";
 const Navbar = () => {
   const [showMenu, setShowMenu] = useState(false);
-  const [token, setToken] = useState(false); //if it is true , it means the user is logged in
+  const [token, setToken] = useState(true); //if it is true , it means the user is logged in
   const router = useRouter(); 
   const handleClick = () => {
     router.push('/auth/login')
   }
 
   return (
-      <div className="flex flex-row  justify-between items-center py-4 mx-10 
-        border-b border-gray-200 bg-brandBlue">
+      <div className="flex flex-row  justify-between items-center py-6 mx-10 
+        border-b border-gray-200 bg-brandBlue ">
           <Image
               src={assets.logo}
               alt="logo" 
@@ -85,7 +85,7 @@ const Navbar = () => {
             </div>
           ): (
             <button onClick={handleClick}
-              className="bg-blue-500 text-white px-8 rounded-full py-1 hidden md:block">
+              className="bg-blue-500 text-white px-8 rounded-full py-2 hidden md:block">
                  Create account
               </button>
           )

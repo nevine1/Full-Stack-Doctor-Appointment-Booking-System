@@ -12,13 +12,12 @@ const Login = () => {
     <div className="  rounded-xl  ">
           <form className="md:w-[30vw] w-[400px] mx-auto md:mt-20 sm:mt-5 sm:w-[90vw] bg-blue-50  border shadow-md border-gray-300 m-auto p-10 rounded-xl">
               <div className="flex flex-col gap-6 items-center justify-start">
-                <p className="text-lg font-semibold">{state === `Sign Up` ? "Sign Up" : "Login"}</p>
-                <p>Please {state === `Sign Up` ? "Sign Up" : "Login"} to book appointment</p>
-          
-              
-          {
-            state === "Sign Up" && 
-            <input
+                <p className="text-lg font-semibold">{state === `Sign Up` ? "Create account" : "Login"}</p>
+                <p>Please {state === `Sign Up` ? "Create account" : "Login"} to book appointment</p>
+                    
+                {
+                  state === "Sign Up" && 
+                  <input
                     type="text"
                     name="full name"
                     value={fullName}
