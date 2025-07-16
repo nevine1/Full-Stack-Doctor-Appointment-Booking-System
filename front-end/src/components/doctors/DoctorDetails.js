@@ -13,7 +13,7 @@ const DoctorDetails = () => {
     console.log('doctor here id:', doctor)
   return (
     <div>
-      <Link href={`/appointment/${id}`}>Appoinment</Link>
+      <Link href={`/auth/appointment/${id}`}>Appoinment</Link>
           <h1>{doctor.name}</h1>
           <Image
               src={doctor.image}

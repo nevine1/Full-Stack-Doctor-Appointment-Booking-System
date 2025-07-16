@@ -8,11 +8,11 @@ const DoctorBlock = ({ doctor }) => {
     
   return (
     <div 
-    onClick={() =>router.push(`/appointments/${doctor._id}`)}
+    onClick={() =>router.push(`/auth/appointments/${doctor._id}`)}
    
     className="border border-blue-200 rounded-lg cursor-pointer hover:translate-y-[-10px] duration-500 transition-all overflow-hidden"
         >
-    <Link href={`/appointment/${doctor._id}`}>
+    <Link href={`/auth/appointment/${doctor._id}`}>
         <Image
             src={doctor.image}
             alt={doctor.name}

@@ -19,7 +19,7 @@ const MyProfile = () => {
   });
 
   return (
-    <div className="flex flex-col bg-blue-50 items-center justify-center p-10 w-full min-h-screen bg-gray-50">
+    <div className="flex flex-col  items-center justify-center p-8 w-full min-h-screen">
       {/* Profile image */}
       <div className="mb-6">
         <Image
@@ -27,12 +27,12 @@ const MyProfile = () => {
           alt="profile pic"
           width={150}
           height={150}
-          className="rounded-full shadow-lg p-2"
+          className="rounded-full shadow-lg p-2 bg-gray-100"
         />
       </div>
 
       
-      <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md space-y-5">
+      <div className="bg-gray-100 py-5 px-10 rounded-xl border border-gray-300 shadow-lg w-full max-w-md space-y-5">
        
         <div >
           <label className="font-bold text-gray-500">Name</label>
@@ -144,7 +144,9 @@ const MyProfile = () => {
         <div className="flex justify-center pt-4">
           <button
             onClick={() => setIsEditable(!isEditable)}
-            className="px-8 py-2 bg-blue-600 text-[18px] text-white rounded-full shadow hover:bg-blue-700 transition"
+            className="px-8 py-2 mb-5 bg-blue-600 text-[18px]
+             text-white rounded-full shadow  transition-all duration-500
+             hover:bg-white hover:text-blue-500 border hover:border-blue-500"
           >
             {isEditable ? "Save Changes" : "Edit Profile"}
           </button>
