@@ -21,7 +21,7 @@ const Navbar = () => {
               alt="logo" 
               width={100}
               height={100}
-              className="w-44  py-0 cursor-pointer"
+              className="w-44  py-0 cursor-pointer md:w-40 xs:hidden"
               onClick={() => router.push('/')}
                 />
             <ul className="hidden md:flex gap-3 text-md">
@@ -90,8 +90,49 @@ const Navbar = () => {
               </button>
           )
         }
-            
-          </div>
+        <Image
+          src={assets.menu_icon}
+          alt="menu icon"
+          width={24}
+          className="w-10 md:hidden cursor-pointer absolute right-2 top-2 pr-3 pt-3"
+          onClick={() => setShowMenu(true)}
+        /> 
+        {/* small size menu */} 
+        
+            <div className={`m:hidden top-0 right-0 overflow-hidden z-20 bg-amber-300`}>
+              <div className="absolute bg-gray-200 top-0 right-0">
+                <Link href="/">
+                  <Image
+                  src={assets.logo}
+                    alt="small size logo"
+                    width={40}
+                  className="md:hidden sm:w-8 "
+                />
+                </Link>
+                <Image
+                  src={assets.cross_icon}
+                  alt="closing icon"
+                  onClick={() => setShowMenu(false)}
+                  className="w-5"
+                />
+              </div>
+            <ul className="md:hidden flex sm:flax-col gap-3 text-md bg-red-200 ">
+              <li className="group relative">
+                <Link href="/" className="text-black"> Home</Link>
+              </li>
+              <li className="group relative">
+                <Link href="/about" className="text-black">About</Link>
+              </li>
+              <li className="group relative">
+                <Link href="/doctors" className="text-black"> Doctors</Link>
+              </li>
+              <li className="group relative">
+                <Link href="/contact">Contact</Link>
+              </li>
+          </ul>
+        </div>
+        
+      </div>
                 
     </div>
   )
