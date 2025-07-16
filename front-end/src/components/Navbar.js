@@ -75,7 +75,7 @@ const Navbar = () => {
                   <div className={`absolute z-20 right-0 top-0 pt-14  text-slate-700  hidden group-hover:block  transition-all duration-400 `}>
                     <div className="w-48  flex flex-col gap-3 rounded-md bg-slate-100 p-4 shadow-lg">
                       <p className='cursor-pointer hover:text-black' onClick={()=>router.push('/auth/profile')}>My Profile</p>
-                      <p className='cursor-pointer hover:text-black' onClick={()=>router.push('/myAppointment')}>My Appointments</p>
+                      <p className='cursor-pointer hover:text-black' onClick={()=>router.push('/auth/appointment')}>My Appointments</p>
                       <p className='cursor-pointer hover:text-black' onClick={()=>setToken(false)}>Logout</p>
                     </div>
                   </div>

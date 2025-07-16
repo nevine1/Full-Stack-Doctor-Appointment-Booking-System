@@ -1,9 +1,10 @@
+import MyAppointments from '@/components/doctors/MyAppointments'
 import React from 'react'
 
 const page = () => {
   return (
       <div>
-          <h1>my apointment page </h1>
+          <MyAppointments/>
     </div>
   )
 }
