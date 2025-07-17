@@ -2,7 +2,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  /* --foreground: #171717; */
+  --foreground: #ededed;
+  --background2: #f3f4f3a4;
 }
 
 @theme inline {
@@ -16,14 +18,28 @@
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+    --background2: #a3e8ba;
   }
 }
 
 body {
-  background: var(--background);
+  background: var(--foreground);
   color: var(--foreground);
   /* font-family: Arial, Helvetica, sans-serif; */
   font-family: outfit;
   margin: 0 100px;
 }
 
+@media (max-width: 768px) {
+  body {
+    margin: 0 50px;
+   
+  }
+}
+
+@media (max-width: 640px) {
+  body {
+    margin: 0 30px;
+
+  }
+}
