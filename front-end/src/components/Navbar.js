@@ -9,89 +9,99 @@ import { IoIosArrowDown } from "react-icons/io";
 const Navbar = () => {
   const [showMenu, setShowMenu] = useState(false);
   const [token, setToken] = useState(true); // if true, user is logged in
-  const router = useRouter(); 
+  const router = useRouter();
 
-  const handleClick = () => router.push('/auth/login')
+  const handleClick = () => {
+    router.push('/auth/login')
+  }
 
   return (
-    <nav className="w-full bg-brandBlue border-b border-gray-200">
-      <div className="flex justify-between items-center px-6 py-4 md:px-10">
-        
-        {/* Logo */}
-        <Image
-          src={assets.logo}
-          alt="logo" 
-          width={100}
-          height={100}
-          className="w-32 md:w-40 cursor-pointer"
-          onClick={() => router.push('/')}
-        />
+    <div className="flex flex-row justify-between items-center py-6 px-4 md:px-10 border-b border-gray-200 bg-brandBlue">
+      
+      {/* Logo */}
+      <Image
+        src={assets.logo}
+        alt="logo"
+        width={100}
+        height={100}
+        className="w-44 py-0 cursor-pointer md:w-40"
+        onClick={() => router.push('/')}
+      />
 
-        {/* Desktop Menu */}
-        <ul className="hidden md:flex gap-6 text-md">
-          {["Home", "About", "Doctors", "Contact"].map((item, index) => (
-            <li key={index} className="group relative">
-              <Link href={`/${item === "Home" ? "" : item.toLowerCase()}`} className="text-black">
-                {item}
-                <span className="absolute left-0 -bottom-1 w-0 h-0.5 bg-blue-500 transition-all duration-300 group-hover:w-full" />
-              </Link>
-            </li>
-          ))}
-        </ul>
+      {/* Desktop Menu */}
+      <ul className="hidden md:flex gap-6 text-md">
+        {["Home", "About", "Doctors", "Contact"].map((item) => (
+          <li key={item} className="group relative">
+            <Link href={`/${item === "Home" ? "" : item.toLowerCase()}`} className="text-black">
+              {item}
+              <span className="absolute left-0 -bottom-1 w-0 h-0.5 bg-blue-500 transition-all duration-300 group-hover:w-full" />
+            </Link>
+          </li>
+        ))}
+      </ul>
 
-        {/* Right-side */}
-        <div className="flex items-center gap-4">
-          {token ? (
-            <div className="relative group">
-              <div className="flex items-center gap-2 cursor-pointer" onClick={() => setShowMenu(!showMenu)}>
-                <Image src={assets.profile_pic} alt="profile pic" width={32} height={32} className="rounded-full w-8" />
-                <IoIosArrowDown className="text-xl" />
-              </div>
-
-              {showMenu && (
-                <div className="absolute right-0 mt-4 w-48 rounded-md bg-slate-100 p-4 shadow-lg z-50">
-                  <p className="cursor-pointer hover:text-black" onClick={() => router.push('/auth/profile')}>My Profile</p>
-                  <p className="cursor-pointer hover:text-black" onClick={() => router.push('/auth/appointment')}>My Appointments</p>
+      {/* Right Side */}
+      <div className="flex items-center gap-4 relative">
+        {token ? (
+          <div className="flex gap-2 items-center relative">
+            <Image
+              src={assets.profile_pic}
+              alt="profile pic"
+              width={32}
+              height={32}
+              className="rounded-full w-8"
+            />
+            <IoIosArrowDown
+              onClick={() => setShowMenu(!showMenu)}
+              className="text-[20px] cursor-pointer"
+            />
+            {showMenu && (
+              <div className="absolute z-50 right-0 top-12 text-slate-700 transition-all duration-400">
+                <div className="w-48 flex flex-col gap-3 rounded-md bg-slate-100 p-4 shadow-lg">
+                  <Link href="/auth/profile" className="cursor-pointer hover:text-black"
+                    onClick={ () => setShowIcon(false)} >My Profile</Link>
+                  <Link href="/auth/appointment" className="cursor-pointer hover:text-black"
+                    onClick={() => setShowIcon(false)}>My Appointments</Link>
                   <p className="cursor-pointer hover:text-black" onClick={() => setToken(false)}>Logout</p>
                 </div>
-              )}
-            </div>
-          ) : (
-            <button onClick={handleClick} className="hidden md:block bg-blue-500 text-white px-6 py-2 rounded-full">
-              Create account
-            </button>
-          )}
+              </div>
+            )}
+          </div>
+        ) : (
+          <button onClick={handleClick} className="bg-blue-500 text-white px-8 rounded-full py-2 hidden md:block">
+            Create account
+          </button>
+        )}
 
-          {/* Mobile menu icon */}
-          <Image
-            src={assets.menu_icon}
-            alt="menu icon"
-            width={32}
-            height={32}
-            className="block md:hidden cursor-pointer w-7"
-            onClick={() => setShowMenu(true)}
-          />
-        </div>
+        {/* Mobile Menu Icon */}
+        <Image
+          src={assets.menu_icon}
+          alt="menu icon"
+          width={24}
+          height={24}
+          className="w-10 md:hidden cursor-pointer"
+          onClick={() => setShowMenu(true)}
+        />
       </div>
 
-      {/* Mobile Menu */}
-      <div className={`${showMenu ? "fixed" : "hidden"} top-0 right-0 w-full h-full bg-blue-50 z-50 transition-all duration-500`}>
-        <div className="flex justify-between items-center px-6 py-4 border-b border-gray-300">
+      {/* Small Screen Menu */}
+      <div className={`${showMenu ? "fixed" : "hidden"} md:hidden top-0 right-0 w-full h-full z-[60] bg-white transition-all`}>
+        <div className="flex justify-between items-center px-4 py-4 bg-gray-100 border-b border-gray-300">
           <Link href="/" onClick={() => setShowMenu(false)}>
-            <Image src={assets.logo} alt="logo" width={100} height={100} className="w-28" />
+            <Image src={assets.logo} alt="small logo" width={80} className="w-20" />
           </Link>
           <Image
             src={assets.cross_icon}
-            alt="close icon"
+            alt="closing icon"
             width={32}
             height={32}
             className="cursor-pointer"
             onClick={() => setShowMenu(false)}
           />
         </div>
-        <ul className="flex flex-col gap-4 px-6 py-6 text-sm">
-          {["Home", "About", "Doctors", "Contact"].map((item, index) => (
-            <li key={index} onClick={() => setShowMenu(false)}>
+        <ul className="flex flex-col gap-4 text-md p-6">
+          {["Home", "About", "Doctors", "Contact"].map((item) => (
+            <li key={item} onClick={() => setShowMenu(false)}>
               <Link href={`/${item === "Home" ? "" : item.toLowerCase()}`} className="text-black">
                 {item}
               </Link>
@@ -99,8 +109,8 @@ const Navbar = () => {
           ))}
         </ul>
       </div>
-    </nav>
-  );
+    </div>
+  )
 }
 
 export default Navbar
