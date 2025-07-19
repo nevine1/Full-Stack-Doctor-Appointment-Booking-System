@@ -56,7 +56,7 @@ const doctorSchema = new mongoose.Schema({
 }, { minimize: false });
 
 //after creating doctorSchema, so it is the time to create doctorModel;
-const doctorModel = mongoose.models.doctor || mongoose.model("doctor", doctorSchema)
+const doctorModel = mongoose.models.Doctor || mongoose.model("Doctor", doctorSchema)
 //whenever the project getting started, the doctorModel will get execute , so to avoid that ,
 //we will use mongoose.models.doctor || (means check first if the doctor model is existing or not , if not , create it and if it is existing, use it)
 
