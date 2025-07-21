@@ -1,22 +1,24 @@
 
 import validator from 'validator';
 import bcrypt from 'bcrypt'
-import Doctor from '../models/doctorModel'
+import Doctor from '../models/doctorModel.js';
+import upload from '../middleware/multer.js';
+import {v2 as cloudinary} from 'cloudinary'
 //API for adding new doctor 
-const addDoctor = async (req, resp) => {
+const addDoctor = async (req, res) => {
   try {
       
       const { name, email, password, image, speciality, degree, fees, experience, about, available, address, slots_booked } = req.body;
-    const imageFile = req.file; 
+    const imageFile = req.file;
     
     //check if doctor data are available or not; 
-    if (!name || !email || !password || !image || !speciality || !degree || !fees || !experience || !about || !available || !address || !slots_booked) {
+   /*  if (!name || !email || !password || !image || !speciality || !degree || !fees || !experience || !about ||  !address ) {
       return resp.json({
         success: false,
         message: "Missing details"
       })
      
-    }
+    } */
     
     //validate email format 
      if (!validator.isEmail(email)) {
@@ -28,10 +30,10 @@ const addDoctor = async (req, resp) => {
     
     //validate strong password
     const strongPassword = validator.matches(password, /^(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{6,}$/);
-    if (!strongPassword) {
+    if (password < 6 ) {
       return res.json({
         success: false, 
-        message: "Password should has 1 Capital letter, 1 special letter and must not be less than 6 characters"
+        message: "Password should be more than 6 characters"
       })
     }
 
@@ -40,9 +42,13 @@ const addDoctor = async (req, resp) => {
     const hashPw = bcrypt.hash(password, salt);
     
     //uploading image file 
-    const uploadedImage = await cloudinary.uploader.upload(imageFile.path, { resource_type: "image" });
-    const imageUrl = uploadedImage.secure_url; 
-
+    /* const uploadedImage = await cloudinary.uploader.upload(imageFile.path, { resource_type: "image" });
+    const imageUrl = uploadedImage.secure_url;  */
+      const dataUri = bufferToDataUri(req.file);
+      const uploadedImage = await cloudinary.uploader.upload(dataUri, {
+        folder: 'doctors',
+        resource_type: 'image'
+      });
     //creating doctor data 
     const doctorData = {
       name, email, speciality, degree, fees, experience, about, available, slots_booked,
