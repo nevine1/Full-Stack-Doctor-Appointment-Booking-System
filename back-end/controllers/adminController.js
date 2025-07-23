@@ -3,7 +3,8 @@ import bcrypt from 'bcrypt';
 import Doctor from '../models/doctorModel.js'; // Ensure this path is correct
 import { v2 as cloudinary } from 'cloudinary';
 import fs from 'fs';
-
+import jwt from 'jsonwebtoken'
+import authAdmin from '../middleware/authAdmin.js';
 const addDoctor = async (req, res) => {
   try {
     //  req.body
@@ -103,4 +104,35 @@ const addDoctor = async (req, res) => {
   }
 };
 
-export default addDoctor;
+//api for admin login
+const loginAdmin = async (req, res) => {
+  
+  try {
+    const { email, password } = req.body;
+    if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
+      //creating jwt token 
+      const token = jwt.sign(email + password, process.env.JWT_SECRET);
+      
+      console.log('token is:', token)
+      return res.json({
+        success: true,
+        token
+      })
+      
+    } else {
+      return res.json({
+        success: false,
+        message: "Email or password is invalid"
+      })
+    }
+  } catch (err) {
+    console.log(err);
+    return res.json({
+      success: false,
+      message: err.message
+    })
+  }
+}
+export {
+  addDoctor, loginAdmin
+};
