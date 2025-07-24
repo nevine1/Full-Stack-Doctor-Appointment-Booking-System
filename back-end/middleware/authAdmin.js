@@ -1,26 +1,44 @@
-import jwt from 'jsonwebtoken'
+// middleware/authAdmin.js
+import jwt from 'jsonwebtoken';
 
-//admin authentication middleware
 const authAdmin = async (req, res, next) => {
+  try {
+    const authHeader = req.headers.authorization;
 
-    try {
-        //if the req has the token , so the doctor can login and can make the api request
-        const { adminToken } = req.header;
-        if (!adminToken) {
-            return res.json({
-                success: false,
-                message: "Not authorized, try again please"
-            })
-        } 
+    console.log('Full Authorization header:', authHeader);
 
-        //if token is existing, verify and decode it to get the email and password
-    } catch (err) {
-        console.log(err);
-        return res.json({
-            success: false, 
-            message: err.message
-        })
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({
+        success: false,
+        message: 'Not authorized, missing or invalid token',
+      });
     }
-}
 
-export default authAdmin; 
+    // Extract the token from "Bearer <token>"
+    const adminToken = authHeader.split(' ')[1];
+
+    const decodedToken = jwt.verify(adminToken, process.env.JWT_SECRET);
+    console.log('Decoded token:', decodedToken);
+   
+    if (
+      decodedToken.email !== process.env.ADMIN_EMAIL ||
+      decodedToken.password !== process.env.ADMIN_PASSWORD
+    ) {
+      return res.status(403).json({
+        success: false,
+        message: 'Invalid token credentials',
+      });
+    }
+    //if it is decoded_token is existing, then
+    // Pass control to next middleware/route
+    next();
+  } catch (err) {
+    console.error(' JWT verification error:', err.message);
+    return res.status(401).json({
+      success: false,
+      message: 'Not authorized, token failed',
+    });
+  }
+};
+
+export default authAdmin;
