@@ -15,9 +15,6 @@ const addDoctor = async (req, res) => {
 
     const imageFile = req.file;
 
-    console.log("BODY (from req.body):", req.body); 
-    console.log("FILE (from req.file):", req.file); 
-
     // --- Validation 
     if (!imageFile || !imageFile.path) {
       console.error("Validation Error: Image file or path is missing.");
@@ -90,7 +87,7 @@ const addDoctor = async (req, res) => {
     });
 
   } catch (error) {
-    console.error("🚨 CATCH BLOCK ERROR in addDoctor:", error); // Log the full error object
+    console.error("CATCH BLOCK ERROR in addDoctor:", error); // Log the full error object
     // Provide more descriptive error messages based on the error type if possible
     if (error.name === 'ValidationError') {
       return res.status(400).json({ success: false, message: `Validation failed: ${error.message}` });
