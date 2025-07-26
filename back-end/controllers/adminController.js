@@ -102,7 +102,7 @@ const addDoctor = async (req, res) => {
 };
 
 //api for admin login
-const loginAdmin = async (req, res) => {
+const adminLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -121,6 +121,7 @@ const loginAdmin = async (req, res) => {
 
       return res.json({
         success: true,
+        message: "Admin successfully logged in",
         token,
       });
     } else {
@@ -139,5 +140,5 @@ const loginAdmin = async (req, res) => {
 };
 
 export {
-  addDoctor, loginAdmin
+  addDoctor, adminLogin
 };

@@ -3,11 +3,13 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSelector, useDispatch } from 'react-redux'
 import axios from 'axios'
-import Link from 'next/link'
+import { updateAdminToken, setIsLogin } from '@/store/slices/adminSlice'
 import 'dotenv'
+import { toast } from 'react-toastify'
 const Login = () => {
   const router = useRouter();
   const { isLoggedIn, adminToken } = useSelector((state) => state.admin);
+  console.log('adminToken is:', adminToken)
   const dispatch = useDispatch()
     const [state, setState] = useState("Admin");
     const [email, setEmail ] = useState('')
@@ -19,22 +21,39 @@ const Login = () => {
     e.preventDefault(); 
 
     try {
+      dispatch(setIsLogin(true))
       if (state === "Admin") {
         
-        const res = await axios.post(`${backUrl}/api/admin/login-admin`, { email, password })
-        
-        if (res.success) {
-          console.log(data.token)
+        const res = await axios.post(`${backUrl}/api/admin/admin-login`, { email, password })
+        const { token, message } = res;
+        console.log('message is:', message)
+        console.log('token in  is', token)
+      
+        if (res.data.token) {
+          localStorage.setItem("adminToken", res.data.token);
           
+          dispatch(updateAdminToken(res.data.token))
+          console.log('adminToken', adminToken)
+          toast.success('Admin successfully logged in');
+          //router.push('/profile')
+           
+        } else {
+          return toast.error(res.data.message)
         }
+
+      //this is else for if (state === "Admin") 
       } else {
-        
+        console.log('can not login')
       }
+
+      
     } catch (err) {
+      dispatch(setIsLogin(false))
       console.log(err);
 
    }
   }
+  console.log('adminToken is: ', adminToken)
   return (
     <div className="">
       <form onSubmit={handleSubmit}
@@ -59,7 +78,7 @@ const Login = () => {
                       className="md:mx-10 sm:mx-2 mb-3 pl-3 py-2 border focus:outline-gray-200 border-gray-300 bg-white w-full rounded-md"
 
                        />
-                  <button type="submit" className="py-2  md:mx-10 sm:mx-2 tex-lg  w-full text-white bg-blue-400 rounded-md">
+                  <button type="submit" className="py-2 cursor-pointer md:mx-10 sm:mx-2 tex-lg  w-full text-white bg-blue-400 rounded-md">
                     Login
                   </button>
                   <div>
