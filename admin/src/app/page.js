@@ -8,10 +8,13 @@ export default function Home() {
     <div >
       {
         adminToken ? (
-          <h1>admin logged in </h1>
+          <>
+            <h1>admin logged in </h1>
+            
+          </>
         ) : (
             <>
-            <h1>admin not logged in </h1>
+          
               <Login />
               </>
         )
