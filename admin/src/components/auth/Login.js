@@ -34,7 +34,7 @@ const Login = () => {
           dispatch(updateAdminToken(res.data.token))
           console.log('adminToken', adminToken)
           toast.success('Admin successfully logged in');
-          //router.push('/profile')
+          router.push('/admin/dashboard')
            
         } else {
           return toast.error(res.data.message)
