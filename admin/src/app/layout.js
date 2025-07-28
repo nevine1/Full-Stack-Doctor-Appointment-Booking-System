@@ -32,7 +32,7 @@ export default function RootLayout({ children }) {
       >
         <Provider store={store}>
           {children}
-          <Navbar/>
+          
           <ToastContainer />
         </Provider>
       </body>

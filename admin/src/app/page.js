@@ -1,6 +1,7 @@
 "use client"
 import Login from "@/components/auth/Login";
 import { useSelector } from "react-redux";
+import Navbar from "@/components/Navbar";
 export default function Home() {
   const { adminToken } = useSelector((state) => state.admin);
   
@@ -9,14 +10,11 @@ export default function Home() {
       {
         adminToken ? (
           <>
-            <h1>admin logged in </h1>
+            <Navbar/>
             
           </>
         ) : (
-            <>
-          
-              <Login />
-              </>
+          <Login />
         )
       }
     </div>
