@@ -5,14 +5,14 @@ import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { assets } from '@/assets/assets'
 const Navbar = () => {
-  const { adminToken } = useSelector((state) => state.admin)
+  const { adminToken, isLoading } = useSelector((state) => state.admin)
   const router = useRouter();
   const dispatch = useDispatch();
-  console.log('navbar token is:', adminToken)
-  const handleLogout = () => {
-    localStorage.removeItem("adminToken")
-    dispatch(logout());
 
+  const handleLogout = () => {
+    localStorage.clear();
+    dispatch(logout());
+     dispatch(setIsLogin(false))
    
   }
   return (

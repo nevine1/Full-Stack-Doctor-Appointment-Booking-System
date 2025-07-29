@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  isLoggedIn: false,
+  isLoading: false,
   adminToken: null,
 };
 
@@ -10,19 +10,19 @@ const adminSlice = createSlice({
   initialState,
 
   reducers: {
-    setIsLogin: (state, action) => {
-      state.isLoggedIn = true;
+    setIsLoading: (state, action) => {
+      state.isLoading = true;
     },
     updateAdminToken: (state, action) => {
       state.adminToken = action.payload;
     
     },
     logout: (state) => {
-      state.isLoggedIn = false;
+      state.isLoading = false;
       state.adminToken = null;
     },
   },
 });
 
-export const { setIsLogin, logout, updateAdminToken } = adminSlice.actions;
+export const { setIsLoading, logout, updateAdminToken } = adminSlice.actions;
 export default adminSlice.reducer;

@@ -3,12 +3,12 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSelector, useDispatch } from 'react-redux'
 import axios from 'axios'
-import { updateAdminToken, setIsLogin } from '@/store/slices/adminSlice'
+import { updateAdminToken, setIsLoading } from '@/store/slices/adminSlice'
 import 'dotenv'
 import { toast } from 'react-toastify'
 const Login = () => {
   const router = useRouter();
-  const { isLoggedIn, adminToken } = useSelector((state) => state.admin);
+  const { isLoading, adminToken } = useSelector((state) => state.admin);
   console.log('adminToken is:', adminToken)
   const dispatch = useDispatch()
     const [state, setState] = useState("Admin");
@@ -21,7 +21,7 @@ const Login = () => {
     e.preventDefault(); 
 
     try {
-      dispatch(setIsLogin(true))
+      dispatch(setIsLoading(true))
       if (state === "Admin") {
         
         const res = await axios.post(`${backUrl}/api/admin/admin-login`, { email, password })
@@ -32,7 +32,7 @@ const Login = () => {
           localStorage.setItem("adminToken", res.data.token);
           
           dispatch(updateAdminToken(res.data.token))
-          console.log('adminToken', adminToken)
+         
           toast.success('Admin successfully logged in');
           router.push('/admin/dashboard')
            
@@ -47,7 +47,7 @@ const Login = () => {
 
       
     } catch (err) {
-      dispatch(setIsLogin(false))
+      dispatch(setIsLoading(false))
       console.log(err);
 
    }

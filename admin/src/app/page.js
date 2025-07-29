@@ -10,21 +10,19 @@ export default function Home() {
   useEffect(() => {
     console.log(adminToken)
   })
+
+  useEffect(() => {
+    if (adminToken) {
+      
+    }
+  }, [])
   return (
     <div >
       {
         adminToken ? (
           <>
             <Navbar />
-            <div className="flex flex-col items-start gap-3 ">
-              <SideBar />
-              <ul>
-                <li><Link href="/">Dashboard</Link></li>
-                <li><Link href="/">Doctors List</Link></li>
-                <li><Link href="/"> Add a doctor</Link></li>
-                <li><Link href="/">All Appointments</Link></li>
-              </ul>
-            </div>
+           
             
           </>
         ) : (
