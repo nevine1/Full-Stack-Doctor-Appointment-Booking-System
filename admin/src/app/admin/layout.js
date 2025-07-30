@@ -4,16 +4,16 @@ import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import Navbar from "@/components/Navbar";
+
 export default function AdminLayout({ children }) {
   const { adminToken } = useSelector((state) => state.admin);
   const router = useRouter();
 
+
   useEffect(() => {
     if (!adminToken) {
       router.push("/");
-    } else {
-        router.push('/admin/dashboard')
-    }
+    } 
   }, [adminToken]);
 
  
@@ -29,7 +29,7 @@ export default function AdminLayout({ children }) {
       
       <div className="flex">
         {/* Sidebar */}
-        <aside className="w-[220px] bg-red-100 shadow-md min-h-screen">
+        <aside className="w-[220px] bg-blue-50 shadow-md min-h-screen">
           <SideBar />
         </aside>
 

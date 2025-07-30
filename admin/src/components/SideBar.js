@@ -1,61 +1,65 @@
-import React from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import Link from 'next/link'
-import Image from 'next/image'
-import { assets } from '@/assets/assets'
+'use client';
+
+import React from 'react';
+import { useSelector } from 'react-redux';
+import Link from 'next/link';
+import Image from 'next/image';
+import { assets } from '@/assets/assets';
+import { usePathname } from 'next/navigation';
+
 const SideBar = () => {
-  const { adminToken} = useSelector((state) => state.admin)
+  const { adminToken } = useSelector((state) => state.admin);
+  const pathname = usePathname();
+
+  const navLinks = [
+    {
+      href: '/admin/dashboard',
+      icon: assets.home_icon,
+      label: 'Dashboard',
+    },
+    {
+      href: '/admin/all-appointments',
+      icon: assets.appointment_icon,
+      label: 'Appointments',
+    },
+    {
+      href: '/admin/add-doctor',
+      icon: assets.add_icon,
+      label: 'Add Doctor',
+    },
+    {
+      href: '/admin/doctors-list',
+      icon: assets.doctor_icon,
+      label: 'Doctors List',
+    },
+  ];
+
   return (
     <div>
-      {
-        adminToken && (
-          <ul className="text-xs py-4 px-5 mt-4  flex flex-col gap-4">
-            <li className="  ">
-              <Link href="/admin/dashboard" className="flex  items-center gap-3 ">
-                <Image src={assets.home_icon}
-                  width={24}
-                  height={24}
-                  alt="home icon"
-                />
-                  Dashboard
-              </Link>
-            </li>
-            
-            <li className=" ">
-              <Link href="/admin/all-appointments" className="flex  items-center gap-3 ">
-                <Image src={assets.appointment_icon}
-                  width={24}
-                  height={24}
-                  alt="home icon"
-                />
-                  Doctors-List
-              </Link>
-            </li>
-            <li className=" ">
-              <Link href="/admin/add-doctor" className="flex  items-center gap-3 ">
-                <Image src={assets.add_icon}
-                  width={24}
-                  height={24}
-                  alt="home icon"
-                />
-                  Add-doctor
-              </Link>
-            </li>
-            <li className=" ">
-              <Link href="/admin/doctors-list" className="flex  items-center gap-3 ">
-                <Image src={assets.doctor_icon}
-                  width={24}
-                  height={24}
-                  alt="home icon"
-                />
-                  Doctors-List
-              </Link>
-            </li>
-          </ul>
-        )
-      }
+      {adminToken && (
+        <ul className="text-xs py-4 px-5 mt-4 flex flex-col gap-4">
+          {navLinks.map(({ href, icon, label }) => {
+            const isActive = pathname === href;
+            return (
+              <li key={href}>
+                <Link
+                  href={href}
+                  className={`flex items-center gap-3 px-4 py-2 rounded-md transition-all duration-300 ${
+                    isActive
+                      ? 'bg-blue-100 text-blue-600 font-semibold'
+                      : 'text-gray-700 hover:bg-gray-100'
+                  }`}
+                >
+                  <Image src={icon} width={24} height={24} alt={`${label} icon`} />
+                  {label}
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      )}
     </div>
-  )
-}
+  );
+};
 
-export default SideBar
+export default SideBar;

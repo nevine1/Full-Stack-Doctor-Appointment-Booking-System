@@ -1,72 +1,42 @@
 "use client"
-import { useState } from 'react'
-import { useSelector, useDispatch } from 'react-redux';
-import { assets } from '@/assets/assets';
-const page = () => {
-  const dispatch = useDispatch();
-  const { isLoading } = useSelector((state) => state.admin)
-  const [user, setUser] = useState({
-    name: '', 
-    email: '', 
-    password: "", 
-    degree: "", 
-    year: "", 
-    address: "", 
-  })
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setUser((prev) => ({
-     ...prev, [name]: value,
-   }))
-  }
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log(user)
-  }
+import React from 'react'
+
+const AddDoctor = () => {
   return (
-    <div className="mt-10 mx-5 ">
+    <div>
       <form
         onSubmit={handleSubmit}
         className="mt-40 md:w-[30vw] w-[400px] mx-auto md:mt-20 sm:mt-5 sm:w-[90vw] bg-blue-50 border shadow-md border-gray-300 m-auto p-10 rounded-xl"
       >
-        <p>Adding new doctor</p>
-        <div className="flex  gap-6 items-center justify-start">
-         
-          <input
-            name="name"
-            type="name"
-            onChange={handleChange}
-            value={user.name}
-            placeholder="full name"
-            className="mb-3 pl-3 py-2 border border-gray-300 bg-white w-full rounded-md"
-          />
-          
+        <div className="flex flex-col gap-6 items-center justify-start">
+          <p className="text-lg font-semibold">
+            {state === "Admin" ? "Admin" : "Doctor"} Login
+          </p>
           <input
             name="email"
             type="email"
-            onChange={handleChange}
-            value={user.email}
+            onChange={(e) => setEmail(e.target.value)}
+            value={email}
             placeholder="Email"
             className="mb-3 pl-3 py-2 border border-gray-300 bg-white w-full rounded-md"
           />
           <input
-            type="file"
-            name="image"
-            onChange={handleChange}
-            value={user.image}
+            type="password"
+            name="password"
+            onChange={(e) => setPassword(e.target.value)}
+            value={password}
             placeholder="Password"
             className="mb-3 pl-3 py-2 border border-gray-300 bg-white w-full rounded-md"
           />
-
           <button
             type="submit"
             className="py-2 w-full text-white bg-blue-400 rounded-md"
             disabled={isLoading}
           >
-            Submit
+            {isLoading ? "Logging in..." : "Login"}
           </button>
           <div>
-           {/*  {state === "Admin" ? (
+            {state === "Admin" ? (
               <p className="text-gray-500 text-sm">
                 Are you a doctor?{" "}
                 <span
@@ -86,7 +56,7 @@ const page = () => {
                   Login here
                 </span>
               </p>
-            )} */}
+            )}
           </div>
         </div>
       </form>
@@ -94,4 +64,4 @@ const page = () => {
   )
 }
 
-export default page
+export default AddDoctor

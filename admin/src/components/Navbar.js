@@ -13,7 +13,7 @@ const Navbar = () => {
   const handleLogout = () => {
     localStorage.clear();
     dispatch(logout());
-     dispatch(setIsLogin(false))
+     
    
   }
   return (
