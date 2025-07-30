@@ -11,10 +11,11 @@ const adminSlice = createSlice({
 
   reducers: {
     setIsLoading: (state, action) => {
-      state.isLoading = true;
+      state.isLoading = action.payload;
     },
     updateAdminToken: (state, action) => {
       state.adminToken = action.payload;
+      localStorage.setItem('token', state.adminToken); // i do not need to use it because I am using redux-persist
     
     },
     logout: (state) => {

@@ -4,6 +4,7 @@ import { logout } from '../store/slices/adminSlice'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { assets } from '@/assets/assets'
+import { setIsLogin} from '../store/slices/adminSlice'
 const Navbar = () => {
   const { adminToken, isLoading } = useSelector((state) => state.admin)
   const router = useRouter();
