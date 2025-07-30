@@ -21,7 +21,7 @@ export default function AdminLayout({ children }) {
   return (
       <div className="min-h-screen">
       {/* Navbar full width */}
-      <header className="h-[64px] w-full shadow-sm border-b bg-white flex items-center px-4 z-20 relative">
+      <header className="h-[64px] w-full   bg-white flex items-center z-20 relative">
         <Navbar />
       </header>
 
@@ -34,7 +34,7 @@ export default function AdminLayout({ children }) {
         </aside>
 
         {/* main pages content */}
-        <main className="flex-1 p-6 bg-gray-50 min-h-screen">
+        <main className="flex-1 p-6  min-h-screen">
           {children}
         </main>
       </div>

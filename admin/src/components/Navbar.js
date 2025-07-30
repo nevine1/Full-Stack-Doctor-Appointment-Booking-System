@@ -17,7 +17,7 @@ const Navbar = () => {
    
   }
   return (
-    <div className="flex flex-row items-center justify-between py-4 px-6 sm:px-10 border-b border-gray-400 bg-white">
+    <div className="flex flex-row items-center justify-between shadow-md w-full py-4 px-6 sm:px-10  border-b border-gray-300  bg-white">
       <div className="flex flex-row gap-6 items-center">
         <Image
         src={assets.admin_logo}
@@ -28,7 +28,7 @@ const Navbar = () => {
           onClick={() => router.push('/')}
           
         />
-        <p className='text-xs text-gray-600 py-0.5 px-3 rounded-full border border-gray-500'>{adminToken ? "Admin" : "Doctor"}</p>
+        <p className='text-xs text-gray-600 py-0.5 px-3 rounded-full '>{adminToken ? "Admin" : "Doctor"}</p>
       </div>
       
       <button type="button" onClick={handleLogout}
