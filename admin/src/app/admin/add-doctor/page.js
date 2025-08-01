@@ -1,160 +1,186 @@
-"use client"
-import { useState } from 'react'
+"use client";
+import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { assets } from '@/assets/assets';
-const page = () => {
+
+const Page = () => {
   const dispatch = useDispatch();
-  const { isLoading } = useSelector((state) => state.admin)
+  const { isLoading } = useSelector((state) => state.admin);
+const experienceOptions = Array.from({ length: 10 }, (_, i) => i + 1);
+
   const [doctor, setDoctor] = useState({
     name: '', 
     email: '',
-    password: "",
-    image: "", 
-    address: "",
-    speciality: "",
-    degree: "", 
-    experience: "", 
-    fees: "",
+    password: '',
+    image: '', 
+    speciality: '',
+    degree: '',
+    experience: '',
+    fees: '',
+    address1: '',
+    address2: '',
+    about: ''
+  });
 
-  })
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setDoctor((prev) => ({
-     ...prev, [name]: value,
-   }))
-  }
+    const { name, value, type, files } = e.target;
+    if (type === "file") {
+      setDoctor((prev) => ({
+        ...prev,
+        [name]: files[0]?.name || "", // show filename only
+      }));
+    } else {
+      setDoctor((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(doctor)
-  }
+    console.log(doctor);
+  };
+
   return (
-    <div className="mt-10 mx-5 ">
+    <div className="my-3 mx-auto w-full max-w-6xl px-4 md:px-8 max-h-[80vh] ">
       <form
         onSubmit={handleSubmit}
-        className="mt-40 md:w-[30vw] w-[400px] mx-auto md:mt-20 sm:mt-5 sm:w-[90vw] bg-blue-50 border shadow-md border-gray-300 m-auto p-10 rounded-xl"
-        >
-        
-        <p className="p-4 text-center">Adding new doctor</p>
-        <div className="flex flex-col  gap-6 items-center justify-start">
-         
+        className="mt-13 mb-4 bg-blue-50 border shadow-md border-gray-300 w-full max-w-4xl mx-auto p-8 md:p-10 rounded-xl"
+      >
+        <p className="pb-6 text-center text-xl font-semibold">Adding New Doctor</p>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
           <input
             name="name"
-            type="name"
+            type="text"
             onChange={handleChange}
             value={doctor.name}
-            placeholder="full name"
-            className="mb-3 pl-3 py-2 border border-gray-300 bg-white w-full rounded-md"
+            placeholder="Full Name"
+            className="pl-3 py-2 border border-gray-300 bg-white rounded-md w-full"
           />
-          
+
           <input
             name="email"
             type="email"
             onChange={handleChange}
             value={doctor.email}
             placeholder="Email"
-            className="mb-3 pl-3 py-2 border border-gray-300 bg-white w-full rounded-md"
+            className="pl-3 py-2 border border-gray-300 bg-white rounded-md w-full"
           />
+
           <input
             name="password"
             type="password"
             onChange={handleChange}
             value={doctor.password}
             placeholder="Password"
-            className="mb-3 pl-3 py-2 border border-gray-300 bg-white w-full rounded-md"
+            className="pl-3 py-2 border border-gray-300 bg-white rounded-md w-full"
             required
           />
-          <div className="mb-3 pl-3 py-2 cursor-pointer border border-gray-300 bg-white w-full rounded-md">
-            {
-              doctor.image ? (
-                <p className="text-gray-400">{doctor.image}</p>
-              ): (
-                <input
-                  type="file"
-                  name="image"
-                  onChange={handleChange}
-                  value={doctor.image}
-                  placeholder="doctor image"
-                    className="text-gray-400 "
-                    required
-                  />
-              )
-            }
-            
-          </div>
-          <div className="mb-3 pl-3 py-2 cursor-pointer text-gray-500 border border-gray-300 bg-white w-full rounded-md">
-            <select name="speciality" className='w-full' onChange={handleChange} required>
-              <option value="" key="">Choose Speciality</option>
-              <option value="Gynecologist" key="Gynecologist">Gynecologist</option>
-              <option value="Dermatologist" key="Dermatologist">Dermatologist</option>
-              <option value="Neurologist" key="Neurologist">Neurologist</option>
-              <option value="General-physician" key="General-physician">General-physician</option>
-              <option value="Gastroenterologist" key="Gastroenterologist">Gastroenterologist</option>
-              <option value="Pediatricians" key="Pediatricians">Pediatricians</option>
-            </select>
-          </div>
-          <div className="mb-3 pl-3 py-2 cursor-pointer text-gray-500 border border-gray-300 bg-white w-full rounded-md">
-            <select name="experience" className='' onChange={handleChange} required>
-              <option value="" key="">Experience</option>
-              <option value="1" key="1">1 year</option>
-              <option value="2" key="2">2 years</option>
-              <option value="3" key="3">3 year</option>
-              <option value="4" key="4">4 years</option>
-              <option value="5" key="5">5 years</option>
-              <option value="6" key="6">6 years</option>
-              <option value="7" key="7">7 years</option>
-              <option value="8" key="8">8 years</option>
-              <option value="9" key="9">9 years</option>
-              <option value="10" key="10">10 years</option>
-            
-            </select>
-          </div>
           
+            <input
+              type="file"
+              name="image"
+              onChange={handleChange}
+              className="pl-3 py-2 border border-gray-300 bg-white rounded-md w-full text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200"
+              required
+            />
+          
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 col-span-full">
+            <input
+              name="address1"
+              type="text"
+              onChange={handleChange}
+              value={doctor.address1}
+              placeholder="Address Line 1"
+              className="pl-3 py-2 border border-gray-300 bg-white rounded-md w-full"
+              required
+            />
+            <input
+              name="address2"
+              type="text"
+              onChange={handleChange}
+              value={doctor.address2}
+              placeholder="Address Line 2"
+              className="pl-3 py-2 border border-gray-300 bg-white rounded-md w-full"
+            />
+          </div>
+
           <input
             name="fees"
             type="number"
             onChange={handleChange}
             value={doctor.fees}
             placeholder="Fees"
-            className="mb-3 pl-3 py-2 border border-gray-300 bg-white w-full rounded-md"
+            className="pl-3 py-2 border border-gray-300 bg-white rounded-md w-full"
             required
           />
 
-          <div className="mb-3 flex flex-row gap-2 pl-3 py-2 border border-gray-300 bg-white w-full rounded-md">
-            <input
-              name="address1"
-              type="text"
-              onChange={handleChange}
-              value={doctor.fees}
-              placeholder="Fees"
-              required
-              />
-            <input
-              name="address2"
-              type="text"
-              onChange={handleChange}
-              value={doctor.fees}
-              placeholder="Fees"
-              required
-            />
-          </div>
-          <div className="mb-3 flex flex-row gap-2 pl-3 py-2 border border-gray-300 bg-white w-full rounded-md">
-            <textarea cols="30" rows="4" name="about" onChange={handleChange} className="w-full"></textarea>
-          </div>
-          <button
-            type="submit"
-            className="py-2 w-full text-white bg-blue-400 rounded-md"
-            disabled={isLoading}
+          <select
+            name="speciality"
+            className="pl-3 py-2 border border-gray-300 bg-white rounded-md w-full text-gray-500"
+            onChange={handleChange}
+            value={doctor.speciality}
+            required
           >
-            Submit
-          </button>
-          <div>
-           
-           
+            <option value="">Choose Speciality</option>
+            <option value="Gynecologist">Gynecologist</option>
+            <option value="Dermatologist">Dermatologist</option>
+            <option value="Neurologist">Neurologist</option>
+            <option value="General-physician">General-physician</option>
+            <option value="Gastroenterologist">Gastroenterologist</option>
+            <option value="Pediatricians">Pediatricians</option>
+          </select>
+
+          <select
+              name="experience"
+              className="pl-3 py-2 border border-gray-300 bg-white rounded-md w-full text-gray-500"
+              onChange={handleChange}
+              value={doctor.experience}
+              required
+            >
+              <option value="">Experience</option>
+              {experienceOptions.map((year) => (
+                <option key={year} value={year}>
+                  {year} {year === 1 ? 'year' : 'years'}
+                </option>
+              ))}
+            </select>
+
+
+          <input
+            name="degree"
+            type="text"
+            onChange={handleChange}
+            value={doctor.degree}
+            placeholder="Degree"
+            className="pl-3 py-2 border border-gray-300 bg-white rounded-md w-full"
+          />
+
+          
+          <div className="col-span-full">
+            <textarea
+              name="about"
+              rows="4"
+              placeholder="About"
+              onChange={handleChange}
+              value={doctor.about}
+              className="pl-3 py-2 border border-gray-300 bg-white rounded-md w-full resize-none"
+            ></textarea>
           </div>
         </div>
+
+        <button
+          type="submit"
+          className="mt-6 py-2 px-4 w-full text-white bg-blue-500 hover:bg-blue-600 rounded-md"
+          disabled={isLoading}
+        >
+          {isLoading ? 'Submitting...' : 'Submit'}
+        </button>
       </form>
     </div>
-  )
-}
+  );
+};
 
-export default page
+export default Page;
