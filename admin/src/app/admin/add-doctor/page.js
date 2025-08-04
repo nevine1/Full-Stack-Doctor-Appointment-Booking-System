@@ -4,9 +4,15 @@ import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Image from 'next/image';
 import Link from 'next/link';
+import axios from 'axios';
+import { setIsLoading } from '../../../store/slices/adminSlice'
+
+import { useRouter } from 'next/navigation';
 const Page = () => {
   const dispatch = useDispatch();
-  const { isLoading } = useSelector((state) => state.admin);
+  const router = useRouter();
+  const backUrl = process.env.NEXT_PUBLIC_BACKEND_URL
+  const { isLoading, adminToken } = useSelector((state) => state.admin);
 const experienceOptions = Array.from({ length: 10 }, (_, i) => i + 1);
 
   const [doctor, setDoctor] = useState({
@@ -14,14 +20,16 @@ const experienceOptions = Array.from({ length: 10 }, (_, i) => i + 1);
     email: '',
     password: '',
     image: '', 
-    iamgePreview:"",
+    imagePreview:"",
     speciality: 'General-physician',
     degree: '',
     experience: '5 Years',
     fees: '',
     address1: '',
     address2: '',
-    about: ''
+    about: '', 
+    available: true,
+    slots_booked: 0,
   });
 
   
@@ -45,10 +53,68 @@ const experienceOptions = Array.from({ length: 10 }, (_, i) => i + 1);
     }
   };
   
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log(doctor);
-  };
+  
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+console.log("⏩ Submitting to:", `${backUrl}/api/admin/add-doctor`);
+  try {
+    dispatch(setIsLoading(true));
+
+    if (!adminToken) return;
+
+    // Upload image
+    //const uploadedImageUrl = await uploadFile(doctor.image, adminToken);
+
+    // all doctor data
+    /* const docData = {
+        name: doctor.name, 
+        email: doctor.email,
+        password: doctor.password,
+        image: uploadedImageUrl, 
+        speciality: doctor.speciality,
+        degree: doctor.degree,
+        experience: doctor.experience,
+        fees: doctor.fees,
+        address: JSON.stringify({ address1: doctor.address1, address2: doctor.address2 }),
+        about: doctor.about, 
+        available: doctor.available,
+        slots_booked: doctor.slots_booked,
+          
+        }; */
+
+    // doctor data
+    const formData = new FormData();
+    formData.append("name", doctor.name);
+    formData.append("email", doctor.email);
+    formData.append("password", doctor.password);
+    formData.append("image", doctor.image); 
+    formData.append("speciality", doctor.speciality);
+    formData.append("degree", doctor.degree);
+    formData.append("fees", doctor.fees);
+    formData.append("experience", doctor.experience);
+    formData.append("about", doctor.about);
+    formData.append("available", doctor.available);
+    formData.append("slots_booked", doctor.slots_booked);
+    formData.append("address", JSON.stringify({ address1: doctor.address1, address2: doctor.address2 }));
+    
+       
+    const res = await axios.post(`${backUrl}/api/admin/add-doctor`, formData, {
+      headers: {
+        Authorization: `Bearer ${adminToken}`,
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    console.log("Doctor added successfully:", res.data);
+
+   
+    router.push("/admin/doctors-list");
+  } catch (err) {
+    console.error(err.response?.data || err.message);
+  } finally {
+    dispatch(setIsLoading(false));
+  }
+};
+
 
   return (
     <div className="my-1 mx-auto w-[80%] max-w-6xl px-4 md:px-8 max-h-[80vh] ">
@@ -198,7 +264,7 @@ const experienceOptions = Array.from({ length: 10 }, (_, i) => i + 1);
           className="mt-6 py-2 px-20 mx-auto cursor-pointer  flex justify-center  text-white bg-blue-500 border hover:border-blue-600 hover:text-blue-500 hover:bg-white transition-all duration-300 rounded-md"
           disabled={isLoading}
         >
-          {isLoading ? 'Submitting...' : 'Submit'}
+          Submit
         </button>
       </form>
     </div>
