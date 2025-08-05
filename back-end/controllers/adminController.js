@@ -101,6 +101,18 @@ const addDoctor = async (req, res) => {
   }
 };
 
+//get all doctors from the database for admin panel
+const getDoctors = async (req, res) => {
+  try {
+    const { doctors } = req.body;
+    doctor = await Doctor.find
+  } catch(err) {
+    return res.json({
+      success: false,
+      message: "Can not get doctors from database"
+    })
+  }
+}
 //api for admin login
 const adminLogin = async (req, res) => {
   try {
