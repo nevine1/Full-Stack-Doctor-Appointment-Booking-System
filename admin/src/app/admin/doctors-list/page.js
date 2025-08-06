@@ -4,6 +4,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { setIsLoading } from '@/store/slices/adminSlice';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import Doctor from '@/components/doctor/Doctor';
+import Image from 'next/image';
 const page = () => {
   const dispatch = useDispatch();
   const { adminToken, isLoading } = useSelector((state) => state.admin);
@@ -40,17 +42,19 @@ const page = () => {
   }, [adminToken])
   console.log('doctors list are:', doctors)
   return (
-    <div className=" flex flex-col m-8 ">
-     
-        { doctors.length > 0 && 
-        doctors.map((doc, index) => (
-          <div key={index} className="p-4 m-2 grid md:grid-cols-4 sm:grid-cols-2 border border-red-500  gap-4 ">
-            <h1>{doc.name}</h1>
+    <div className=" my-8 lg:mx-20 md:mx-10 md:max-w-[90vw] " >
+      <h1 className="flex items-center justify-center my-3 text-gray-600 text-md md:text-2xl ">All doctors list</h1>
+    {doctors.length > 0 && (
+      <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 grid-col-1 gap-8 flex justify-center">
+        {doctors.map((doc, index) => (
+          <div key={index} className="">
+            <Doctor doc={doc} />
           </div>
-        ))
-      }
-      
-    </div>
+        ))}
+      </div>
+    )}
+  </div>
+
   )
 }
 
