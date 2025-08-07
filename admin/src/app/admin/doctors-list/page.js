@@ -10,7 +10,8 @@ const page = () => {
   const dispatch = useDispatch();
   const { adminToken, isLoading } = useSelector((state) => state.admin);
   console.log('doctors list admin token is:', adminToken)
-  const [doctors , setDoctors] = useState([])
+  const [doctors, setDoctors] = useState([])
+  
   const fetchAllDoctors = async () => {
     try {
       const backUrl = process.env.NEXT_PUBLIC_BACKEND_URL

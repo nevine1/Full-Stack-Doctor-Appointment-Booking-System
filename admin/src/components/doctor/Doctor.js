@@ -1,6 +1,12 @@
 import React from 'react'
-
-const Doctor = ({doc}) => {
+import { updateAvailability } from '../../libs/doctorsAsync'
+import { useSelector } from 'react-redux'
+import { toast } from 'react-toastify'
+import axios from 'axios'
+const Doctor = ({ doc }) => {
+  const backUrl = process.env.NEXT_PUBLIC_BACKEND_URL
+ const { adminToken } = useSelector((state) => state.admin)
+ console.log('doctor page admin token is:', adminToken)
   return (
     <div className=" border border-gray-300 shadow-md flex flex-col gap-y-2 rounded-md">
           <img
@@ -14,7 +20,7 @@ const Doctor = ({doc}) => {
               <div className="p-1 flex flex-row gap-2 pb-2">
                   <input type="checkbox"
                       checked={doc.available}
-                      readOnly
+                      onChange={() =>updateAvailability(doc._id, adminToken)}
                   />
                   <p className={`${doc.available? "text-gray-600": "text-gray-400"} text-xs`} >Available</p>
               </div>
