@@ -1,8 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { doctorsList } from "@/assets/assets";
+//import { doctorsList } from "@/assets/assets";
 
 const initialState = { 
-    doctors: doctorsList, 
+    doctors: [], 
     isLoading: false, 
     error: null
 }
@@ -10,10 +10,12 @@ const doctorsSlice = createSlice({
     name: "doctors",
     initialState, 
     reducers: {
-        
+        setDoctors: (state, action) => {
+            state.doctors = action.payload
+        }
     }
 
 })
 
-export const {  } = doctorsSlice.actions;
+export const { setDoctors } = doctorsSlice.actions;
 export default doctorsSlice.reducer; 

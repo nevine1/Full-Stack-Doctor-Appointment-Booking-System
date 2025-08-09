@@ -21,6 +21,25 @@ const changeAvailability = async (req, res) => {
     }
 }
 
-export  {
-    changeAvailability
+//get all doctors
+
+const getDoctors = async (req, res) => {
+  try {
+    
+    const doctors = await Doctor.find({}).select(['-password', '-email'])
+    
+    return res.json({
+      success: true, data: doctors
+    })
+  } catch(err) {
+    return res.json({
+      success: false,
+      message: err.message
+    })
+  }
 }
+
+export  {
+    changeAvailability,
+    getDoctors
+    }

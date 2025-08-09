@@ -1,12 +1,19 @@
 "use client"
-import React from 'react'
+import { useEffect} from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { doctorsList } from '@/assets/assets'
-import { useSelector } from 'react-redux'
+import { useSelector , useDispatch} from 'react-redux'
+import { fetchAllDoctors } from '@/store/slices/doctorsAsync'
 
 const DoctorsList = () => {
-    const { doctors } = useSelector((state) => state.doctors)
+  const dispatch = useDispatch();
+   const { doctors } = useSelector((state) => state.doctors)
+  
+  useEffect(() => {
+    fetchAllDoctors( dispatch)
+  }, [dispatch])
+
+ 
   return (
     <div className="flex flex-col items-center my-40">
     <h1 className="text-gray-900 text-3xl font-semibold my-2">
@@ -20,7 +27,8 @@ const DoctorsList = () => {
     <div className="w-full px-3 sm:px-0">
       <div className="lg:mx-20 xl:mx-20 sm:mx-10 my-3 max-w-7xl px-5 xl:px-0">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-          {doctors.length > 0 &&
+         
+            {
             doctors.map((item, index) => (
               <div
                 key={index}

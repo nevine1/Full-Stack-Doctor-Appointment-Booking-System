@@ -4,7 +4,7 @@ import 'dotenv/config'
 import connectDB from './config/mongodb.js';
 import connectCloudinary from './config/cloudinary.js';
 import adminRoute from './routes/adminRoute.js';
-
+import doctorRoute from './routes/doctorRoute.js';
 
 const app = express();
 const port = process.env.PORT || 4000 
@@ -19,6 +19,7 @@ connectDB();
 connectCloudinary()
 //api end points 
 app.use('/api/admin', adminRoute) // <--- Multer middleware is applied within adminRoute.js
+app.use('/api/doctors', doctorRoute);
 
 app.get('/', (req, res) => {
     res.send("app is working")
