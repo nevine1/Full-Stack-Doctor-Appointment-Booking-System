@@ -45,9 +45,11 @@ const DoctorsList = () => {
                     </Link>
                 <div className="flex flex-col justify-start p-4">
                   <div className=" flex flex-row gap-2 items-center">
-                    <p className="w-2 h-2 rounded-full bg-green-500"></p>
-                    <p className="text-green-500 font-light text-xs">
-                      Available
+                    <p className={`w-2 h-2 rounded-full ${item.available ? "bg-green-500" : "bg-gray-500"}`}></p>
+                    <p className={`font-light text-xs ${item.available ? "text-green-500": "text-gray-500"}`}>
+                      {
+                        item.available ? "Available" : "Unavailable"
+                      }
                     </p>
                   </div>
                   <p className="text-[17px] font-semibold py-1">{item.name}</p>
