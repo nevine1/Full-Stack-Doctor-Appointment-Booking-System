@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = { 
     doctors: [], 
+    token: null,
     isLoading: false, 
     error: null
 }
@@ -12,10 +13,13 @@ const doctorsSlice = createSlice({
     reducers: {
         setDoctors: (state, action) => {
             state.doctors = action.payload
+        }, 
+        setToken: (state, action) => {
+            state.token = action.payload
         }
     }
 
 })
 
-export const { setDoctors } = doctorsSlice.actions;
+export const { setDoctors , setToken } = doctorsSlice.actions;
 export default doctorsSlice.reducer; 

@@ -5,14 +5,14 @@ import User from '../models/userModel.js';
 const registerUser = async (req, res) => {
     
     try {
-        const { name, email, phone, password } = req.body; 
-        if (!name || !email || !phone || !password) {
+        const { name, email,  password } = req.body; 
+        if (!name || !email || !password) {
             return res.json({
                 success: false, 
                 message: "This field is  required"
             })
         }
-        //validation for email, name, pasword;
+        //validation for email, name, password;
         if (!email) { 
               console.error("Validation Error: Email is missing.");
               return res.status(400).json({ success: false, message: "Email is required." });
@@ -33,12 +33,18 @@ const registerUser = async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         const hashedPass = await bcrypt.hash(password, salt)
 
-
+        const existingUser = await User.findOne({ email });
+        
+        if (existingUser) {
+            return res.json({
+                success: false,
+                message: "This email is already existing, please use another email"
+            })
+        }
         
         const userData = {
             name, 
             email, 
-            phone, 
             password: hashedPass, 
             date: new Date(), 
         }
@@ -61,4 +67,42 @@ const registerUser = async (req, res) => {
     }
 }
 
-export { registerUser}
+const loginUser = async (req, res) => {
+
+    try {
+        const { email, password } = req.body;
+        const user = await User.findOne({ email });
+        
+        if (!user) {
+             return res.json({
+                success: false, 
+                message: "User is not existing",
+            })
+        }
+
+        const matchedPass = await bcrypt.compare(password, user.password);
+
+        if (matchedPass) {
+            const token = await jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+             return res.json({
+                success: true, 
+                message: "user logged in successfully",
+                 data: user, 
+                token
+            })
+        } else {
+            return res.json({
+                success: false, 
+                message: "user email or password is incorrect",
+            }) 
+        }
+       
+    } catch (err) {
+
+        return res.json({
+            success: false, 
+            message: err.message
+        })
+    }
+}
+export { registerUser, loginUser }
