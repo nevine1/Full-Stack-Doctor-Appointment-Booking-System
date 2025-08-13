@@ -3,7 +3,7 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import Image from 'next/image'
 const MyAppointments = () => {
-    const { doctors } = useSelector((state) => state.doctors)
+    const { doctors } = useSelector((state) => state.users)
   return (
     <div>
           <p className="mt-12 pb-2 font-medium ">My Appointments</p>

@@ -1,20 +1,33 @@
 "use client"
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image';
 import { assets } from '../assets/assets'
 import { useRouter } from 'next/navigation'
 import { IoIosArrowDown } from "react-icons/io";
-
+import { useSelector, useDispatch } from 'react-redux'
+import { logout } from '../store/slices/usersSlice'
 const Navbar = () => {
+  const dispatch = useDispatch();
+  const [mounted, setMounted ] = useState(false)
   const [showMenu, setShowMenu] = useState(false);
-  const [token, setToken] = useState(true); // if true, user is logged in
+  const { token } = useSelector((state) => state.users)
   const router = useRouter();
 
   const handleClick = () => {
     router.push('/auth/login')
   }
 
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  const logOut = () => {
+    dispatch(logout());
+    router.push('/')
+  }
+  if (!mounted) return; 
+console.log('token at navbar is,', token)
   return (
     <div className="flex flex-row justify-between items-center py-6 px-4 md:px-10 border-b border-gray-200 bg-brandBlue">
       
@@ -62,14 +75,21 @@ const Navbar = () => {
                     onClick={ () => setShowIcon(false)} >My Profile</Link>
                   <Link href="/auth/appointment" className="cursor-pointer hover:text-black"
                     onClick={() => setShowIcon(false)}>My Appointments</Link>
-                  <p className="cursor-pointer hover:text-black" onClick={() => setToken(false)}>Logout</p>
+                 
+                  {
+                    token ? (
+                     <p className="cursor-pointer hover:text-black" onClick={logOut}>Logout</p>
+                    ) : (
+                         <p className="cursor-pointer hover:text-black" onClick={handleClick}>Login</p>
+                    )
+                  }
                 </div>
               </div>
             )}
           </div>
         ) : (
-          <button onClick={handleClick} className="bg-blue-500 text-white px-8 rounded-full py-2 hidden md:block">
-            Create account
+          <button onClick={handleClick} className="cursor-pointer bg-blue-500 text-white px-8 rounded-full py-2 hidden md:block">
+            Login
           </button>
         )}
 

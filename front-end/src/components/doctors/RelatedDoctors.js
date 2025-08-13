@@ -8,7 +8,7 @@ const RelatedDoctors = ({ speciality , docId}) => {
 
   const [relatedDoctors, setRelatedDoctors] = useState([])
 
-    const { doctors } = useSelector((state) => state.doctors)
+    const { doctors } = useSelector((state) => state.users)
 
   useEffect(() => {
 

@@ -7,8 +7,8 @@ const initialState = {
     isLoading: false, 
     error: null
 }
-const doctorsSlice = createSlice({
-    name: "doctors",
+const usersSlice = createSlice({
+    name: "users",
     initialState, 
     reducers: {
         setDoctors: (state, action) => {
@@ -19,10 +19,19 @@ const doctorsSlice = createSlice({
         },
         setToken: (state, action) => {
             state.token = action.payload
+        }, 
+        logout: (state, action) => {
+            state.token = null; 
+            state.doctors = [];
         }
     }
 
 })
 
-export const { setDoctors , setToken, setIsLoading } = doctorsSlice.actions;
-export default doctorsSlice.reducer; 
+export const {
+    setDoctors,
+    setToken,
+    setIsLoading,
+    logout
+    } = usersSlice.actions;
+export default usersSlice.reducer; 

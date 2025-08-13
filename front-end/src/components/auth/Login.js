@@ -1,8 +1,8 @@
 "use client"
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSelector, useDispatch } from 'react-redux';
-import { setIsLoading, setToken } from '@/store/slices/doctorsSlice';
+import { setIsLoading, setToken } from '@/store/slices/usersSlice';
 import { toast } from 'react-toastify';
 
 import axios from 'axios'
@@ -10,8 +10,9 @@ const Login = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const backUrl = process.env.NEXT_PUBLIC_BACKEND_URL
-  const { token, isLoading } = useSelector((state) => state.doctors)
-  const [mode, setMode] = useState("Sign Up");
+  const { token, isLoading } = useSelector((state) => state.users)
+  //const [mode, setMode] = useState("Sign Up");
+  const [mode, setMode] = useState("login");
   const [userInfo, setUserInfo] = useState({
     name: " ", 
     email: "", 
@@ -67,6 +68,12 @@ const Login = () => {
       dispatch(setIsLoading(false))
     }
   }
+
+  useEffect(() => {
+    if (token) {
+      router.push('/auth/profile')
+    }
+  }, [token, router])
   console.log(' token is:', token)
   return (
     <div className="  rounded-xl  ">

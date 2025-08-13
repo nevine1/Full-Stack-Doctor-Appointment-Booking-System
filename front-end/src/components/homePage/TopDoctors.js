@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 import { useSelector } from 'react-redux';
 const TopDoctors = () => {
     const router = useRouter();
-    const { doctors } = useSelector((state) => state.doctors)
+    const { doctors } = useSelector((state) => state.users)
     console.log('hello this is doctorslist', doctors)
   return (
     <div className="flex flex-col items-center my-14">

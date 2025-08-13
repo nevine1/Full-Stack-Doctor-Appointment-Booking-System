@@ -2,8 +2,9 @@
 import { useState } from "react";
 import { assets } from "@/assets/assets";
 import Image from "next/image";
-
+import { useDispatch, useSelector } from "react-redux";
 const MyProfile = () => {
+  const { token } = useSelector((state) => state.users)
   const [isEditable, setIsEditable] = useState(false);
   const [userData, setUserData] = useState({
     name: "nevine vena",
@@ -18,6 +19,9 @@ const MyProfile = () => {
     gender: "female"
   });
 
+  if (token) {
+    
+  }
   return (
     <div className="flex flex-col  items-center justify-center p-8 w-full min-h-screen">
       {/* Profile image */}

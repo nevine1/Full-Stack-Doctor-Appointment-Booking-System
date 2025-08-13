@@ -1,10 +1,10 @@
 import { combineReducers } from "@reduxjs/toolkit"
-import  doctorsReducer  from './slices/doctorsSlice'
+import  usersReducer  from './slices/usersSlice'
 
 
 
 const rootReducer = combineReducers({
-   doctors: doctorsReducer,
+   users: usersReducer,usersReducer
   
 })
   

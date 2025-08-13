@@ -105,4 +105,52 @@ const loginUser = async (req, res) => {
         })
     }
 }
-export { registerUser, loginUser }
+
+const userDetails = async (req, res) => {
+
+    try {
+        //getting the userId from the token 
+        const  userId  = req.userId;
+        const userDetails = await User.findById(userId).select("-password");
+        
+        return res.json({
+            success: true,
+            data: userDetails
+        })
+    } catch (err) {
+        return res.json({
+            success: false,
+            message: err.message
+        })
+    }
+}
+const updateUser = async (req, res) => {
+console.log(req, res)
+    /* try {
+
+        const { email } = req.body; 
+        const fileImage = req.file; 
+        const user = await findOne({ email });
+        if (!user) {
+            return res.json({
+                success: false,
+                message: "This email is not existing"
+            })
+        }
+        const updatingData = {
+            name: user.name,
+            image: user.fileImage,
+            phone: user.phone,
+            DOB: user.DOB, 
+            gender: user.gender
+        }
+        const updatedUser = await User.findOneAndUpdate({})
+        
+    } catch (err) {
+        return res.json({
+            success: false, 
+            message: err.message
+        })
+    } */
+}
+export { registerUser, loginUser , updateUser, userDetails }

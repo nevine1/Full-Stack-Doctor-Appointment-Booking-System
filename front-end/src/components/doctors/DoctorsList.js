@@ -3,11 +3,11 @@ import { useEffect} from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useSelector , useDispatch} from 'react-redux'
-import { fetchAllDoctors } from '@/store/slices/doctorsAsync'
+import { fetchAllDoctors } from '@/store/slices/usersAsync'
 
 const DoctorsList = () => {
   const dispatch = useDispatch();
-   const { doctors } = useSelector((state) => state.doctors)
+   const { doctors } = useSelector((state) => state.users)
   
   useEffect(() => {
     fetchAllDoctors( dispatch)

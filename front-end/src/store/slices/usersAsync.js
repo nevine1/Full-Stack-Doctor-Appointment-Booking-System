@@ -1,6 +1,6 @@
 
 import axios from 'axios'
-import { setDoctors , setToken, setIsLoading } from './doctorsSlice';
+import { setDoctors , setToken, setIsLoading } from './usersSlice';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify'
 const backUrl = process.env.NEXT_PUBLIC_BACKEND_URL
@@ -26,7 +26,7 @@ const fetchAllDoctors = async (dispatch) => {
    }
 }
 
-const doctorRegisterLogin = async ({dispatch, mode, setMode, name, email, password}) => {
+const UserRegisterLogin = async ({dispatch, mode, setMode, name, email, password}) => {
       try {
       dispatch(setIsLoading(true))
       if (mode === "Sign Up") { //register route
@@ -67,4 +67,19 @@ const doctorRegisterLogin = async ({dispatch, mode, setMode, name, email, passwo
       dispatch(setIsLoading(false))
     }
 }
-export { fetchAllDoctors, doctorRegisterLogin }
+
+const userDetails = async (token) => {
+  try {
+    if (!token) {
+      toast.error('This user is not logged in')
+    }
+
+    const res = await axios.get(`${backUrl}/api/users/user-details`);
+    if (res.data.success) {
+      toast.success('user details are ')
+    }
+  } catch (err) {
+    console.log(err.message)
+  }
+}
+export { fetchAllDoctors, UserRegisterLogin }
