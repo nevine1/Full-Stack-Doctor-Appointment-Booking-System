@@ -1,6 +1,6 @@
 
 import axios from 'axios'
-import { setDoctors , setToken } from './doctorsSlice';
+import { setDoctors , setToken, setIsLoading } from './doctorsSlice';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify'
 const backUrl = process.env.NEXT_PUBLIC_BACKEND_URL
@@ -26,13 +26,45 @@ const fetchAllDoctors = async (dispatch) => {
    }
 }
 
-const doctorLogin = async () => {
-    try {
-        const res = await axios.post(`${backUrl}/api/doctors/login`, { email, password }, {
-            
-        })
+const doctorRegisterLogin = async ({dispatch, mode, setMode, name, email, password}) => {
+      try {
+      dispatch(setIsLoading(true))
+      if (mode === "Sign Up") { //register route
+        
+        const res = await axios.post(`${backUrl}/api/users/register`, { name, email, password });
+        if (!name || !email || !password) {
+          toast.error("Please fill all fields");
+            console.log("Please fill all fields");
+            return;
+        }
+       
+        if (res.data.success) {
+          console.log("User:", res.data.data);
+          toast.success(`${name} has been successfully registered, now you should login`);
+          
+          setMode('login')//to login after registration 
+        } else {
+          console.log("Error from backend:", res.data.message);
+        }
+      } else {
+        // when login 
+        const res = await axios.post(`${backUrl}/api/users/login`, { email, password });
+        if (!email || !password) {
+          toast.error("Email or password should not be empty ");
+        }
+        if (res.data.success && res.data.token) {
+          dispatch(setToken(res.data.token))
+          toast.success(`${name} has successfully logged in`);
+          router.push('/auth/profile')
+        } else {
+          console.log(res.data.message || "Logged in failed")
+        }
+      }
+      
     } catch (err) {
-        console.log(err.message)
+      console.log(err.message)
+    } finally {
+      dispatch(setIsLoading(false))
     }
 }
-export { fetchAllDoctors, doctorLogin }
+export { fetchAllDoctors, doctorRegisterLogin }
