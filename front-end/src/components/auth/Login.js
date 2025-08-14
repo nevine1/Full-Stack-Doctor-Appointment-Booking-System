@@ -77,7 +77,7 @@ const Login = () => {
   console.log(' token is:', token)
   return (
     <div className="  rounded-xl  ">
-      <form className="md:w-[60vw] sm:w-[75vw] min-w-[500px] mx-auto md:mt-20 sm:mt-5  bg-blue-50  border shadow-md border-gray-300 m-auto p-10 rounded-xl"
+      <form className="lg:w-[30vw] md:w-[50vw] sm:w-[70vw] min-w-[500px] mx-auto md:mt-20 sm:mt-5  bg-blue-50  border shadow-md border-gray-300 m-auto p-10 rounded-xl"
         onSubmit={handleSubmit}
         >
               <div className="flex flex-col gap-6 items-center justify-start">

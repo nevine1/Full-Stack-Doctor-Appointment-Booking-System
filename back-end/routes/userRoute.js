@@ -1,13 +1,14 @@
 import express from 'express'
 import  authUser  from '../middleware/authUser.js'
-import { registerUser , loginUser , updateUser, userDetails} from '../controllers/userController.js';
+import { registerUser, loginUser, updateUser, userDetails } from '../controllers/userController.js';
+import  upload from '../middleware/multer.js'
 const userRoute = express.Router();
 
 
 userRoute.post('/register', registerUser);
 userRoute.post('/login', loginUser);
 userRoute.get('/user-details', authUser, userDetails);
-userRoute.post('/update', updateUser);
+userRoute.post('/update-user',upload.single('image'), authUser, updateUser); //use upload because user data has image file to update(form-data)
 
 
 export default userRoute; 

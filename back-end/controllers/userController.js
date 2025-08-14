@@ -2,6 +2,7 @@ import validator from 'validator';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import User from '../models/userModel.js';
+import { v2 as cloudinary } from 'cloudinary'
 const registerUser = async (req, res) => {
     
     try {
@@ -110,7 +111,8 @@ const userDetails = async (req, res) => {
 
     try {
         //getting the userId from the token 
-        const  userId  = req.userId;
+        const userId = req.userId;
+        console.log("userId from body:", userId);
         const userDetails = await User.findById(userId).select("-password");
         
         return res.json({
@@ -124,33 +126,50 @@ const userDetails = async (req, res) => {
         })
     }
 }
-const updateUser = async (req, res) => {
-console.log(req, res)
-    /* try {
 
-        const { email } = req.body; 
-        const fileImage = req.file; 
-        const user = await findOne({ email });
-        if (!user) {
+const updateUser = async (req, res) => {
+    try {
+        const { userId, name, email, phone, address, DOB, gender } = req.body;
+        const fileImage = req.file;
+
+        if ( !name || !email || !DOB || !phone   || !gender) {
             return res.json({
                 success: false,
-                message: "This email is not existing"
-            })
+                message: "Missing data"
+            });
         }
-        const updatingData = {
-            name: user.name,
-            image: user.fileImage,
-            phone: user.phone,
-            DOB: user.DOB, 
-            gender: user.gender
+
+        let updateData = {
+            name,
+            email,
+            phone,
+            DOB,
+            gender,
+           //address: JSON.parse(address) 
+        };
+
+        // If there's an image, upload to Cloudinary first
+        if (fileImage) {
+            const uploadImage = await cloudinary.uploader.upload(fileImage.path, { resource_type: "image" });
+            updateData.image = uploadImage.secure_url;
         }
-        const updatedUser = await User.findOneAndUpdate({})
-        
+
+        //find the user by userId , then update his details
+        const updatedUser = await User.findByIdAndUpdate(userId, updateData);
+        // new: true , it makes the mongodb updated the old data with the new one 
+        return res.json({
+            success: true,
+            message: 'User info updated successfully',
+            data: updatedUser
+        });
+
     } catch (err) {
         return res.json({
-            success: false, 
+            success: false,
             message: err.message
-        })
-    } */
-}
+        });
+    }
+};
+
+
 export { registerUser, loginUser , updateUser, userDetails }
