@@ -3,11 +3,13 @@ import { useState } from "react";
 import { assets } from "@/assets/assets";
 import Image from "next/image";
 import { useDispatch, useSelector } from "react-redux";
+import { userDetails } from "@/store/slices/usersAsync";
 const MyProfile = () => {
   const { token } = useSelector((state) => state.users)
+ 
   const [isEditable, setIsEditable] = useState(false);
   const [userData, setUserData] = useState({
-    name: "nevine vena",
+   /*  name: "nevine vena",
     image: "assets.profile",
     email: "vena@gmail.com",
     phone: "(123) - 869-9087",
@@ -16,12 +18,31 @@ const MyProfile = () => {
       line2: "new york city, USA"
     },
     dob: "1998-12-20", // use YYYY-MM-DD for <input type="date">
-    gender: "female"
+    gender: "female" */
   });
 
-  if (token) {
+  const userDetails = async (token, user, setUser ) => {
+  try {
+
+    if (!token) {
+      toast.error('This user is not logged in')
+    }
+
+    const res = await axios.get(`${backUrl}/api/users/user-details`);
+    if (res.data.success) {
+      setUserData(res.data.data)
+      toast.success('user details are ')
+    }
     
+      } catch (err) {
+        console.log(err.message)
+      }
   }
+  console.log('all user data is ', userData)
+ /*  useEffect(() => {
+   userDetails(token)
+  }, [token])
+   */
   return (
     <div className="flex flex-col  items-center justify-center p-8 w-full min-h-screen">
       {/* Profile image */}
