@@ -68,20 +68,31 @@ const UserRegisterLogin = async ({dispatch, mode, setMode, name, email, password
     }
 }
 
-const userDetails = async (token, user, setUser ) => {
+const getUserDetails = async ( token, setUserData ) => {
   try {
 
     if (!token) {
       toast.error('This user is not logged in')
     }
 
-    const res = await axios.get(`${backUrl}/api/users/user-details`);
+    const res = await axios.get(`${backUrl}/api/users/user-details`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+
+    });
+   
     if (res.data.success) {
-      setUser(res.data.data)
-      toast.success('user details are ')
+      setUserData(res.data.data)
+    console.log(res.data.data)
+    } else {
+      console.log(res.data.message)
     }
-  } catch (err) {
-    console.log(err.message)
-  }
+    
+      } catch (err) {
+        console.log(err.message)
+      }
 }
-export { fetchAllDoctors, UserRegisterLogin, userDetails }
+  
+
+export { fetchAllDoctors, UserRegisterLogin, getUserDetails }

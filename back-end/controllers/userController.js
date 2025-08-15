@@ -127,50 +127,7 @@ const userDetails = async (req, res) => {
     }
 }
 
-/* const updateUser = async (req, res) => {
-    try {
-        const { userId, name, email, phone, address, DOB, gender } = req.body;
-        const fileImage = req.file;
 
-        if ( !name || !email || !DOB || !phone   || !gender) {
-            return res.json({
-                success: false,
-                message: "Missing data"
-            });
-        }
-
-        let updateData = {
-            name,
-            email,
-            phone,
-            DOB,
-            gender,
-           //address: JSON.parse(address) 
-        };
-
-        // If there's an image, upload to Cloudinary first
-        if (fileImage) {
-            const uploadImage = await cloudinary.uploader.upload(fileImage.path, { resource_type: "image" });
-            updateData.image = uploadImage.secure_url;
-        }
-
-        //find the user by userId , then update his details
-        const updatedUser = await User.findByIdAndUpdate(userId, updateData);
-        // new: true , it makes the mongodb updated the old data with the new one 
-        return res.json({
-            success: true,
-            message: 'User info updated successfully',
-            data: updatedUser
-        });
-
-    } catch (err) {
-        return res.json({
-            success: false,
-            message: err.message
-        });
-    }
-};
- */
 const updateUser = async (req, res) => {
     try {
         const { userId, name, email, phone, address, DOB, gender } = req.body;

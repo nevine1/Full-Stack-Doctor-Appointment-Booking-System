@@ -1,59 +1,99 @@
 "use client";
-import { useState } from "react";
-import { assets } from "@/assets/assets";
+import { useState, useEffect } from "react";
+import axios from "axios";
 import Image from "next/image";
+import { assets } from "@/assets/assets";
 import { useDispatch, useSelector } from "react-redux";
-import { userDetails } from "@/store/slices/usersAsync";
+import { getUserDetails } from "@/store/slices/usersAsync";
+import { setIsLoading } from "@/store/slices/usersSlice";
 const MyProfile = () => {
-  const { token } = useSelector((state) => state.users)
+  const dispatch = useDispatch();
+  const { token } = useSelector((state) => state.users);
  
   const [isEditable, setIsEditable] = useState(false);
-  const [userData, setUserData] = useState({
-   /*  name: "nevine vena",
-    image: "assets.profile",
-    email: "vena@gmail.com",
-    phone: "(123) - 869-9087",
-    address: {
-      line1: "123 Richmond",
-      line2: "new york city, USA"
-    },
-    dob: "1998-12-20", // use YYYY-MM-DD for <input type="date">
-    gender: "female" */
-  });
+  const [userData, setUserData] = useState({});
+  const backUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-  const userDetails = async (token, user, setUser ) => {
+const getUserDetails = async ( ) => {
   try {
-
+    dispatch(setIsLoading(true))
     if (!token) {
       toast.error('This user is not logged in')
     }
 
-    const res = await axios.get(`${backUrl}/api/users/user-details`);
+    const res = await axios.get(`${backUrl}/api/users/user-details`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+
+    });
+   
     if (res.data.success) {
       setUserData(res.data.data)
-      toast.success('user details are ')
+    console.log(res.data.data)
+    } else {
+      console.log(res.data.message)
     }
     
       } catch (err) {
         console.log(err.message)
+  } finally {
+    dispatch(setIsLoading(false))
       }
-  }
-  console.log('all user data is ', userData)
- /*  useEffect(() => {
-   userDetails(token)
-  }, [token])
-   */
+}
+  useEffect(() => {
+      getUserDetails( );
+    }, [ token ] );
+  console.log('user info', userData) 
+  
+  //updating user data and save it to mongoose db 
+   const updateUserData = async () => {
+    try {
+      dispatch(setIsLoading(true));
+      
+      //use formData because , user data has text and image;
+      const formData = new FormData();
+      formData.append("userId", userId);
+      formData.append("name", name);
+      formData.append("email", email);
+      formData.append("phone", phone);
+      formData.append("DOB", DOB);
+      formData.append("gender", gender);
+      formData.append("address", JSON.stringify(address)); // address must be stringified
+      if (fileImage) {
+        formData.append("fileImage", fileImage);
+      }
+      const res = await axios.put(`${backUrl}/api/user/update-user`, formData, {
+        headers: {
+          Authorization: Bearer`${token}`, 
+            "Content-Type": "multipart/form-data"
+        }
+      })
+
+       if(res.data.success){
+          console.log(res.data.data )
+        }
+
+      console.log('updated user is ',res.data)
+    } catch (err) {
+      console.log(err.message)
+    } finally {
+      dispatch(setIsLoading(false))
+    }
+  } 
   return (
     <div className="flex flex-col  items-center justify-center p-8 w-full min-h-screen">
       {/* Profile image */}
+
       <div className="mb-6">
         <Image
-          src={assets.profile_pic}
+          src={userData?.image || assets.profile_pic}
           alt="profile pic"
           width={150}
           height={150}
           className="rounded-full shadow-lg p-2 bg-gray-100"
         />
+
       </div>
 
       
@@ -75,7 +115,7 @@ const MyProfile = () => {
           )}
         </div>
 
-        {/* Email */}
+       
         <div>
           <label className="font-bold text-gray-500">Email</label>
           {isEditable ? (
@@ -92,14 +132,14 @@ const MyProfile = () => {
           )}
         </div>
 
-        {/* Address */}
+       
         <div>
           <label className="font-bold text-gray-500">Address</label>
           {isEditable ? (
             <>
               <input
                 type="text"
-                value={userData.address.line1}
+                value={userData.address?.line1}
                 onChange={(e) =>
                   setUserData((prev) => ({
                     ...prev,
@@ -122,12 +162,12 @@ const MyProfile = () => {
             </>
           ) : (
             <p className="text-gray-700 mt-1">
-              {userData.address.line1}, {userData.address.line2}
+              {userData.address?.line1}, {userData.address?.line2}
             </p>
           )}
         </div>
 
-        {/* DOB */}
+        
         <div>
           <label className="font-bold text-gray-500">Date of Birth</label>
           {isEditable ? (
@@ -144,7 +184,7 @@ const MyProfile = () => {
           )}
         </div>
 
-        {/* Gender */}
+      
         <div>
           <label className="font-bold text-gray-500">Gender</label>
           {isEditable ? (
@@ -165,7 +205,7 @@ const MyProfile = () => {
           )}
         </div>
 
-        {/* Buttons */}
+     
         <div className="flex justify-center pt-4">
           <button
             onClick={() => setIsEditable(!isEditable)}
