@@ -5,13 +5,13 @@ import Image from "next/image";
 import { assets } from "@/assets/assets";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserDetails } from "@/store/slices/usersAsync";
-import { setIsLoading } from "@/store/slices/usersSlice";
+import { setIsLoading, setUser } from "@/store/slices/usersSlice";
 const MyProfile = () => {
   const dispatch = useDispatch();
   const { token } = useSelector((state) => state.users);
- 
   const [isEditable, setIsEditable] = useState(false);
   const [userData, setUserData] = useState({});
+  const [fileImage, setFileImage ] = useState(null)
   const backUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 const getUserDetails = async ( ) => {
@@ -44,8 +44,24 @@ const getUserDetails = async ( ) => {
   useEffect(() => {
       getUserDetails( );
     }, [ token ] );
-  console.log('user info', userData) 
+   
   
+  
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setUserData((prev) => ({ ...prev, [name]: value }));
+  };
+   //  handle image upload preview
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFileImage(file);
+      setUserData((prev) => ({
+        ...prev,
+        image: URL.createObjectURL(file),
+      }));
+    }
+  };
   //updating user data and save it to mongoose db 
    const updateUserData = async () => {
     try {
@@ -59,7 +75,7 @@ const getUserDetails = async ( ) => {
       formData.append("phone", phone);
       formData.append("DOB", DOB);
       formData.append("gender", gender);
-      formData.append("address", JSON.stringify(address)); // address must be stringified
+      formData.append("address", JSON.stringify(address)); 
       if (fileImage) {
         formData.append("fileImage", fileImage);
       }
@@ -71,10 +87,13 @@ const getUserDetails = async ( ) => {
       })
 
        if(res.data.success){
-          console.log(res.data.data )
+         console.log("updated user data iddddddddddddddddddds",res.data.data)
+         setUserData(res.data.data);
+         dispatch(setUser(res.data.data));
+         setIsEditable(false)
         }
 
-      console.log('updated user is ',res.data)
+      console.log('updated user is ',res.data.data)
     } catch (err) {
       console.log(err.message)
     } finally {
@@ -86,13 +105,23 @@ const getUserDetails = async ( ) => {
       {/* Profile image */}
 
       <div className="mb-6">
-        <Image
-          src={userData?.image || assets.profile_pic}
-          alt="profile pic"
-          width={150}
-          height={150}
-          className="rounded-full shadow-lg p-2 bg-gray-100"
-        />
+        {
+          isEditable ? (
+            <input
+              type="file"
+              onChange={handleImageChange}
+              className="w-full mt-1 p-2  outline-none bg-blue-50 border border-blue-200 focus:border-blue-200 rounded-md"
+            />
+          ): (
+            <Image
+                src={userData?.image || assets.profile_pic}
+                alt="profile pic"
+                width={150}
+                height={150}
+                className="rounded-full shadow-lg p-2 bg-gray-100"
+              />
+          )
+        }
 
       </div>
 
@@ -104,10 +133,9 @@ const getUserDetails = async ( ) => {
           {isEditable ? (
             <input
               type="text"
-              value={userData.name}
-              onChange={(e) =>
-                setUserData((prev) => ({ ...prev, name: e.target.value }))
-              }
+              name="name"
+              value={userData.name || ""}
+              onChange={handleChange}
               className="w-full mt-1 p-2  outline-none bg-blue-50 border border-blue-200 focus:border-blue-200 rounded-md"
             />
           ) : (
@@ -121,10 +149,9 @@ const getUserDetails = async ( ) => {
           {isEditable ? (
             <input
               type="email"
-              value={userData.email}
-              onChange={(e) =>
-                setUserData((prev) => ({ ...prev, email: e.target.value }))
-              }
+              name="email"
+              value={userData.email || ""}
+              onChange={handleChange}
               className="w-full mt-1 p-2  outline-none bg-blue-50 border border-blue-200 focus:border-blue-200 rounded-md"
             />
           ) : (
@@ -139,22 +166,24 @@ const getUserDetails = async ( ) => {
             <>
               <input
                 type="text"
+                name= "address.line1"
                 value={userData.address?.line1}
                 onChange={(e) =>
                   setUserData((prev) => ({
                     ...prev,
-                    address: { ...prev.address, line1: e.target.value }
+                    address: { ...prev.address, line1: e.target.value },
                   }))
                 }
-              className="w-full mt-1 p-2  outline-none bg-blue-50 border border-blue-200 focus:border-blue-200 rounded-md"
+                className="w-full mt-1 p-2  outline-none bg-blue-50 border border-blue-200 focus:border-blue-200 rounded-md"
               />
               <input
                 type="text"
-                value={userData.address.line2}
+                value={userData.address?.line2}
+                name="address.line2"
                 onChange={(e) =>
                   setUserData((prev) => ({
                     ...prev,
-                    address: { ...prev.address, line2: e.target.value }
+                    address: { ...prev.address, line2: e.target.value },
                   }))
                 }
               className="w-full mt-1 p-2  outline-none bg-blue-50 border border-blue-200 focus:border-blue-200 rounded-md"
@@ -173,14 +202,13 @@ const getUserDetails = async ( ) => {
           {isEditable ? (
             <input
               type="date"
-              value={userData.dob}
-              onChange={(e) =>
-                setUserData((prev) => ({ ...prev, dob: e.target.value }))
-              }
+              name="DOB"
+              value={userData.DOB || ""}
+              onChange={handleChange}
               className="w-full mt-1 p-2  outline-none bg-blue-50 border border-blue-200 focus:border-blue-200 rounded-md"
             />
           ) : (
-            <p className="text-gray-700 mt-1">{userData.dob}</p>
+            <p className="text-gray-700 mt-1">{userData.DOB}</p>
           )}
         </div>
 
@@ -189,10 +217,9 @@ const getUserDetails = async ( ) => {
           <label className="font-bold text-gray-500">Gender</label>
           {isEditable ? (
             <select
+              name="gender"
               value={userData.gender}
-              onChange={(e) =>
-                setUserData((prev) => ({ ...prev, gender: e.target.value }))
-              }
+              onChange={handleChange}
               className="w-full mt-1 p-2  outline-none bg-blue-50 border border-blue-200 focus:border-blue-200 rounded-md"
             >
               <option value="male">Male</option>

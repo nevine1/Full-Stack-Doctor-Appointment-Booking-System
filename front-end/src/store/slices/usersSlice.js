@@ -3,9 +3,10 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = { 
     doctors: [], 
+    user: null,
     token: null,
     isLoading: false, 
-    error: null
+    error: null, 
 }
 const usersSlice = createSlice({
     name: "users",
@@ -14,6 +15,9 @@ const usersSlice = createSlice({
         setDoctors: (state, action) => {
             state.doctors = action.payload
         }, 
+        setUser: (state, action) => {
+      state.user = action.payload;
+    },
         setIsLoading: (state, action) => {
             state.isLoading = action.payload;
         },
@@ -32,6 +36,6 @@ export const {
     setDoctors,
     setToken,
     setIsLoading,
-    logout
+    logout, setUser
     } = usersSlice.actions;
 export default usersSlice.reducer; 

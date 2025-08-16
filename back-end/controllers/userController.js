@@ -161,7 +161,7 @@ const updateUser = async (req, res) => {
         // Find the user by userId and update their details.
         // The { new: true } option is very important here to make the mongoose  return the updated document.
         const updatedUser = await User.findByIdAndUpdate(userId, updateData, { new: true });
-
+console.log('upated user is:', updatedUser)
         // Check if a user was actually found and updated
         if (!updatedUser) {
             return res.status(404).json({ // Use status code 404 for not found
