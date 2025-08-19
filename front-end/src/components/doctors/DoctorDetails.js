@@ -7,7 +7,7 @@ import Image from 'next/image';
 const DoctorDetails = () => {
     const params = useParams();
     const { id } = params 
-    const { doctors } = useSelector((state) => state.users)
+    const { doctors } = useSelector((state) => state.doctors)
     const doctor = doctors.find((doc) => doc._id === id)
     console.log('here is the doctor id ', id)
     console.log('doctor here id:', doctor)

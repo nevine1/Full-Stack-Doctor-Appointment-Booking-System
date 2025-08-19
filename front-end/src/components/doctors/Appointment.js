@@ -7,7 +7,7 @@ import Image from "next/image";
 import RelatedDoctors from "./RelatedDoctors";
 
 const Appointment = () => {
-  const { doctors } = useSelector((state) => state.users);
+  const { doctors } = useSelector((state) => state.doctors);
   const params = useParams();
   const { id } = params;
   const doctor = doctors.find((doc) => doc._id === id);

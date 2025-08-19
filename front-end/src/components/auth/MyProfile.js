@@ -4,16 +4,21 @@ import axios from "axios";
 import Image from "next/image";
 import { assets } from "@/assets/assets";
 import { useDispatch, useSelector } from "react-redux";
-import { getUserDetails } from "@/store/slices/usersAsync";
+//import { getUserDetails } from "@/store/slices/usersAsync";
 import { setIsLoading, setUser } from "@/store/slices/usersSlice";
+import { toast } from "react-toastify";
 const MyProfile = () => {
   const dispatch = useDispatch();
-  const { token } = useSelector((state) => state.users);
+  const { token, user } = useSelector((state) => state.users);
   const [isEditable, setIsEditable] = useState(false);
-  const [userData, setUserData] = useState({});
+  const [userData, setUserData] = useState(user || {});
   const [fileImage, setFileImage ] = useState(null)
   const backUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
+  useEffect(() => {
+    setUserData(user || {} )
+  }, [user])
+  
 const getUserDetails = async ( ) => {
   try {
     dispatch(setIsLoading(true))
@@ -29,8 +34,10 @@ const getUserDetails = async ( ) => {
     });
    
     if (res.data.success) {
-      setUserData(res.data.data)
-    console.log(res.data.data)
+      toast.success("User info updated successfully");
+      dispatch(setUser(res.data.data))
+      console.log(res.data.data)
+      router.refresh();
     } else {
       console.log(res.data.message)
     }
@@ -41,11 +48,11 @@ const getUserDetails = async ( ) => {
     dispatch(setIsLoading(false))
       }
 }
-  useEffect(() => {
-      getUserDetails( );
-    }, [ token ] );
-   
   
+   
+  useEffect(() => {
+    getUserDetails( );
+  }, [token]);
   
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -63,35 +70,39 @@ const getUserDetails = async ( ) => {
     }
   };
   //updating user data and save it to mongoose db 
-   const updateUserData = async () => {
-    try {
-      dispatch(setIsLoading(true));
+  const updateUserData = async () => {
+   
+     try {
+       dispatch(setIsLoading(true));
       
-      //use formData because , user data has text and image;
-      const formData = new FormData();
-      formData.append("userId", userId);
-      formData.append("name", name);
-      formData.append("email", email);
-      formData.append("phone", phone);
-      formData.append("DOB", DOB);
-      formData.append("gender", gender);
-      formData.append("address", JSON.stringify(address)); 
+       //formData should be used here  because:  user data has text and image;
+       const formData = new FormData();
+       formData.append("userId", user._id);
+       formData.append("name", userData.name);
+       formData.append("email", userData.email);
+       formData.append("phone", userData.phone);
+       formData.append("DOB", userData.DOB);
+       formData.append("gender", userData.gender);
+       formData.append("address", JSON.stringify(userData.address) || {}); 
+
       if (fileImage) {
-        formData.append("fileImage", fileImage);
+        formData.append("image", fileImage);
       }
-      const res = await axios.put(`${backUrl}/api/user/update-user`, formData, {
+      const res = await axios.put(`${backUrl}/api/users/update-user`, formData, {
         headers: {
-          Authorization: Bearer`${token}`, 
+          Authorization: `Bearer ${token}`, 
             "Content-Type": "multipart/form-data"
         }
       })
 
-       if(res.data.success){
-         console.log("updated user data iddddddddddddddddddds",res.data.data)
-         setUserData(res.data.data);
-         dispatch(setUser(res.data.data));
-         setIsEditable(false)
-        }
+       
+       if (res.data.success) {
+        console.log('updated user data is:', (res.data.data))
+      dispatch(setUser(res.data.data));    
+      setUserData(res.data.data);
+        setIsEditable(false);
+      toast.success(`${user.name} information has been successfully updated!`)
+    }
 
       console.log('updated user is ',res.data.data)
     } catch (err) {
@@ -167,7 +178,7 @@ const getUserDetails = async ( ) => {
               <input
                 type="text"
                 name= "address.line1"
-                value={userData.address?.line1}
+                value={userData.address?.line1 || " "}
                 onChange={(e) =>
                   setUserData((prev) => ({
                     ...prev,
@@ -178,7 +189,7 @@ const getUserDetails = async ( ) => {
               />
               <input
                 type="text"
-                value={userData.address?.line2}
+                value={userData.address?.line2 || ""}
                 name="address.line2"
                 onChange={(e) =>
                   setUserData((prev) => ({
@@ -234,8 +245,12 @@ const getUserDetails = async ( ) => {
 
      
         <div className="flex justify-center pt-4">
-          <button
-            onClick={() => setIsEditable(!isEditable)}
+          <button onClick={() => {
+                if (isEditable) {
+                  updateUserData();   
+                }
+                setIsEditable(!isEditable);
+              }}
             className="px-8 py-2 mb-5 bg-blue-600 text-[18px]
              text-white rounded-full shadow  transition-all duration-500
              hover:bg-white hover:text-blue-500 border hover:border-blue-500"

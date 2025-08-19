@@ -99,7 +99,7 @@ const loginUser = async (req, res) => {
         }
        
     } catch (err) {
-
+        console.log(err.message)
         return res.json({
             success: false, 
             message: err.message
@@ -128,7 +128,7 @@ const userDetails = async (req, res) => {
 }
 
 
-const updateUser = async (req, res) => {
+/* const updateUser = async (req, res) => {
     try {
         const { userId, name, email, phone, address, DOB, gender } = req.body;
         const fileImage = req.file;
@@ -182,5 +182,72 @@ console.log('upated user is:', updatedUser)
             message: err.message
         });
     }
+}; */
+
+
+const updateUser = async (req, res) => {
+    try {
+        const { userId, name, email, phone, address, DOB, gender } = req.body;
+        const fileImage = req.file;
+
+        // Log incoming request data for debugging
+        console.log("Request body userId:", userId);
+        console.log("Raw request body:", req.body);
+
+        // Make sure address is included in the validation check if it's a required field
+        if (!name || !email || !DOB || !phone || !gender) {
+            return res.status(400).json({ // Use status code 400 for bad requests
+                success: false,
+                message: "Missing data"
+            });
+        }
+
+        let updateData = {
+            name,
+            email,
+            phone,
+            DOB,
+            gender,
+            address: JSON.parse(address),
+        };
+
+        // Log what we’re about to update
+        console.log("Update data object before DB update:", updateData);
+
+        // If there’s an image, upload to Cloudinary first
+        if (fileImage) {
+            const uploadImage = await cloudinary.uploader.upload(fileImage.path, { resource_type: "image" });
+            updateData.image = uploadImage.secure_url;
+            console.log("Uploaded new image URL:", updateData.image);
+        }
+
+        // Find the user by userId and update their details.
+        // The { new: true } option is very important here to make Mongoose return the updated document.
+        const updatedUser = await User.findByIdAndUpdate(userId, updateData, { new: true });
+        console.log("Updated user from DB:", updatedUser);
+
+        // Check if a user was actually found and updated
+        if (!updatedUser) {
+            return res.status(404).json({ // Use status code 404 for not found
+                success: false,
+                message: 'User not found'
+            });
+        }
+
+        
+        return res.status(200).json({ // Use status code 200 for a successful request
+            success: true,
+            message: 'User info updated successfully',
+            data: updatedUser
+        });
+
+    } catch (err) {
+        console.error("Error in updateUser:", err.message);
+        return res.json({ 
+            success: false,
+            message: err.message
+        });
+    }
 };
+
 export { registerUser, loginUser , updateUser, userDetails }

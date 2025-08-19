@@ -10,7 +10,7 @@ const Specialist = () => {
   const params = useParams();
   const router = useRouter();
   const { specialist } = params;
-  const { doctors } = useSelector((state) => state.users);
+  const { doctors } = useSelector((state) => state.doctors);
   const [filterDoc, setFilterDoc] = useState([]);
   const [showFilter, setShowFilter ] = useState(false)
   const [selectedSpecialist , setSelectedSpecialist ] = useState(specialist)

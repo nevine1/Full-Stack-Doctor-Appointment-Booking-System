@@ -1,30 +1,11 @@
 
 import axios from 'axios'
-import { setDoctors , setToken, setIsLoading } from './usersSlice';
+import {  setToken, setIsLoading } from './usersSlice';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify'
 const backUrl = process.env.NEXT_PUBLIC_BACKEND_URL
 
-const fetchAllDoctors = async (dispatch) => {
 
-    try {
-       
-        const res = await axios.get(`${backUrl}/api/doctors/get-doctors`/* , {} ,{
-        headers: {
-            Authorization: 'Bearer ${adminToken}'
-        }
-    } */)
-
-    if (res.data) {
-        toast.success("getting all doctors successfully")
-        
-        const doctorsList = res.data.data; 
-        dispatch(setDoctors(doctorsList))
-    }
-    } catch (err) {
-        toast.error(err.message)
-   }
-}
 
 const UserRegisterLogin = async ({dispatch, mode, setMode, name, email, password}) => {
       try {
@@ -95,4 +76,4 @@ const getUserDetails = async ( token, setUserData ) => {
 }
   
 
-export { fetchAllDoctors, UserRegisterLogin, getUserDetails }
+export {  UserRegisterLogin, getUserDetails }
