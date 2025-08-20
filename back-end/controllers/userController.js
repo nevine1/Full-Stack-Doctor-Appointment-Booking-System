@@ -2,6 +2,8 @@ import validator from 'validator';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import User from '../models/userModel.js';
+import Doctor from '../models/doctorModel.js'
+import appointment from '../models/appointmentModel.js';
 import { v2 as cloudinary } from 'cloudinary'
 const registerUser = async (req, res) => {
     
@@ -249,5 +251,50 @@ const updateUser = async (req, res) => {
         });
     }
 };
+//booking an appointment
+const bookAppointment = async (req, res) => {
+    try {
+        const { userId, docId, slotDate, slotTime } = req.body;
+        const docData = await Doctor.findById(docId).select("-password");
+        
+        //check doctor availability 
+        if (!doctor.available) {
+            return res.json({
+                success: false,
+                message: "Doctor is not available right now, please try again later!"
+            })
+        }
+        //if the doctor is available to book appointment
+        const slots_booked = docData.slots_booked;
+
+        //check if slot available 
+        if (slots_booked[slotDate]) { //if the slots booked date is available 
+            if (slots_booked[slotDate].includes(slotsTime)) { //and if slots_booked at this date has this time
+                //this condition mean this date and time is already booked and look for another time
+                return res.json({
+                    success: false,
+                    message: `To book at: ${slotTime} at this date ${slotDate} is already booked`,
+                })
+            } else {
+                slots_booked[slotDate].push(slotTime)
+            }
+
+        } else {
+            //if this date has slot times not booked
+            slots_booked[slotDate] = [];
+            slots_booked[slotDate].push(slotTime)
+        }
+        
+        //after checking the slots_booked available or not , just get the user data to book
+        const userData = await User.findById(userId).select("-password");
+        //after getting the slots booked , delete the slots_booked from the doctor data
+        delete docData.slots_booked
+    } catch (err) {
+        return res.json({
+            success: false, 
+            message: err.message
+        })
+    }
+}
 
 export { registerUser, loginUser , updateUser, userDetails }

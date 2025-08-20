@@ -11,7 +11,7 @@ const Navbar = () => {
   const dispatch = useDispatch();
   const [mounted, setMounted ] = useState(false)
   const [showMenu, setShowMenu] = useState(false);
-  const { token } = useSelector((state) => state.users)
+  const { token, user } = useSelector((state) => state.users)
   const router = useRouter();
 
   const handleClick = () => {
@@ -58,7 +58,7 @@ console.log('token at navbar is,', token)
         {token ? (
           <div className="flex gap-2 items-center relative">
             <Image
-              src={assets.profile_pic}
+              src={user.image}
               alt="profile pic"
               width={32}
               height={32}

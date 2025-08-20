@@ -75,5 +75,47 @@ const getUserDetails = async ( token, setUserData ) => {
       }
 }
   
+ const updateUserData = async () => {
+   
+     try {
+       dispatch(setIsLoading(true));
+      
+       //formData should be used here  because:  user data has text and image;
+       const formData = new FormData();
+       formData.append("userId", user._id);
+       formData.append("name", userData.name);
+       formData.append("email", userData.email);
+       formData.append("phone", userData.phone);
+       formData.append("DOB", userData.DOB);
+       formData.append("gender", userData.gender);
+       formData.append("address", JSON.stringify(userData.address) || {}); 
+
+      if (fileImage) {
+        formData.append("image", fileImage);
+      }
+      const res = await axios.put(`${backUrl}/api/users/update-user`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`, 
+            "Content-Type": "multipart/form-data"
+        }
+      })
+
+       
+       if (res.data.success) {
+        console.log('updated user data is:', (res.data.data))
+      dispatch(setUser(res.data.data));    
+      setUserData(res.data.data);
+        setIsEditable(false);
+      toast.success(`${user.name} information has been successfully updated!`)
+    }
+
+      console.log('updated user is ',res.data.data)
+    } catch (err) {
+      console.log(err.message)
+    } finally {
+      dispatch(setIsLoading(false))
+    }
+} 
+  
 
 export {  UserRegisterLogin, getUserDetails }
