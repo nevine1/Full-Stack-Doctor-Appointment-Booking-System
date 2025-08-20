@@ -8,7 +8,8 @@ import { v2 as cloudinary } from 'cloudinary'
 const registerUser = async (req, res) => {
     
     try {
-        const { name, email,  password } = req.body; 
+        const { name, email, password } = req.body; 
+        
         if (!name || !email || !password) {
             return res.json({
                 success: false, 
@@ -289,6 +290,28 @@ const bookAppointment = async (req, res) => {
         const userData = await User.findById(userId).select("-password");
         //after getting the slots booked , delete the slots_booked from the doctor data
         delete docData.slots_booked
+
+        const appointmentData = {
+            userId, 
+            doctorId, 
+            userData, 
+            docData,
+            amount: docData.fees,
+            slotTime, 
+            slotDate,
+            date: Date.now()
+        }
+
+        const newAppointment = new appointment(appointmentData);
+        const appointment = await newAppointment.save();
+
+        //save new slots data to doc data 
+         await Doctor.findByIdAndUpdate(docId, { slots_booked });
+        return res.json({
+            success: true, 
+            message: "New appointment has been booked"
+        })
+        
     } catch (err) {
         return res.json({
             success: false, 
@@ -297,4 +320,4 @@ const bookAppointment = async (req, res) => {
     }
 }
 
-export { registerUser, loginUser , updateUser, userDetails }
+export { registerUser, loginUser , updateUser, userDetails, bookAppointment }
