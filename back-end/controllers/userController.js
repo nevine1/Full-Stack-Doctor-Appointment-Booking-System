@@ -313,10 +313,10 @@ const bookAppointment = async (req, res) => {
         })
         
     } catch (err) {
-        return res.json({
-            success: false, 
+         return res.json({ 
+            success: false,
             message: err.message
-        })
+        });
     }
 }
 
