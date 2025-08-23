@@ -29,8 +29,8 @@ const persistConfig = {
 const persistedReducer = persistReducer(persistConfig, rootReducer)
 
 export const store = configureStore({
-  reducer: persistedReducer,
-  middleware: (getDefaultMiddleware) =>
+    reducer: persistedReducer,
+    middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false, // we should use serializableCheck  for redux-persist to work
     }),
