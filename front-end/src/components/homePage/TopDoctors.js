@@ -1,14 +1,23 @@
 "use client"
-import React from 'react'
+import { useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { doctors } from '@/assets/assets';
 import { useRouter } from 'next/navigation';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchAllDoctors } from '@/store/slices/doctorAsync';
 const TopDoctors = () => {
     const router = useRouter();
-    const { doctors } = useSelector((state) => state.users)
-    console.log('hello this is doctorslist', doctors)
+    const dispatch = useDispatch();
+    const { doctors } = useSelector((state) => state.doctors)
+   
+
+    useEffect(() => {
+        if (doctors.length === 0) {
+            fetchAllDoctors(dispatch)
+        }
+    }, [dispatch, doctors.length])
+
+    
   return (
     <div className="flex flex-col items-center my-14">
         <h1 className="text-gray-900 text-3xl font-semibold my-2">

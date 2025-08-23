@@ -1,18 +1,12 @@
 "use client"
-import { useEffect} from 'react'
+
 import Image from 'next/image'
 import Link from 'next/link'
-import { useSelector , useDispatch} from 'react-redux'
-import { fetchAllDoctors } from '@/store/slices/doctorAsync'
+import { useSelector } from 'react-redux'
+
 
 const DoctorsList = () => {
-  const dispatch = useDispatch();
    const { doctors } = useSelector((state) => state.doctors)
-  
-  useEffect(() => {
-    fetchAllDoctors( dispatch)
-  }, [dispatch])
-
  
   return (
     <div className="flex flex-col items-center my-40">

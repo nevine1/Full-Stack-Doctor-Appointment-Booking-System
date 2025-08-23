@@ -1,7 +1,7 @@
 
 import axios from 'axios'
 import { setDoctors  } from './doctorsSlice';
-import { useDispatch } from 'react-redux';
+
 import { toast } from 'react-toastify'
 const backUrl = process.env.NEXT_PUBLIC_BACKEND_URL
 const fetchAllDoctors = async (dispatch) => {
@@ -14,12 +14,13 @@ const fetchAllDoctors = async (dispatch) => {
         }
     } */)
 
-    if (res.data) {
+    if (res.data.success) {
         toast.success("getting all doctors successfully")
-        
-        const doctorsList = res.data.data; 
-        dispatch(setDoctors(doctorsList))
-    }
+        console.log("all doctors list at top page is: ", res.data.data)
+        dispatch(setDoctors(res.data.data)) 
+    } else {
+        toast.error(res.data.message)
+        }
     } catch (err) {
         toast.error(err.message)
    }
