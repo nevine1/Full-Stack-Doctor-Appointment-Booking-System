@@ -17,7 +17,7 @@ const Appointment = () => {
   const { id } = params;
   console.log('the doctor is  is;', id)
   const doctor = doctors.find((doc) => doc._id === id);
-  console.log('doctors detail is :', doctor)
+  
   const weekDays = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
   const [docSlots, setDocSlots] = useState([]);
   const [slotIndex, setSlotIndex] = useState(0);
@@ -117,7 +117,7 @@ const Appointment = () => {
 
     if (res.data.success) {
       toast.success(res.data.message);
-      router.push('/auth/appointment');
+      router.push(`/doctors/${id}/appointment`);
     } else {
       toast.error(res.data.message || "Failed to book appointment");
     }
@@ -128,46 +128,14 @@ const Appointment = () => {
 };
 
   return (
-    <div className="flex flex-col gap-5 justify-center">
-      {/* Doctor Info */}
-      <div className="flex flex-row sm:flex-row gap-5 my-10 mx-4">
-        <div>
-          <Image
-            src={doctor?.image || "/assets/profile_pic.png"}
-            alt="doctor image"
-            width={300}
-            height={350}
-            className="w-full h-auto shadow-md bg-blue-500 border border-blue-200 rounded-lg"
-          />
-        </div>
-        <div className="flex-1 justify-start items-center leading-loose">
-          <div className="border border-blue-200 rounded-lg px-8 py-6 gap-4 mr-5">
-            <h1 className="flex items-center gap-3 font-bold text-2xl text-gray-700 mb-4">
-              {doctor ? doctor.name : "doctor name"}
-              <Image
-                src={assets.verified_icon}
-                alt="verified icon"
-                width={20}
-                height={20}
-              />
-            </h1>
-            <div className="flex flex-row gap-3 text-sm text-gray-500 font-semibold">
-              <p>
-                {doctor ? doctor.degree : " "} - {doctor? doctor.speciality : ""} -
-              </p>
-              <button className="py-0.5 rounded-full px-2 border border-gray-500">
-                {doctor ?  doctor.experience : " "}
-              </button>
-            </div>
-            <p className="text-gray-700 text-md">{doctor ?  doctor.about : ""}</p>
-            <p className="font-semibold text-gray-600 text-sm mt-4">
-              Appointment fees - <span>${doctor ? doctor.fees : ""}</span>
-            </p>
-          </div>
-        </div>
-      </div>
+    <div className="flex flex-col gap-5 justify-center w-[60vw]">
+      
+      {
+        doctor.available ? 
+          <>
+          <h1>Booking appointment for Doctor: {doctor.name}</h1>
 
-      {/* Available Days */}
+     
       <div className="flex flex-row gap-8 sm:ml-72">
               {
                   docSlots.map((slot, index) => {
@@ -222,24 +190,22 @@ const Appointment = () => {
       <button
         onClick={bookAppointment}
         className="flex items-center sm:ml-71 justify-center text-sm cursor-pointer
-           my-7 py-3 px-14 text-white bg-blue-500 font-semibold rounded-full w-auto sm:max-w-80"
-        >Book an appointment
-      </button>
-          <hr className="border border-gray-100"/>
-          
-      {/* related doctors part */} 
-      
-      <div className="flex flex-col mt-8 items-center">
-      
-        {
-          doctor && (
-            <RelatedDoctors
-              speciality={doctor.speciality}
-              docId={doctor._id}
-            />
-          )
-        }
+           my-7 py-3 px-14 text-white bg-blue-500 font-semibold rounded-lg w-auto sm:max-w-80"
+        >Book This appointment
+            </button>
+            </>
+        : 
+      <div>
+        <p className="flex justify-center text-[20px] mt-30 items-center mx-30">Sorry doctor {doctor.name} is not available for booking appointment, please try again later!</p>
+        <p className="flex justify-center text-[20px] mt-30 items-center mx-30">
+          Boot with another <span onClick={() => router.push('/doctors')}> doctor</span>
+              
+        </p>
       </div>
+        
+      }
+          
+          
           
       </div>
   );

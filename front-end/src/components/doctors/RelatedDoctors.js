@@ -21,15 +21,15 @@ const RelatedDoctors = ({ speciality , docId}) => {
         ))
     }
       
-    }, [speciality, docId])
+    }, [speciality, doctors, docId ])
   
     
   return (
-    <div className="flex flex-col items-center my-14">
-        <h1 className="text-gray-900 text-3xl font-semibold my-2">
+    <div className="flex flex-col items-center mt-8 mb-14">
+        <h1 className="text-gray-900 text-2xl font-semibold my-2">
             Related doctors to {speciality} to book
         </h1>
-        <p className="text-gray-800 text-sm py-4">
+        <p className="text-gray-800 text-sm py-8">
             Simply browse through our extensive list of trusted doctors.
         </p>
         

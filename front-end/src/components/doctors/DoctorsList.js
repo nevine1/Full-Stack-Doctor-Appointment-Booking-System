@@ -28,7 +28,8 @@ const DoctorsList = () => {
                 key={index}
                 className="border border-blue-200 rounded-lg cursor-pointer hover:translate-y-[-10px] duration-500 transition-all overflow-hidden"
               >
-                    <Link href={`/auth/appointment/${item._id}`}>
+                   
+                    <Link href={`/doctors/${item._id}`}>
                         <Image
                             src={item.image}
                             alt={item.name}

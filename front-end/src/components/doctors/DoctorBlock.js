@@ -8,19 +8,17 @@ const DoctorBlock = ({ doctor }) => {
     
   return (
     <div 
-    onClick={() =>router.push(`/auth/appointments/${doctor._id}`)}
-   
-    className="border border-blue-200 rounded-lg cursor-pointer hover:translate-y-[-10px] duration-500 transition-all overflow-hidden"
+        className="border border-blue-200 rounded-lg cursor-pointer hover:translate-y-[-10px] duration-500 transition-all overflow-hidden"
         >
-    <Link href={`/auth/appointment/${doctor._id}`}>
-        <Image
-            src={doctor.image}
-            alt={doctor.name}
-            width={150}
-            height={300}
-            className="bg-blue-50 rounded-lg w-full"
-        /> 
-    </Link>
+        <Link href={`/doctors/${doctor._id}`}>
+            <Image
+                src={doctor.image}
+                alt={doctor.name}
+                width={150}
+                height={300}
+                className="bg-blue-50 rounded-lg w-full"
+            /> 
+        </Link>
     <div className="flex flex-col justify-start p-4">
         <div className=" flex flex-row gap-2 doctors-center">
         <p className="w-2 h-2 rounded-full bg-green-500"></p>
