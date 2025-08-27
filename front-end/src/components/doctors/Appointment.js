@@ -14,13 +14,8 @@ const Appointment = () => {
   const backUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
   const params = useParams();
   const { id } = params;
-
-  console.log('hello user is:', user)
-  // Use useMemo to prevent re-computation on every render-
-   const doctor = useMemo(() => {
-    // This will return the doctor object if found, otherwise it will return undefined
-    return doctors.find((doc) => doc._id === id);
-   }, [doctors, id]);
+ 
+   const doctor = doctors.find((doc) => doc._id === id);
   
   const weekDays = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
   const [docSlots, setDocSlots] = useState([]);
@@ -208,5 +203,6 @@ console.log('helle doctor', doctor)
     </div>
   );
 };
+
 
 export default Appointment;
