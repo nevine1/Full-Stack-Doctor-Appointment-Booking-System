@@ -48,9 +48,13 @@ const doctorSchema = new mongoose.Schema({
         required: true
     },
     slots_booked: {
-        type: Object,
+        type: Map, of: [String],
         default: {}
     }
+    /* slots_booked: {
+        type: Object,
+        default: {}
+    } */
     //to store the empty object in any data , use minimize: false 
     // if minimize is false so we can use the empty object as a default value
 }, { minimize: false });
