@@ -39,7 +39,33 @@ const getDoctors = async (req, res) => {
   }
 }
 
+const getDoctorData = async (req, res) => {
+  try {
+    const { id } = req.params; 
+    const doctor = await Doctor.findById(id).select("-password");
+
+    if (!doctor) {
+      return res.status(404).json({
+        success: false,
+        message: "Doctor not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Doctor data fetched successfully",
+      data: doctor,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: err.message,
+    });
+  }
+};
+
 export  {
     changeAvailability,
-    getDoctors
+    getDoctors,
+    getDoctorData
     }

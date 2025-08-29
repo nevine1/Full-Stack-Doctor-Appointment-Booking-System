@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 //import { getUserDetails } from "@/store/slices/usersAsync";
 import { setIsLoading, setUser } from "@/store/slices/usersSlice";
 import { toast } from "react-toastify";
+import Link from "next/link";
 const MyProfile = () => {
   const dispatch = useDispatch();
   const { token, user } = useSelector((state) => state.users);
@@ -36,7 +37,6 @@ const getUserDetails = async ( ) => {
     if (res.data.success) {
       toast.success("User info updated successfully");
       dispatch(setUser(res.data.data))
-      console.log(res.data.data)
       router.refresh();
     } else {
       console.log(res.data.message)
@@ -244,19 +244,22 @@ const getUserDetails = async ( ) => {
         </div>
 
      
-        <div className="flex justify-center pt-4">
+        <div className="flex flex-col  pt-4">
           <button onClick={() => {
                 if (isEditable) {
                   updateUserData();   
                 }
                 setIsEditable(!isEditable);
               }}
-            className="px-8 py-2 mb-5 bg-blue-600 text-[18px]
-             text-white rounded-full shadow  transition-all duration-500
-             hover:bg-white hover:text-blue-500 border hover:border-blue-500"
+            className="px-8 py-2 mb-5 text-[16px] width-auto
+              rounded-full shadow  transition-all duration-500
+             bg-white text-blue-500 border border-blue-500" 
           >
             {isEditable ? "Save Changes" : "Edit Profile"}
           </button>
+          <Link href={`/doctors`}
+            className="flex justify-center hover:text-blue-500 duration-300 transition-all pb-5"
+            >Check doctors list to book your appointment</Link>
         </div>
       </div>
     </div>

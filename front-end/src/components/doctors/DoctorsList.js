@@ -9,8 +9,8 @@ const DoctorsList = () => {
    const { doctors } = useSelector((state) => state.doctors)
  
   return (
-    <div className="flex flex-col items-center my-40">
-    <h1 className="text-gray-900 text-3xl font-semibold my-2">
+    <div className="flex flex-col items-center mt-10 mb-20">
+    <h1 className="text-gray-900 md:text-3xl sm:text-xl font-semibold my-2">
       Top Doctors to Book
     </h1>
     <p className="text-gray-800 text-sm py-4">

@@ -4,6 +4,24 @@ import { setDoctors  } from './doctorsSlice';
 
 import { toast } from 'react-toastify'
 const backUrl = process.env.NEXT_PUBLIC_BACKEND_URL
+
+const fetchDoctorData = async () => {
+  try {
+    const res = await axios.get(`${backUrl}/api/doctors/get-doctor`, {
+      params: { id }
+    });
+
+    if (res.data.success) {
+      toast.success("Get Doctor Data successfully!");
+      return res.data.data; 
+    } else {
+      toast.error(res.data.message);
+    }
+  } catch (err) {
+    toast.error("Cannot fetch doctor by id");
+  }
+};
+
 const fetchAllDoctors = async (dispatch) => {
 
     try {
@@ -27,5 +45,6 @@ const fetchAllDoctors = async (dispatch) => {
 }
 
 export { 
-    fetchAllDoctors
+    fetchAllDoctors,
+    fetchDoctorData
 }

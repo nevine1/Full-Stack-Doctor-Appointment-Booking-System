@@ -1,10 +1,7 @@
 "use client";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
-import { assets } from "@/assets/assets";
-import Image from "next/image";
-import RelatedDoctors from "./RelatedDoctors";
 import { toast } from "react-toastify";
 import axios from "axios";
 
@@ -13,14 +10,10 @@ const Appointment = () => {
   const { token, user } = useSelector((state) => state.users);
   const backUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
   const params = useParams();
+  const router = useRouter();
   const { id } = params;
-
-  console.log('hello user is:', user)
-  // Use useMemo to prevent re-computation on every render-
-   const doctor = useMemo(() => {
-    // This will return the doctor object if found, otherwise it will return undefined
-    return doctors.find((doc) => doc._id === id);
-   }, [doctors, id]);
+ 
+   const doctor = doctors.find((doc) => doc._id === id);
   
   const weekDays = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
   const [docSlots, setDocSlots] = useState([]);
@@ -116,7 +109,8 @@ const Appointment = () => {
 
       const res = await axios.post(
         `${backUrl}/api/users/book-appointment`,
-        { userId: user._id, docId: id, slotDate, slotTime,  user },
+        //{ userId: user._id, docId: id, slotDate, slotTime,  user },
+        { docId: id, slotDate, slotTime },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -209,4 +203,6 @@ console.log('helle doctor', doctor)
   );
 };
 
+
 export default Appointment;
+

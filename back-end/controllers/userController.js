@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import User from '../models/userModel.js';
 import Doctor from '../models/doctorModel.js'
-import appointment from '../models/appointmentModel.js';
+import Appointment from '../models/appointmentModel.js';
 import { v2 as cloudinary } from 'cloudinary'
 const registerUser = async (req, res) => {
     
@@ -252,7 +252,6 @@ const updateUser = async (req, res) => {
         });
     }
 };
-
 const bookAppointment = async (req, res) => {
     
   try {
@@ -272,11 +271,29 @@ const bookAppointment = async (req, res) => {
       });
     }
 
-    // automatically try to book the slot
-    const updatedDoctor = await Doctor.findByIdAndUpdate(
-      { _id: docId, [`slots_booked.${slotDate}`]: { $ne: slotTime } }, // only if slot not already booked
+    const slotsBooked = docData.slots_booked;
+    if (slotsBooked[slotDate]) {
+      if (slotsBooked[slotDate].includes(slotTime)) {
+        return res.json({
+          success: false,
+          message: `Sorry you can not book this ${slotTime}`
+        })
+      } else {
+        /* slotsBooked[slotDate] = []; */
+        slotsBooked[slotDate].push(slotTime);
+      }
+
+    } else {
+      //slotsBooked[slotDate] = {}
+      slotsBooked[slotDate] = [];
+      slotsBooked[slotDate].push(slotTime);
+    }
+
+    // update the doctor info with new slotsBooked
+    const updatedDoctor = await Doctor.findByIdAndUpdate(docId, {slotsBooked}
+      /* { _id: docId, [`slots_booked.${slotDate}`]: { $ne: slotTime } }, // only if slot not already booked
       { $push: { [`slots_booked.${slotDate}`]: slotTime } },           // push slot into array
-      { new: true }                                                    // return updated doc data
+      { new: true }  */                                                   // return updated doc data
     );
 
       
@@ -302,14 +319,15 @@ const bookAppointment = async (req, res) => {
       date: Date.now()
     };
 
-    const newAppointment = new appointment(appointmentData);
+    const newAppointment = new Appointment(appointmentData);
     await newAppointment.save();
 
     return res.json({
       success: true,
-      message: "New appointment has been booked"
+      message: "New appointment has been booked", 
+      data: newAppointment
     });
-
+console.log('slot date and slot time is:', slotDate , slotTime)
   } catch (err) {
     return res.json({
       success: false,

@@ -17,16 +17,26 @@ const doctorsSlice = createSlice({
         setIsLoading: (state, action) => {
             state.isLoading = action.payload;
         },
+
+       updateDoctorDetails: (state, action) => {
+      const updatedDoctor = action.payload;
+      const index = state.doctors.findIndex((doc) => doc._id === updatedDoctor._id);
+      if (index !== -1) {
+        state.doctors[index] = updatedDoctor;
+      } else {
+        state.doctors.push(updatedDoctor);
+      }
+    },
+  },
         
         
-    }
+    
 
 })
 
 export const {
     setDoctors,
-  
     setIsLoading,
-  
+    updateDoctorDetails
     } = doctorsSlice.actions;
 export default doctorsSlice.reducer; 
