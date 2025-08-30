@@ -131,63 +131,6 @@ const userDetails = async (req, res) => {
 }
 
 
-/* const updateUser = async (req, res) => {
-    try {
-        const { userId, name, email, phone, address, DOB, gender } = req.body;
-        const fileImage = req.file;
-
-        // Make sure address is included in the validation check if it's a required field
-        if ( !name || !email || !DOB || !phone || !gender) {
-            return res.status(400).json({ // Use status code 400 for bad requests
-                success: false,
-                message: "Missing data"
-            });
-        }
-
-        let updateData = {
-            name,
-            email,
-            phone,
-            DOB,
-            gender,
-            address: JSON.parse(address),
-        };
-
-        
-        
-        //  upload to Cloudinary first
-        if (fileImage) {
-            const uploadImage = await cloudinary.uploader.upload(fileImage.path, { resource_type: "image" });
-            updateData.image = uploadImage.secure_url;
-        }
-
-        // Find the user by userId and update their details.
-        // The { new: true } option is very important here to make the mongoose  return the updated document.
-        const updatedUser = await User.findByIdAndUpdate(userId, updateData, { new: true });
-console.log('upated user is:', updatedUser)
-        // Check if a user was actually found and updated
-        if (!updatedUser) {
-            return res.status(404).json({ // Use status code 404 for not found
-                success: false,
-                message: 'User not found'
-            });
-        }
-
-        return res.status(200).json({ // Use status code 200 for a successful request
-            success: true,
-            message: 'User info updated successfully',
-            data: updatedUser
-        });
-
-    } catch (err) {
-        return res.json({ 
-            success: false,
-            message: err.message
-        });
-    }
-}; */
-
-
 const updateUser = async (req, res) => {
     try {
         const { userId, name, email, phone, address, DOB, gender } = req.body;
@@ -272,30 +215,27 @@ const bookAppointment = async (req, res) => {
     }
 
     const slotsBooked = docData.slots_booked;
-    if (slotsBooked[slotDate]) {
-      if (slotsBooked[slotDate].includes(slotTime)) {
-        return res.json({
-          success: false,
-          message: `Sorry you can not book this ${slotTime}`
-        })
-      } else {
-        /* slotsBooked[slotDate] = []; */
-        slotsBooked[slotDate].push(slotTime);
-      }
+      
+      if (!slotsBooked[slotDate]) {
+            slotsBooked[slotDate] = []; // the array is the times array of this slotDate
+            }
 
-    } else {
-      //slotsBooked[slotDate] = {}
-      slotsBooked[slotDate] = [];
+            if (slotsBooked[slotDate].includes(slotTime)) {
+            return res.json({
+                success: false,
+                message: `Sorry you cannot book this ${slotTime}, it is already booked!`
+            });
+            }
+      //then add the slotTime to the slotsBooked to book the appointment
       slotsBooked[slotDate].push(slotTime);
-    }
+      
 
-    // update the doctor info with new slotsBooked
-    const updatedDoctor = await Doctor.findByIdAndUpdate(docId, {slotsBooked}
-      /* { _id: docId, [`slots_booked.${slotDate}`]: { $ne: slotTime } }, // only if slot not already booked
-      { $push: { [`slots_booked.${slotDate}`]: slotTime } },           // push slot into array
-      { new: true }  */                                                   // return updated doc data
-    );
-
+      const updatedDoctor = await Doctor.findByIdAndUpdate(
+          docId, 
+        
+          { slots_booked: slotsBooked }, 
+          { new: true }
+      )
       
     if (!updatedDoctor) {
       return res.json({
@@ -304,10 +244,10 @@ const bookAppointment = async (req, res) => {
       });
     }
 
-    // get user info
+    // getting user data
     const userData = await User.findById(userId).select("-password");
 
-    // create new appointment
+    // creating the  new appointment
     const appointmentData = {
       userId,
       doctorId: docId,
@@ -320,14 +260,15 @@ const bookAppointment = async (req, res) => {
     };
 
     const newAppointment = new Appointment(appointmentData);
-    await newAppointment.save();
-
+      await newAppointment.save();
+      
+    console.log('new appointment in backend is:', newAppointment)
     return res.json({
       success: true,
       message: "New appointment has been booked", 
       data: newAppointment
     });
-console.log('slot date and slot time is:', slotDate , slotTime)
+
   } catch (err) {
     return res.json({
       success: false,

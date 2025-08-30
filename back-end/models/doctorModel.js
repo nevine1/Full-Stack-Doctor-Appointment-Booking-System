@@ -48,7 +48,7 @@ const doctorSchema = new mongoose.Schema({
         required: true
     },
     slots_booked: {
-        type: Map, of: [String],
+        type: Object,
         default: {}
     }
     /* slots_booked: {

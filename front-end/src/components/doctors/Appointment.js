@@ -110,14 +110,14 @@ const Appointment = () => {
       const res = await axios.post(
         `${backUrl}/api/users/book-appointment`,
         //{ userId: user._id, docId: id, slotDate, slotTime,  user },
-        { docId: id, slotDate, slotTime },
+        { docId: id, userId: user._id, slotDate, slotTime },
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-
+console.log('slot time is', slotTime)
       if (res.data.success) {
         toast.success(res.data.message);
         router.push(`/doctors/${id}/appointment`);
@@ -129,7 +129,9 @@ const Appointment = () => {
       toast.error(err.response?.data?.message || "Something went wrong");
     }
   };
-console.log('helle doctor', doctor)
+  console.log('doctora sloted booked is', doctor.slots_booked); 
+  /*  console.log('slot time and slot date is:', slotTime , slotDate) */
+  console.log('updated doct is :', doctor)
   return (
     <div className="flex flex-col gap-5 justify-center w-[60vw]">
       
@@ -205,4 +207,3 @@ console.log('helle doctor', doctor)
 
 
 export default Appointment;
-

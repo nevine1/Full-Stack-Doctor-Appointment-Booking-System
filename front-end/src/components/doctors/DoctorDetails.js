@@ -13,17 +13,12 @@ const Appointment = () => {
   const { token } = useSelector((state) => state.users)
   const backUrl = process.env.NEXT_PUBLIC_BACKEND_URL
   const params = useParams();
-
+  const router = useRouter();
   const { id } = params;
   console.log('the doctor is  is;', id)
   const doctor = doctors.find((doc) => doc._id === id);
   console.log('doctors detail is :', doctor)
 
-
- 
-
-
- 
 
   return (
     <div className="flex flex-col gap-5 justify-center">
