@@ -50,12 +50,13 @@ const getDoctorData = async (req, res) => {
         message: "Doctor not found",
       });
     }
-
+console.log("getting doctor data is", doctor )
     return res.status(200).json({
       success: true,
       message: "Doctor data fetched successfully",
       data: doctor,
     });
+    
   } catch (err) {
     return res.status(500).json({
       success: false,

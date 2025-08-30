@@ -19,18 +19,25 @@ const doctorsSlice = createSlice({
         },
 
        updateDoctorDetails: (state, action) => {
-      const updatedDoctor = action.payload;
-      const index = state.doctors.findIndex((doc) => doc._id === updatedDoctor._id);
-      if (index !== -1) {
-        state.doctors[index] = updatedDoctor;
-      } else {
-        state.doctors.push(updatedDoctor);
-      }
-    },
+        const updatedDoctor = action.payload;
+
+        // Add a check to ensure updatedDoctor and its _id exist
+        if (updatedDoctor && updatedDoctor._id) {
+            const index = state.doctors.findIndex((doc) => doc._id === updatedDoctor._id);
+
+            if (index !== -1) {
+                // Update the existing doctor
+                state.doctors[index] = updatedDoctor;
+            } else {
+                // Add the new doctor if not found
+                state.doctors.push(updatedDoctor);
+            }
+        } else {
+            console.error("Invalid payload for updateDoctorDetails:", updatedDoctor);
+        }
+        },
   },
         
-        
-    
 
 })
 

@@ -214,8 +214,12 @@ const bookAppointment = async (req, res) => {
       });
     }
 
-    const slotsBooked = docData.slots_booked;
+    let slotsBooked = docData.slots_booked;
       
+      // if slotsBooked is a string or anything else, convert to object
+        if (typeof slotsBooked !== 'object' || slotsBooked === null) {
+        slotsBooked = {};
+        }
       if (!slotsBooked[slotDate]) {
             slotsBooked[slotDate] = []; // the array is the times array of this slotDate
             }
