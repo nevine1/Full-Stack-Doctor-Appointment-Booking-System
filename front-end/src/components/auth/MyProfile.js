@@ -258,8 +258,14 @@ const getUserDetails = async ( ) => {
             {isEditable ? "Save Changes" : "Edit Profile"}
           </button>
           <Link href={`/doctors`}
+            className="flex justify-center hover:text-blue-500 duration-300 transition-all pb-3"
+            >All doctors' list 
+          </Link>
+          <Link href={`/auth/myAppointments`}
             className="flex justify-center hover:text-blue-500 duration-300 transition-all pb-5"
-            >Check doctors list to book your appointment</Link>
+            >All my appointments 
+          </Link>
+          
         </div>
       </div>
     </div>

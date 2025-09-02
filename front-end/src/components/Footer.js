@@ -3,6 +3,7 @@ import Image from 'next/image'
 import { assets } from '@/assets/assets'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import TrainingComp from '../components/TrainingComp'
 const Footer = () => {
     const router = useRouter();
   return (
@@ -51,8 +52,9 @@ const Footer = () => {
           </div>
           <hr />
           <div className="flex justify-center items-center my-10">
-              <p className="text-xs">Copyright 2024  Greatstack.dev - All Right Reserved.</p>
+              <p className="text-xs">Copyright 2024  Great stack.dev - All Right Reserved.</p>
           </div>
+          {/* <TrainingComp className="bg-blue-100 p-20" /> */}
       </div>
    
   )

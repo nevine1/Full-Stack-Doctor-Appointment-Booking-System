@@ -1,13 +1,41 @@
 "use client"
-import React from 'react'
-import { useSelector } from 'react-redux'
+import { useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux';
+import { setIsLoading } from '@/store/slices/usersSlice';
 import Image from 'next/image'
+import { toast } from 'react-toastify'
+import axios from 'axios'
 const MyAppointments = () => {
-    const { doctors } = useSelector((state) => state.doctors)
+  const { doctors } = useSelector((state) => state.doctors)
+  const { token , isLoading} = useSelector((state) => state.users)
+  const backUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+  console.log('my appointment token is', token)
+  const getAppointments = async () => {
+    
+    try {
+      setIsLoading(true)
+        await axios.get("http://localhost:4000/api/users/get-appointment", {
+  headers: { Authorization: `Bearer ${token}` }
+});
+  
+      if(res.data.success){
+        console.log('gettinga ppointment', res.data.data)
+      }
+    } catch (err) {
+      toast.error(err.message)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    getAppointments();
+  }, [token])
   return (
     <div>
           <p className="mt-12 pb-2 font-medium ">My Appointments</p>
-          <div>
+      <div>
+        <button onClick={getAppointments} type="button" className="cursor-pointer">get appointments</button>
               {
                   doctors.slice(0, 2).map((doctor, index) => (
                       <div key={index}
@@ -17,8 +45,8 @@ const MyAppointments = () => {
                               <Image
                               src={doctor.image}
                               alt={doctor.name}
-                              /* width={100}
-                              height={100} */
+                              width={100}
+                              height={100}
                               className="w-48 bg-blue-100 rounded-xl shadow-lg"
                           />
                           </div>

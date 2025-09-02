@@ -27,9 +27,9 @@ const Appointment = () => {
     const today = new Date();
     const allSlots = [];
     for (let i = 0; i < 7; i++) {
-      const slotDate = new Date(today);
+      const slotDate = new Date(today); //this is a copy of const today, and we can modify it without affecting on const today inside the loop 
       slotDate.setDate(today.getDate() + i);
-      const currentDate = new Date(slotDate);
+      const currentDate = new Date(slotDate); 
       if (i === 0) {
         const now = new Date();
         const currentHour = now.getHours();
@@ -113,7 +113,8 @@ const Appointment = () => {
           dispatch(updateDoctorDetails(docRes.data.data));
         }
 
-        router.push(`/doctors/${id}/appointment`);
+        router.push('/auth/myAppointments')
+        /* router.push(`/doctors/${id}/appointment`); */
       } else {
         toast.error(res.data.message || "Failed to book appointment");
       }

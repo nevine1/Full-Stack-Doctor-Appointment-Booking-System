@@ -27,7 +27,9 @@ const Navbar = () => {
     router.push('/')
   }
   if (!mounted) return; 
-console.log('token at navbar is,', token)
+  console.log('token at navbar is,', token)
+  
+ 
   return (
     <div className="flex flex-row justify-between items-center py-6 px-4 md:px-10 border-b border-gray-200 bg-brandBlue">
       

@@ -280,5 +280,31 @@ const bookAppointment = async (req, res) => {
     });
   }
 };
+//api for getting user appointments for myAppointments page 
+const getUserAppointments = async (req, res) => {
+  try {
+    //const userId = req.user.id; 
+    const userId = req.body; 
 
-export { registerUser, loginUser , updateUser, userDetails, bookAppointment }
+    const appointments = await Appointment.find({ userId });
+
+    return res.json({
+      success: true,
+      data: appointments
+    });
+  } catch (err) {
+    return res.json({
+      success: false,
+      message: err.message
+    });
+  }
+};
+
+export {
+  registerUser,
+  loginUser,
+  updateUser,
+  userDetails,
+  bookAppointment, 
+  getUserAppointments
+}

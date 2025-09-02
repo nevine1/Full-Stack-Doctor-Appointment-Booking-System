@@ -117,5 +117,21 @@ const getUserDetails = async ( token, setUserData ) => {
     }
 } 
   
+const getAppointments = async (token) => {
+  
+  try {
+    const res = await axios.get(`${backUrl}/api/users/get-appointment`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+
+    if(res.data.success){
+      console.log('gettinga ppointment', res.data.data)
+    }
+  } catch (err) {
+    toast.error(err.message)
+  }
+}
 
 export {  UserRegisterLogin, getUserDetails }
