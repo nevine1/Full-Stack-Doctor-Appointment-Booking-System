@@ -292,6 +292,7 @@ const getUserAppointments = async (req, res) => {
       success: true,
       data: appointments
     });
+    
   } catch (err) {
     return res.json({
       success: false,

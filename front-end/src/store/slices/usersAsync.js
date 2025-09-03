@@ -1,8 +1,9 @@
-
+"use client"
 import axios from 'axios'
 import {  setToken, setIsLoading } from './usersSlice';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify'
+import { setAppointments } from './appointmentsSlice'
 const backUrl = process.env.NEXT_PUBLIC_BACKEND_URL
 
 
@@ -117,21 +118,24 @@ const getUserDetails = async ( token, setUserData ) => {
     }
 } 
   
-const getAppointments = async (token) => {
+const getAppointments = async ( dispatch, token) => {
+    
+    try {
+      setIsLoading(true)
+       const res = await axios.get("http://localhost:4000/api/users/get-appointment", {
+        headers: { Authorization: `Bearer ${token}` }
+      });
   
-  try {
-    const res = await axios.get(`${backUrl}/api/users/get-appointment`, {
-      headers: {
-        Authorization: `Bearer ${token}`
+      if (res.data.success) {
+        dispatch(setAppointments(res.data.data.reverse()))
+        console.log('gettinga ppointment', res.data.data)
       }
-    })
-
-    if(res.data.success){
-      console.log('gettinga ppointment', res.data.data)
+    } catch (err) {
+      toast.error(err.message)
+    } finally {
+      setIsLoading(false)
     }
-  } catch (err) {
-    toast.error(err.message)
   }
-}
 
-export {  UserRegisterLogin, getUserDetails }
+
+export {  UserRegisterLogin, getUserDetails, getAppointments }

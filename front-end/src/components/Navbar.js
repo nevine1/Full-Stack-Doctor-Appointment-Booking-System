@@ -75,7 +75,7 @@ const Navbar = () => {
                 <div className="w-48 flex flex-col gap-3 rounded-md bg-slate-100 p-4 shadow-lg">
                   <Link href="/auth/profile" className="cursor-pointer hover:text-black"
                     onClick={ () => setShowIcon(false)} >My Profile</Link>
-                  <Link href="/auth/appointment" className="cursor-pointer hover:text-black"
+                  <Link href="/auth/myAppointments" className="cursor-pointer hover:text-black"
                     onClick={() => setShowIcon(false)}>My Appointments</Link>
                  
                   {
