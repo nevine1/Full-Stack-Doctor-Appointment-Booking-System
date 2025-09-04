@@ -6,74 +6,114 @@ import Image from 'next/image'
 import { toast } from 'react-toastify'
 import axios from 'axios'
 import { setAppointments } from '../../store/slices/appointmentsSlice'
-import { getAppointments } from '../../store/slices/usersAsync'
+import { useRouter } from 'next/navigation';
+import Link from 'next/link'
+
 const MyAppointments = () => {
   const dispatch = useDispatch();
-  
-  const { token , isLoading} = useSelector((state) => state.users)
-  const backUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-  console.log('my appointment token is', token)
+  const router = useRouter();
+  const { token, isLoading, users } = useSelector((state) => state.users)
+ 
+const getAppointments = async () => {
+
+    try {
+      dispatch(setIsLoading(true))
+      // The userId will be extracted from the token on the backend.
+      const res = await axios.post("http://localhost:4000/api/users/get-appointment", {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      if (res.data.success) {
+        console.log('front end res  is the data;', res.data.data)
+        dispatch(setAppointments(res.data.data.reverse()))
+        
+        console.log('redux state data is:', res.data.data)
+      }
+    } catch (err) {
+      toast.error(err.message)
+
+    } finally {
+
+      dispatch(setIsLoading(false))
+    }
+  }
 
   useEffect(() => {
-    
-     if (token) {
-    getAppointments(dispatch, token);
-  }
+    if (token) {
+     getAppointments();
+    }
   }, [token, dispatch])
 
   const { appointments } = useSelector((state) => state.appointments)
-  console.log("updated appointments", appointments)
-  console.log('final appointments are;', appointments)
-  return (
-    <div>
-      <p className="mt-12 pb-2 font-medium ">My Appointments</p>
-      <p>getting all appointments </p>
-      
-      <div>
-        
-              {
-                  appointments.map((item, index) => (
-                      <div key={index}
-                          className="my-6 p-4 grid grid-cols-[1fr_2fr] sm:flex sm:gap-6 "
-                        >
-                          <div>
-                              <Image
-                              src={item.docData.image}
-                              alt={item.docData.name}
-                              width={100}
-                              height={100}
-                              className="w-48 bg-blue-100 rounded-xl shadow-lg"
-                          />
-                          </div>
-                          <div className="flex-1 text-sm gap-5 text-zinc-600">
-                              <p className="font-semibold">{item.docData.name}</p>
-                              <p className="">{item.docData.speciality}</p>
-                              <p className="font-semibold mt-2 text-zinc-700">ِAddress:</p>
-                              <p>
-                                <span className="text-xs font-semibold">Date & Time: </span>
-                                <span>{item.slotDate}, {item.slotTime}</span>
-                              </p>
-                          </div>
-                          <div></div>
-                          <div className="flex flex-col gap-4">
-                              <button className="px-4 py-2 mb-5 bg-blue-600 text-sm
-                                text-white rounded-full shadow  transition-all duration-500
-                                hover:bg-white hover:text-blue-500 border hover:border-blue-500">
-                                  Pay online
-                              </button>
-                          
-                            <button className="px-4 py-2 mb-5 bg-blue-600 text-sm
-                                    text-white rounded-full shadow  transition-all duration-500
-                                    hover:bg-white hover:text-blue-500 border hover:border-blue-500">
-                                Cancel Appointment
-                              </button>
-                        </div>
-                      </div>
-                  ))
-              }
-          </div>
-    </div>
-  )
-}
 
-export default MyAppointments
+  // Group appointments by doctorId for rendering
+    const groupedAppointments = appointments.reduce((acc, currentAppointment) => {
+        const doctorId = currentAppointment.doctorId;
+        if (!acc[doctorId]) {
+            acc[doctorId] = {
+                docData: currentAppointment.docData,
+                appointments: [],
+            };
+        }
+        acc[doctorId].appointments.push(currentAppointment);
+        return acc;
+    }, {});
+  
+  return (
+     <div>
+        <p className="mt-12 pb-2 font-medium">My Appointments</p>
+        <div>
+          {Object.values(groupedAppointments).map((doctor, doctorIndex) => (
+            <div key={doctorIndex} className="my-6 p-4 border rounded-xl shadow-md">
+              {/* Doctor's main info */}
+              <div className="flex items-center gap-6 mb-4">
+                <Image
+                  src={doctor.docData.image}
+                  alt={doctor.docData.name}
+                  width={100}
+                   height={100}
+                  className="w-48 bg-blue-100 rounded-xl shadow-lg"
+                    />
+                <div>
+                  <p className="font-semibold text-lg">{doctor.docData.name}</p>
+                  <p className="text-zinc-600">{doctor.docData.speciality}</p>
+                </div>
+              </div>
+
+              {/* List of all appointments for this doctor */}
+              <h4 className="font-semibold text-zinc-700 mt-4 border-t pt-4">Booked Slots:</h4>
+              {doctor.appointments.map((item, appointmentIndex) => (
+                <div key={appointmentIndex} className="flex flex-col sm:flex-row justify-between gap-4 p-2 border-b last:border-b-0">
+                  <div className="text-sm text-zinc-600">
+                    <span className="font-semibold text-zinc-800">Date:</span> {item.slotDate}
+                    </div>
+                    <div className="text-sm text-zinc-600">
+                      <span className="font-semibold text-zinc-800">Time:</span> {item.slotTime}
+                    </div>
+                    {/* Example action buttons for each slot */}
+                    <div className="flex gap-2">
+                      <button className="px-3 py-1 bg-blue-600 text-xs text-white rounded-full transition-all duration-300 hover:bg-white hover:text-blue-500 border hover:border-blue-500">
+                        Pay
+                      </button>
+                      <button className="px-3 py-1 bg-red-600 text-xs text-white rounded-full transition-all duration-300 hover:bg-white hover:text-red-500 border hover:border-red-500">
+                        Cancel
+                      </button>
+                    </div>
+                </div>
+                  ))}
+             </div>
+            ))}
+      </div>
+      <div className="flex justify-center">
+        <button type="button" onClick={() => router.push('/doctors')}
+          className="flex justify-center px-6 py-3 border border-blue-500 text-blue-500 
+            cursor-pointer rounded-xl 
+          "
+        >Book another appointment</button>
+      </div>
+
+        </div>
+    );
+};
+
+export default MyAppointments;

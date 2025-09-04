@@ -11,7 +11,7 @@ const appointmentsSlice = createSlice({
     initialState,
     reducers: {
         setAppointments : (state, action) => {
-            state.appointments = action.payload; 
+            state.appointments = action.payload;
         }
     }
     

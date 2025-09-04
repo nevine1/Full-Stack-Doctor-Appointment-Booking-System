@@ -13,6 +13,6 @@ userRoute.post('/login', loginUser);
 userRoute.get('/user-details', authUser, userDetails);
 userRoute.put('/update-user',upload.single('image'), authUser, updateUser); //use upload because user data has image file to update(form-data)
 userRoute.post('/book-appointment', authUser, bookAppointment);
-userRoute.get('/get-appointment', authUser, getUserAppointments);
+userRoute.post('/get-appointment', authUser, getUserAppointments);
 
 export default userRoute; 

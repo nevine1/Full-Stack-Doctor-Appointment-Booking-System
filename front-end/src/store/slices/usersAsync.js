@@ -118,24 +118,32 @@ const getUserDetails = async ( token, setUserData ) => {
     }
 } 
   
-const getAppointments = async ( dispatch, token) => {
-    
+const getAppointments = async () => {
+  //thunk function 
+  /* async (dispatch, getState) => {
+    const { token } = getState().users; */
+
     try {
-      setIsLoading(true)
-       const res = await axios.get("http://localhost:4000/api/users/get-appointment", {
+      dispatch(setIsLoading(true))
+      // The userId will be extracted from the token on the backend.
+      const res = await axios.post("http://localhost:4000/api/users/get-appointment", {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
-  
+
       if (res.data.success) {
-        dispatch(setAppointments(res.data.data.reverse()))
-        console.log('gettinga ppointment', res.data.data)
+        console.log('front end res  is the data;', res.data.data)
+        //dispatch(setAppointments(res.data.data.reverse()))
+        
+        console.log('redux state data is:', res.data.data)
       }
     } catch (err) {
       toast.error(err.message)
+
     } finally {
-      setIsLoading(false)
+
+      dispatch(setIsLoading(false))
     }
   }
-
+/* } */
 
 export {  UserRegisterLogin, getUserDetails, getAppointments }

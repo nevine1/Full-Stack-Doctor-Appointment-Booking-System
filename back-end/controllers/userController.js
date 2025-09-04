@@ -280,26 +280,46 @@ const bookAppointment = async (req, res) => {
     });
   }
 };
-//api for getting user appointments for myAppointments page 
+
+
+
+
+// This assumes your authUser middleware correctly extracts and attaches the userId to the request object.
+// Example: req.userId = decodedToken.userId;
+
 const getUserAppointments = async (req, res) => {
   try {
-    //const userId = req.user.id; 
-    const userId = req.body; 
+    // Get the userId from the request  which was set by the authUser middleware.
+    const userId = req.userId;
 
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        message: "User not authenticated. Please provide a valid token.",
+      });
+    }
+
+    
     const appointments = await Appointment.find({ userId });
 
+    console.log('all apoinemtns are;', appointments);
+
+    
     return res.json({
       success: true,
-      data: appointments
+      data: appointments,
     });
-    
+
   } catch (err) {
-    return res.json({
+    console.error("Error fetching appointments:", err);
+
+    return res.status(500).json({
       success: false,
-      message: err.message
+      message: "Server error",
     });
   }
 };
+
 
 export {
   registerUser,
