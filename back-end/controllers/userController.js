@@ -321,6 +321,27 @@ const getUserAppointments = async (req, res) => {
 };
 
 
+
+const cancelAppointment = async (req, res) => {
+  try {
+    const {userId, appointmentId} = req.body; //getting this userId from the auth middleware 
+    const appointment = await Appointment.findById({ appointmentId })
+    
+      if (appointment.userId !== userId) {
+        return res.json({
+        success: false, 
+        message: "Unauthorized action "
+        })
+    }
+    
+    const canceledAppointment = await Appointment.findByIdAndUpdate(appointmentId, { canceled: true })
+  } catch (err) {
+    return res.json({
+      success: false, 
+      message: err.message
+    })
+  }
+}
 export {
   registerUser,
   loginUser,
