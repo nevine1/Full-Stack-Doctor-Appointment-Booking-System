@@ -54,36 +54,39 @@ const getAppointments = async () => {
                 docData: currentAppointment.docData,
                 appointments: [],
             };
-        }
+      }
+      
         acc[doctorId].appointments.push(currentAppointment);
         return acc;
     }, {});
   
   return (
-     <div>
-        <p className="mt-12 pb-2 font-medium">My Appointments</p>
+     <div className="my-2 mx-auto  md:w-[60%]  sm:w-[80%]">
+        <p className="mt-12 pb-2  text-center text-lg font-semibold">My Appointments</p>
         <div>
-          {Object.values(groupedAppointments).map((doctor, doctorIndex) => (
-            <div key={doctorIndex} className="my-6 p-4 border rounded-xl shadow-md">
+          {Object.values(groupedAppointments).map((doctor , index) => (
+            <div key={index} className="my-6  p-4 border  border-gray-300 rounded-xl shadow-md">
               {/* Doctor's main info */}
-              <div className="flex items-center gap-6 mb-4">
-                <Image
-                  src={doctor.docData.image}
-                  alt={doctor.docData.name}
-                  width={100}
-                   height={100}
-                  className="w-48 bg-blue-100 rounded-xl shadow-lg"
-                    />
-                <div>
-                  <p className="font-semibold text-lg">{doctor.docData.name}</p>
-                  <p className="text-zinc-600">{doctor.docData.speciality}</p>
-                </div>
+              <div className="">
+                <Link href={`/doctors/${doctor.docData._id}`} className="flex items-center gap-6 mb-4">
+                  <Image
+                    src={doctor.docData.image}
+                    alt={doctor.docData.name}
+                    width={100}
+                    height={100}
+                    className="w-48 bg-blue-100 rounded-xl shadow-lg"
+                      />
+                  <div>
+                    <p className="font-semibold text-lg">{doctor.docData.name}</p>
+                    <p className="text-zinc-600">{doctor.docData.speciality}</p>
+                  </div>
+                </Link>
               </div>
 
               {/* List of all appointments for this doctor */}
-              <h4 className="font-semibold text-zinc-700 mt-4 border-t pt-4">Booked Slots:</h4>
+              <h4 className="font-semibold text-zinc-700 mt-4 border-t  border-gray-300 pt-4">Booked Slots:</h4>
               {doctor.appointments.map((item, appointmentIndex) => (
-                <div key={appointmentIndex} className="flex flex-col sm:flex-row justify-between gap-4 p-2 border-b last:border-b-0">
+                <div key={appointmentIndex} className="flex flex-col sm:flex-row justify-between gap-4 px-2 py-4 border-b last:border-b-0">
                   <div className="text-sm text-zinc-600">
                     <span className="font-semibold text-zinc-800">Date:</span> {item.slotDate}
                     </div>
@@ -92,10 +95,12 @@ const getAppointments = async () => {
                     </div>
                     {/* Example action buttons for each slot */}
                     <div className="flex gap-2">
-                      <button className="px-3 py-1 bg-blue-600 text-xs text-white rounded-full transition-all duration-300 hover:bg-white hover:text-blue-500 border hover:border-blue-500">
+                      <button className="px-6 py-1  border border-blue-500 text-blue-500 
+                      cursor-pointer rounded-full transition-all duration-300 hover:text-white hover:bg-blue-500">
                         Pay
                       </button>
-                      <button className="px-3 py-1 bg-red-600 text-xs text-white rounded-full transition-all duration-300 hover:bg-white hover:text-red-500 border hover:border-red-500">
+                      <button className=" px-6 py-1 ml-3  border border-red-500 text-red-500 
+                      cursor-pointer rounded-full transition-all duration-300 hover:text-white hover:bg-red-500 hover:border-white">
                         Cancel
                       </button>
                     </div>
@@ -106,8 +111,8 @@ const getAppointments = async () => {
       </div>
       <div className="flex justify-center">
         <button type="button" onClick={() => router.push('/doctors')}
-          className="flex justify-center px-6 py-3 border border-blue-500 text-blue-500 
-            cursor-pointer rounded-xl 
+          className="flex justify-center mt-5 px-8 py-3  border border-blue-500 text-blue-500 
+            cursor-pointer rounded-full transition-all duration-300 hover:text-white hover:bg-blue-500
           "
         >Book another appointment</button>
       </div>
