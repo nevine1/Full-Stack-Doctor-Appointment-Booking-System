@@ -14,5 +14,6 @@ userRoute.get('/user-details', authUser, userDetails);
 userRoute.put('/update-user',upload.single('image'), authUser, updateUser); //use upload because user data has image file to update(form-data)
 userRoute.post('/book-appointment', authUser, bookAppointment);
 userRoute.post('/get-appointment', authUser, getUserAppointments);
+userRoute.post('/cancel-appointment', authUser, cancelAppointment);
 
 export default userRoute; 

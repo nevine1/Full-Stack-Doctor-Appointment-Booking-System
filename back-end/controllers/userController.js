@@ -324,8 +324,9 @@ const getUserAppointments = async (req, res) => {
 
 const cancelAppointment = async (req, res) => {
   try {
-    const {userId, appointmentId} = req.body; //getting this userId from the auth middleware 
-    const appointment = await Appointment.findById({ appointmentId })
+    const   { appointmentId }  = req.body; //getting from the appointment data given by user
+    const  userId  = req.userId; //getting this userId from the auth middleware 
+    const appointment = await Appointment.findOne({ _id: appointmentId, userId });
     
       if (appointment.userId !== userId) {
         return res.json({
@@ -334,7 +335,37 @@ const cancelAppointment = async (req, res) => {
         })
     }
     
-    const canceledAppointment = await Appointment.findByIdAndUpdate(appointmentId, { canceled: true })
+    //first check if the appointment is already canceled 
+     if (appointment.canceled) {
+        return res.status(400).json({
+            success: false,
+            message: "This appointment has already been canceled."
+        });
+    } 
+    
+     const canceledAppointment = await Appointment.findByIdAndUpdate(
+      appointmentId,
+      { canceled: true },
+      { new: true } // { new: true } save the changes and returns the updated document
+    );
+    
+    //if appointment has been canceled, it will remove from the doctor timeSlot
+    //so, get the docData to release the slotTime 
+    const { docId, slotTime, slotDate } = appointment;
+    const docData = await Doctor.findBy(docId);
+    let slotBooked = await docData.slots_booked
+    //after cancel the appointment, the final slotsBooked will be;
+    slotBooked[slotTime] = slotBooked[slotTime].filter((e) => e !== slotTime);
+    
+    //then update the docData
+    const finalDocData = await Doctor.findByIdAndUpdate(docId, {slotBooked})
+
+    return res.json({
+      success: true,
+      message: `this time at ${slotTime} has been successfully canceled!`,
+      data: finalDocData
+    })
+
   } catch (err) {
     return res.json({
       success: false, 
@@ -348,5 +379,6 @@ export {
   updateUser,
   userDetails,
   bookAppointment, 
-  getUserAppointments
+  getUserAppointments,
+  cancelAppointment
 }
