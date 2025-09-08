@@ -13,8 +13,10 @@ const MyAppointments = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const { token, isLoading, users } = useSelector((state) => state.users)
- 
-const getAppointments = async () => {
+  const backUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+
+
+  const getAppointments = async () => {
 
     try {
       dispatch(setIsLoading(true))
@@ -60,6 +62,33 @@ const getAppointments = async () => {
         return acc;
     }, {});
   
+ const cancelDocAppointment = async (appointmentId) => {
+  try {
+    dispatch(setIsLoading(true));
+
+    const res = await axios.post(
+      `${backUrl}/api/users/cancel-appointment`,
+      { appointmentId },
+      {
+        headers: { Authorization: `Bearer ${token}` }
+      }
+    );
+
+    if (res.data.success) {
+      toast.success(res.data.message);
+      await getAppointments(); // re-fetch fresh list
+    } else {
+      toast.error(res.data.message);
+    }
+  } catch (err) {
+    console.error("Cancel error:", err.message);
+    toast.error("Failed to cancel appointment. Please try again.");
+  } finally {
+    dispatch(setIsLoading(false));
+  }
+};
+
+
   return (
      <div className="my-2 mx-auto  md:w-[60%]  sm:w-[80%]">
         <p className="mt-12 pb-2  text-center text-lg font-semibold">My Appointments</p>
@@ -99,7 +128,9 @@ const getAppointments = async () => {
                       cursor-pointer rounded-full transition-all duration-300 hover:text-white hover:bg-blue-500">
                         Pay
                       </button>
-                      <button className=" px-6 py-1 ml-3  border border-red-500 text-red-500 
+                    <button
+                      onClick={() => cancelDocAppointment(item._id)}
+                      className=" px-6 py-1 ml-3  border border-red-500 text-red-500 
                       cursor-pointer rounded-full transition-all duration-300 hover:text-white hover:bg-red-500 hover:border-white">
                         Cancel
                       </button>

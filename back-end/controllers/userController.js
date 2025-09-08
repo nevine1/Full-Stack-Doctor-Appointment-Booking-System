@@ -302,8 +302,7 @@ const getUserAppointments = async (req, res) => {
     
     const appointments = await Appointment.find({ userId });
 
-    console.log('all apoinemtns are;', appointments);
-
+    //console.log('all apoinemtns are;', appointments);
     
     return res.json({
       success: true,
@@ -322,57 +321,47 @@ const getUserAppointments = async (req, res) => {
 
 
 
-const cancelAppointment = async (req, res) => {
+ const cancelAppointment = async (req, res) => {
   try {
-    const   { appointmentId }  = req.body; //getting from the appointment data given by user
-    const  userId  = req.userId; //getting this userId from the auth middleware 
-    const appointment = await Appointment.findOne({ _id: appointmentId, userId });
-    
-      if (appointment.userId !== userId) {
-        return res.json({
-        success: false, 
-        message: "Unauthorized action "
-        })
+    const { appointmentId } = req.body;
+    const userId = req.userId; // from authUser middleware
+    if (!appointmentId) {
+      return res.status(400).json({ success: false, message: "Appointment ID is required." });
     }
-    
-    //first check if the appointment is already canceled 
-     if (appointment.canceled) {
-        return res.status(400).json({
-            success: false,
-            message: "This appointment has already been canceled."
-        });
-    } 
-    
-     const canceledAppointment = await Appointment.findByIdAndUpdate(
+
+    //  get the appointment 
+    const appointment = await Appointment.findOne({ _id: appointmentId, userId });
+    if (!appointment) {
+      return res.status(404).json({ success: false, message: "Appointment not found or does not belong to the user." });
+    }
+
+    if (appointment.canceled) {
+      return res.status(200).json({ success: true, message: "Appointment is already canceled." });
+    }
+    // cancel the appointment
+    const updatedAppointment = await Appointment.findByIdAndUpdate(
       appointmentId,
       { canceled: true },
-      { new: true } // { new: true } save the changes and returns the updated document
+      { new: true }
     );
-    
-    //if appointment has been canceled, it will remove from the doctor timeSlot
-    //so, get the docData to release the slotTime 
-    const { docId, slotTime, slotDate } = appointment;
-    const docData = await Doctor.findBy(docId);
-    let slotBooked = await docData.slots_booked
-    //after cancel the appointment, the final slotsBooked will be;
-    slotBooked[slotTime] = slotBooked[slotTime].filter((e) => e !== slotTime);
-    
-    //then update the docData
-    const finalDocData = await Doctor.findByIdAndUpdate(docId, {slotBooked})
+    //update the doctor slot after removing the canceled appointment
+    await Doctor.findByIdAndUpdate(appointment.doctorId, {
+      $pull: { [`slots_booked.${appointment.slotDate}`]: appointment.slotTime }
+    });
 
-    return res.json({
+    res.status(200).json({
       success: true,
-      message: `this time at ${slotTime} has been successfully canceled!`,
-      data: finalDocData
-    })
-
+      message: "Appointment canceled successfully.",
+      data: updatedAppointment,
+    });
   } catch (err) {
-    return res.json({
-      success: false, 
-      message: err.message
-    })
+    console.error("Error canceling appointment:", err);
+    res.status(500).json({ success: false, message: "Server error" });
   }
-}
+};
+
+
+   
 export {
   registerUser,
   loginUser,
