@@ -287,7 +287,7 @@ const bookAppointment = async (req, res) => {
 // This assumes your authUser middleware correctly extracts and attaches the userId to the request object.
 // Example: req.userId = decodedToken.userId;
 
-const getUserAppointments = async (req, res) => {
+/* const getUserAppointments = async (req, res) => {
   try {
     // Get the userId from the request  which was set by the authUser middleware.
     const userId = req.userId;
@@ -317,8 +317,31 @@ const getUserAppointments = async (req, res) => {
       message: "Server error",
     });
   }
-};
+}; */
 
+
+ const getUserAppointments = async (req, res) => {
+  try {
+    const userId = req.userId; // coming from auth middleware
+
+    const appointments = await Appointment.find({
+      userId,
+      canceled: false   
+    }).sort({ date: -1 });
+
+    res.status(200).json({
+      success: true,
+      data: appointments
+    });
+
+  } catch (err) {
+    console.error("Error fetching appointments:", err);
+    res.status(500).json({
+      success: false,
+      message: "Server error fetching appointments"
+    });
+  }
+};
 
 
  const cancelAppointment = async (req, res) => {
@@ -329,10 +352,10 @@ const getUserAppointments = async (req, res) => {
       return res.status(400).json({ success: false, message: "Appointment ID is required." });
     }
 
-    //  get the appointment 
+    //  get all  appointment 
     const appointment = await Appointment.findOne({ _id: appointmentId, userId });
     if (!appointment) {
-      return res.status(404).json({ success: false, message: "Appointment not found or does not belong to the user." });
+      return res.status(404).json({ success: false, message: "Appointment not found." });
     }
 
     if (appointment.canceled) {

@@ -22,7 +22,9 @@ const MyAppointments = () => {
       dispatch(setIsLoading(true))
       // The userId will be extracted from the token on the backend.
       const res = await axios.post("http://localhost:4000/api/users/get-appointment", {}, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
       });
 
       if (res.data.success) {
@@ -62,6 +64,7 @@ const MyAppointments = () => {
         return acc;
     }, {});
   
+    //cancel appointment 
  const cancelDocAppointment = async (appointmentId) => {
   try {
     dispatch(setIsLoading(true));
