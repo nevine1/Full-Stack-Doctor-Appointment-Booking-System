@@ -5,6 +5,9 @@ import User from '../models/userModel.js';
 import Doctor from '../models/doctorModel.js'
 import Appointment from '../models/appointmentModel.js';
 import { v2 as cloudinary } from 'cloudinary'
+import Stripe from 'stripe'
+
+
 const registerUser = async (req, res) => {
     
     try {
@@ -284,41 +287,6 @@ const bookAppointment = async (req, res) => {
 
 
 
-// This assumes your authUser middleware correctly extracts and attaches the userId to the request object.
-// Example: req.userId = decodedToken.userId;
-
-/* const getUserAppointments = async (req, res) => {
-  try {
-    // Get the userId from the request  which was set by the authUser middleware.
-    const userId = req.userId;
-
-    if (!userId) {
-      return res.status(401).json({
-        success: false,
-        message: "User not authenticated. Please provide a valid token.",
-      });
-    }
-
-    
-    const appointments = await Appointment.find({ userId });
-
-    //console.log('all apoinemtns are;', appointments);
-    
-    return res.json({
-      success: true,
-      data: appointments,
-    });
-
-  } catch (err) {
-    console.error("Error fetching appointments:", err);
-
-    return res.status(500).json({
-      success: false,
-      message: "Server error",
-    });
-  }
-}; */
-
 
  const getUserAppointments = async (req, res) => {
   try {
@@ -344,47 +312,112 @@ const bookAppointment = async (req, res) => {
 };
 
 
- const cancelAppointment = async (req, res) => {
+
+const cancelAppointment = async (req, res) => {
   try {
     const { appointmentId } = req.body;
-    const userId = req.userId; // from authUser middleware
+    const userId = req.userId; // from auth middleware
+
     if (!appointmentId) {
-      return res.status(400).json({ success: false, message: "Appointment ID is required." });
+      return res.status(400).json({
+        success: false,
+        message: "Appointment ID is required."
+      });
     }
 
-    //  get all  appointment 
+    // Find appointment and verify ownership
     const appointment = await Appointment.findOne({ _id: appointmentId, userId });
     if (!appointment) {
-      return res.status(404).json({ success: false, message: "Appointment not found." });
+      return res.status(404).json({
+        success: false,
+        message: "Appointment not found or does not belong to the user."
+      });
     }
 
     if (appointment.canceled) {
-      return res.status(200).json({ success: true, message: "Appointment is already canceled." });
+      return res.status(200).json({
+        success: true,
+        message: "Appointment is already canceled."
+      });
     }
-    // cancel the appointment
+
+    // find the appointment as canceled
     const updatedAppointment = await Appointment.findByIdAndUpdate(
       appointmentId,
       { canceled: true },
       { new: true }
     );
-    //update the doctor slot after removing the canceled appointment
+
+    // free the doctor's slot (remove from booked slots)
     await Doctor.findByIdAndUpdate(appointment.doctorId, {
       $pull: { [`slots_booked.${appointment.slotDate}`]: appointment.slotTime }
     });
 
     res.status(200).json({
       success: true,
-      message: "Appointment canceled successfully.",
+      message: `Appointment canceled successfully. Slot ${appointment.slotTime} on ${appointment.slotDate} is now available again.`,
       data: updatedAppointment,
     });
-  } catch (err) {
-    console.error("Error canceling appointment:", err);
-    res.status(500).json({ success: false, message: "Server error" });
-  }
+
+
+    } catch (err) {
+        console.error("Error canceling appointment:", err);
+        res.status(500).json({
+            success: false,
+            message: "Server error"
+        });
+    }
 };
 
+//pay online for the doc's appointment
+const stipe = new stripe(process.env.STRIPE_SECRET_KEY)
+const payOnline = async (req, res) => {
+  try {
+    const { appointmentId } = req.body;
+    const userId = req.userId; //coming fromm authUser 
 
-   
+    if (!appointmentId) {
+      return res.jon({
+        success: false, 
+        message: "This appointment Id is not existing"
+      })
+    }
+    
+    const appointment = await Appointment.findOne({ userId, _id: appointmentId}).populate("doctorId")
+
+    if (!appointment) {
+      return res.jon({
+        success: false, 
+        message: "This appointment Id is not found"
+      })
+    }
+
+    //stripe checkout session;
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: [
+        {
+          price_data: {
+            currency: "usd",
+            product_data: {
+              name: `Appointment with Dr. ${appointment.doctorId.name}`,
+            },
+            unit_amount: appointment.doctorId.fees * 100, // convert to cents
+          },
+          quantity: 1,
+        },
+      ],
+      mode: "payment",
+      success_url: `${process.env.FRONTEND_URL}/payment-success?appointmentId=${appointment._id}`,
+      cancel_url: `${process.env.FRONTEND_URL}/payment-cancel?appointmentId=${appointment._id}`,
+    });
+  } catch (err) {
+    return res.json({
+      success: false, 
+      messag: err.messag
+    })
+  }
+}   
 export {
   registerUser,
   loginUser,
