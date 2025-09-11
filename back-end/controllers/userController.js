@@ -370,54 +370,46 @@ const cancelAppointment = async (req, res) => {
 };
 
 //pay online for the doc's appointment
-const stipe = new stripe(process.env.STRIPE_SECRET_KEY)
-const payOnline = async (req, res) => {
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+const onlinePayment = async (req, res) => {
   try {
-    const { appointmentId } = req.body;
-    const userId = req.userId; //coming fromm authUser 
-
-    if (!appointmentId) {
-      return res.jon({
-        success: false, 
-        message: "This appointment Id is not existing"
-      })
-    }
-    
-    const appointment = await Appointment.findOne({ userId, _id: appointmentId}).populate("doctorId")
-
-    if (!appointment) {
-      return res.jon({
-        success: false, 
-        message: "This appointment Id is not found"
-      })
+    const { docId, slotDate, slotTime } = req.body;
+    const doctor = await Doctor.findById(docId)
+    if (!doctor) {
+      return res.status(404).json({ success: false, message: 'Doctor not found.' });
     }
 
-    //stripe checkout session;
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card"],
+      payment_method_types: ['card'],
       line_items: [
         {
           price_data: {
-            currency: "usd",
+            currency: 'usd',
             product_data: {
-              name: `Appointment with Dr. ${appointment.doctorId.name}`,
+              name: `Appointment with ${doctor.name}`,
+              description: `For ${doctor.speciality} on ${slotDate} at ${slotTime}`,
+              images: [doctor.image]
             },
-            unit_amount: appointment.doctorId.fees * 100, // convert to cents
+            unit_amount: doctor.fees * 100, 
           },
           quantity: 1,
         },
       ],
-      mode: "payment",
-      success_url: `${process.env.FRONTEND_URL}/payment-success?appointmentId=${appointment._id}`,
-      cancel_url: `${process.env.FRONTEND_URL}/payment-cancel?appointmentId=${appointment._id}`,
+      mode: 'payment',
+      success_url: `${process.env.NEXT_PUBLIC_FRONTEND_URL}/auth/myAppointments/checkout?success=true&docId=${docId}&slotDate=${slotDate}&slotTime=${slotTime}`,
+      cancel_url: `${process.env.NEXT_PUBLIC_FRONTEND_URL}/auth/myAppointments/checkout?canceled=true`,
     });
+    return res.json({ id: session.id, url: session.url });
   } catch (err) {
     return res.json({
       success: false, 
-      messag: err.messag
+      message: err.message
     })
   }
-}   
+}
+
+
+
 export {
   registerUser,
   loginUser,
@@ -425,5 +417,6 @@ export {
   userDetails,
   bookAppointment, 
   getUserAppointments,
-  cancelAppointment
+  cancelAppointment, 
+  onlinePayment
 }

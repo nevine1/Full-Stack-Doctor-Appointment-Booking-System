@@ -91,25 +91,7 @@ const MyAppointments = () => {
   }
 };
 
-  //pay online for appointment 
- const payOnline = async (docId, slotDate, slotTime) => {
-  try {
-    const res = await axios.post(
-      `${backUrl}/api/users/online-payment`,
-      { docId, slotDate, slotTime }, //  matching  backend
-      {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      }
-    );
-    console.log('payment res is', res.data);
-    window.location.href = res.data.url; // redirect to Stripe checkout
-  } catch (err) {
-    console.log("Payment error:", err.response?.data || err.message);
-  }
-};
-  
+
   return (
      <div className="my-2 mx-auto  md:w-[60%]  sm:w-[80%]">
         <p className="mt-12 pb-2  text-center text-lg font-semibold">My Appointments</p>
@@ -135,21 +117,17 @@ const MyAppointments = () => {
 
               {/* List of all appointments for this doctor */}
               <h4 className="font-semibold text-zinc-700 mt-4 border-t  border-gray-300 pt-4">Booked Slots:</h4>
-              {doctor.appointments.map((item, appointmentIndex) => {
-                console.log('doctor appoitment item is:', item)
-                return (
-                  <div key={appointmentIndex} className="flex flex-col sm:flex-row justify-between gap-4 px-2 py-4 border-b last:border-b-0">
+              {doctor.appointments.map((item, appointmentIndex) => (
+                <div key={appointmentIndex} className="flex flex-col sm:flex-row justify-between gap-4 px-2 py-4 border-b last:border-b-0">
                   <div className="text-sm text-zinc-600">
                     <span className="font-semibold text-zinc-800">Date:</span> {item.slotDate}
                     </div>
                     <div className="text-sm text-zinc-600">
                       <span className="font-semibold text-zinc-800">Time:</span> {item.slotTime}
                     </div>
-                    {/*  action buttons for each slot */}
+                    {/* Example action buttons for each slot */}
                     <div className="flex gap-2">
-                    <button
-                      onClick={() => payOnline(item.doctorId, item.slotDate, item.slotTime)}
-                      className="px-6 py-1  border border-blue-500 text-blue-500 
+                      <button className="px-6 py-1  border border-blue-500 text-blue-500 
                       cursor-pointer rounded-full transition-all duration-300 hover:text-white hover:bg-blue-500">
                         Pay
                       </button>
@@ -161,8 +139,7 @@ const MyAppointments = () => {
                       </button>
                     </div>
                 </div>
-                )
-              } )}
+                  ))}
              </div>
             ))}
       </div>
