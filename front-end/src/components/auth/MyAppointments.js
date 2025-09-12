@@ -5,7 +5,7 @@ import { setIsLoading } from '@/store/slices/usersSlice';
 import Image from 'next/image'
 import { toast } from 'react-toastify'
 import axios from 'axios'
-import { setAppointments } from '../../store/slices/appointmentsSlice'
+import { setAppointments, clearAppointments } from '../../store/slices/appointmentsSlice'
 import { useRouter } from 'next/navigation';
 import Link from 'next/link'
 
@@ -49,7 +49,7 @@ const MyAppointments = () => {
   }, [token, dispatch])
 
   const { appointments } = useSelector((state) => state.appointments)
-
+console.log('all appointments are;', appointments)
   // Group appointments by doctorId for rendering
     const groupedAppointments = appointments.reduce((acc, currentAppointment) => {
         const doctorId = currentAppointment.doctorId;
@@ -117,7 +117,7 @@ const MyAppointments = () => {
           {Object.values(groupedAppointments).map((doctor , index) => (
             <div key={index} className="my-6  p-4 border  border-gray-300 rounded-xl shadow-md">
               {/* Doctor's main info */}
-              <div className="">
+              {/* <div className="">
                 <Link href={`/doctors/${doctor.docData._id}`} className="flex items-center gap-6 mb-4">
                   <Image
                     src={doctor.docData.image}
@@ -131,7 +131,7 @@ const MyAppointments = () => {
                     <p className="text-zinc-600">{doctor.docData.speciality}</p>
                   </div>
                 </Link>
-              </div>
+              </div> */}
 
               {/* List of all appointments for this doctor */}
               <h4 className="font-semibold text-zinc-700 mt-4 border-t  border-gray-300 pt-4">Booked Slots:</h4>
@@ -173,7 +173,7 @@ const MyAppointments = () => {
           "
         >Book another appointment</button>
       </div>
-
+<button onClick={() => dispatch(clearAppointments)}> Clear all appointments</button>
         </div>
     );
 };

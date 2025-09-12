@@ -1,9 +1,9 @@
 import React from 'react'
-
+import CheckoutPage from '../../../../components/auth/CheckoutPage'
 const page = () => {
   return (
     <div>
-      <h1>Hello checkout pageeeeeeeeeeeeee</h1>
+      <CheckoutPage/>
     </div>
   )
 }

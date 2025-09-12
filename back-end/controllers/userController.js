@@ -409,6 +409,38 @@ const onlinePayment = async (req, res) => {
 }
 
 
+//confirm payment 
+
+const confirmAppointment = async (req, res) => {
+  try {
+    const { docId, slotDate, slotTime } = req.body;
+    const userId = req.userId; // from auth middleware
+
+    // find the existing appointment
+    const appointment = await Appointment.findOne({
+      userId,
+      doctorId: docId,
+      slotDate,
+      slotTime
+    });
+
+    if (!appointment) {
+      return res.status(404).json({ success: false, message: "Appointment not found" });
+    }
+
+    // then update this appointment
+    appointment.onlinePayment = true;
+    appointment.isPaid = true; // this field is optional if we have it in the appointment model
+    await appointment.save();
+
+    res.json({ success: true, message: "Appointment confirmed", appointment });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+
+
 
 export {
   registerUser,
@@ -418,5 +450,6 @@ export {
   bookAppointment, 
   getUserAppointments,
   cancelAppointment, 
-  onlinePayment
+  onlinePayment, 
+  confirmAppointment
 }
