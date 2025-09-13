@@ -411,7 +411,7 @@ const onlinePayment = async (req, res) => {
 
 //confirm payment 
 
-const confirmAppointment = async (req, res) => {
+/* const confirmAppointment = async (req, res) => {
   try {
     const { docId, slotDate, slotTime } = req.body;
     const userId = req.userId; // from auth middleware
@@ -432,10 +432,38 @@ const confirmAppointment = async (req, res) => {
     appointment.onlinePayment = true;
     appointment.isPaid = true; // this field is optional if we have it in the appointment model
     await appointment.save();
-
+console.log('appointmen is already paid', appointment)
     res.json({ success: true, message: "Appointment confirmed", appointment });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
+  }
+}; */
+
+
+const confirmPayment = async (req, res) => {
+  try {
+    const { appointmentId, paymentIntentId } = req.body;
+console.log(paymentIntentId)
+    const appointment = await Appointment.findById(appointmentId);
+    if (!appointment) {
+      return res.status(404).json({ message: "Appointment not found" });
+    }
+
+    appointment.onlinePayment = true;    // true means it is paid 
+    appointment.paymentIntentId = paymentIntentId; //  needed for refunds
+    appointment.isCompleted = true;      
+    await appointment.save();
+ console.log('foncifakjpay men is;', appointment)
+    res.json({
+      success: true,
+      message: "Appointment confirmed & paid", appointment
+    });
+  } catch (error) {
+    res.status(500).json({
+      success:false,
+      message: "Error confirming payment",
+      error: error.message
+    });
   }
 };
 
@@ -451,5 +479,5 @@ export {
   getUserAppointments,
   cancelAppointment, 
   onlinePayment, 
-  confirmAppointment
+  confirmPayment
 }

@@ -111,13 +111,13 @@ console.log('all appointments are;', appointments)
 };
   
   return (
-     <div className="my-2 mx-auto  md:w-[60%]  sm:w-[80%]">
+     <div className="my-2 mx-auto lg:w-[60%]  md:w-[85%]  sm:w-[95%]">
         <p className="mt-12 pb-2  text-center text-lg font-semibold">My Appointments</p>
         <div>
           {Object.values(groupedAppointments).map((doctor , index) => (
             <div key={index} className="my-6  p-4 border  border-gray-300 rounded-xl shadow-md">
               {/* Doctor's main info */}
-              {/* <div className="">
+              <div className="">
                 <Link href={`/doctors/${doctor.docData._id}`} className="flex items-center gap-6 mb-4">
                   <Image
                     src={doctor.docData.image}
@@ -131,49 +131,84 @@ console.log('all appointments are;', appointments)
                     <p className="text-zinc-600">{doctor.docData.speciality}</p>
                   </div>
                 </Link>
-              </div> */}
+              </div>
 
               {/* List of all appointments for this doctor */}
               <h4 className="font-semibold text-zinc-700 mt-4 border-t  border-gray-300 pt-4">Booked Slots:</h4>
               {doctor.appointments.map((item, appointmentIndex) => {
-                console.log('doctor appoitment item is:', item)
-                return (
-                  <div key={appointmentIndex} className="flex flex-col sm:flex-row justify-between gap-4 px-2 py-4 border-b last:border-b-0">
-                  <div className="text-sm text-zinc-600">
-                    <span className="font-semibold text-zinc-800">Date:</span> {item.slotDate}
-                    </div>
-                    <div className="text-sm text-zinc-600">
-                      <span className="font-semibold text-zinc-800">Time:</span> {item.slotTime}
-                    </div>
-                    {/*  action buttons for each slot */}
-                    <div className="flex gap-2">
-                    <button
-                      onClick={() => payOnline(item.doctorId, item.slotDate, item.slotTime)}
-                      className="px-6 py-1  border border-blue-500 text-blue-500 
-                      cursor-pointer rounded-full transition-all duration-300 hover:text-white hover:bg-blue-500">
-                        Pay
-                      </button>
-                    <button
-                      onClick={() => cancelDocAppointment(item._id)}
-                      className=" px-6 py-1 ml-3  border border-red-500 text-red-500 
-                      cursor-pointer rounded-full transition-all duration-300 hover:text-white hover:bg-red-500 hover:border-white">
-                        Cancel
-                      </button>
-                    </div>
-                </div>
-                )
-              } )}
+  console.log("doctor appointment item is:", item);
+  return (
+    <div
+      key={appointmentIndex}
+      className="flex flex-col sm:flex-row justify-between gap-4 px-2 py-4 border-b last:border-b-0"
+    >
+      {/* Date */}
+      <div className="text-sm text-zinc-600">
+        <span className="font-semibold text-zinc-800">Date:</span> {item.slotDate}
+      </div>
+
+      {/* Time */}
+      <div className="text-sm text-zinc-600">
+        <span className="font-semibold text-zinc-800">Time:</span> {item.slotTime}
+      </div>
+
+      {/* Actions */}
+      <div className="flex gap-2 items-center">
+        {item.isPaid ? (
+          <>
+            <span className="text-green-600 text-sm font-medium">
+              Payment is done
+            </span>
+            <button
+              onClick={() =>
+                cancelPayment(item._id) // your cancel payment handler
+              }
+              className="px-4 py-1 border border-blue-500 text-blue-500 text-sm cursor-pointer rounded-md transition-all duration-300 hover:text-white hover:bg-blue-500"
+            >
+              Cancel Payment
+            </button>
+          </>
+        ) : (
+          <>
+            <button
+              onClick={() =>
+                payOnline(item.doctorId, item.slotDate, item.slotTime)
+              }
+              className="px-4 py-1 border border-green-500 text-green-500 text-sm cursor-pointer rounded-md transition-all duration-300 hover:text-white hover:bg-green-500"
+            >
+              Pay Now
+            </button>
+
+            <button
+              onClick={() => cancelDocAppointment(item._id)}
+              className="px-4 py-1 border border-red-500 text-red-500 text-sm cursor-pointer rounded-md transition-all duration-300 hover:text-white hover:bg-red-500"
+            >
+              Cancel Appointment
+            </button>
+          </>
+        )}
+      </div>
+    </div>
+  );
+})}
+
              </div>
             ))}
       </div>
-      <div className="flex justify-center">
+      <div className="flex flex-col gap6 justify-center">
         <button type="button" onClick={() => router.push('/doctors')}
           className="flex justify-center mt-5 px-8 py-3  border border-blue-500 text-blue-500 
             cursor-pointer rounded-full transition-all duration-300 hover:text-white hover:bg-blue-500
           "
         >Book another appointment</button>
+
+        <button type="button"
+          className="flex justify-center mt-5 px-8 py-3  border border-blue-500 text-blue-500 
+            cursor-pointer rounded-full transition-all duration-300 hover:text-white hover:bg-blue-500
+          "
+          onClick={() => dispatch(clearAppointments())}> Clear all appointments</button>
       </div>
-<button onClick={() => dispatch(clearAppointments)}> Clear all appointments</button>
+    
         </div>
     );
 };
