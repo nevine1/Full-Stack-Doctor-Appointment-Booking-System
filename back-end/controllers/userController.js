@@ -5,7 +5,7 @@ import User from '../models/userModel.js';
 import Doctor from '../models/doctorModel.js'
 import Appointment from '../models/appointmentModel.js';
 import { v2 as cloudinary } from 'cloudinary'
-import Stripe from 'stripe'
+
 
 
 const registerUser = async (req, res) => {
@@ -285,9 +285,6 @@ const bookAppointment = async (req, res) => {
 };
 
 
-
-
-
  const getUserAppointments = async (req, res) => {
   try {
     const userId = req.userId; // coming from auth middleware
@@ -310,7 +307,6 @@ const bookAppointment = async (req, res) => {
     });
   }
 };
-
 
 
 const cancelAppointment = async (req, res) => {
@@ -369,44 +365,7 @@ const cancelAppointment = async (req, res) => {
     }
 };
 
-//pay online for the doc's appointment
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-const onlinePayment = async (req, res) => {
-  try {
-    const { docId, slotDate, slotTime } = req.body;
-    const doctor = await Doctor.findById(docId)
-    if (!doctor) {
-      return res.status(404).json({ success: false, message: 'Doctor not found.' });
-    }
 
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
-      line_items: [
-        {
-          price_data: {
-            currency: 'usd',
-            product_data: {
-              name: `Appointment with ${doctor.name}`,
-              description: `For ${doctor.speciality} on ${slotDate} at ${slotTime}`,
-              images: [doctor.image]
-            },
-            unit_amount: doctor.fees * 100, 
-          },
-          quantity: 1,
-        },
-      ],
-      mode: 'payment',
-      success_url: `${process.env.NEXT_PUBLIC_FRONTEND_URL}/auth/myAppointments/checkout?success=true&docId=${docId}&slotDate=${slotDate}&slotTime=${slotTime}`,
-      cancel_url: `${process.env.NEXT_PUBLIC_FRONTEND_URL}/auth/myAppointments/checkout?canceled=true`,
-    });
-    return res.json({ id: session.id, url: session.url });
-  } catch (err) {
-    return res.json({
-      success: false, 
-      message: err.message
-    })
-  }
-}
 
 
 //confirm payment 
@@ -440,7 +399,7 @@ console.log('appointmen is already paid', appointment)
 }; */
 
 
-const confirmPayment = async (req, res) => {
+/* const confirmPayment = async (req, res) => {
   try {
     const { appointmentId, paymentIntentId } = req.body;
 console.log(paymentIntentId)
@@ -466,7 +425,7 @@ console.log(paymentIntentId)
     });
   }
 };
-
+ */
 
 
 
@@ -477,7 +436,6 @@ export {
   userDetails,
   bookAppointment, 
   getUserAppointments,
-  cancelAppointment, 
-  onlinePayment, 
-  confirmPayment
+  cancelAppointment
+  
 }

@@ -65,50 +65,50 @@ console.log('all appointments are;', appointments)
     }, {});
   
     //cancel appointment 
- const cancelDocAppointment = async (appointmentId) => {
-  try {
-    dispatch(setIsLoading(true));
+    const cancelDocAppointment = async (appointmentId) => {
+      try {
+        dispatch(setIsLoading(true));
 
-    const res = await axios.post(
-      `${backUrl}/api/users/cancel-appointment`,
-      { appointmentId },
-      {
-        headers: { Authorization: `Bearer ${token}` }
-      }
-    );
+        const res = await axios.post(
+          `${backUrl}/api/users/cancel-appointment`,
+          { appointmentId },
+          {
+            headers: { Authorization: `Bearer ${token}` }
+          }
+        );
 
-    if (res.data.success) {
-      toast.success(res.data.message);
-      await getAppointments(); // re-fetch fresh list
-    } else {
-      toast.error(res.data.message);
-    }
-  } catch (err) {
-    console.error("Cancel error:", err.message);
-    toast.error("Failed to cancel appointment. Please try again.");
-  } finally {
-    dispatch(setIsLoading(false));
-  }
-};
-
-  //pay online for appointment 
- const payOnline = async (docId, slotDate, slotTime) => {
-  try {
-    const res = await axios.post(
-      `${backUrl}/api/users/online-payment`,
-      { docId, slotDate, slotTime }, //  matching  backend
-      {
-        headers: {
-          Authorization: `Bearer ${token}`
+        if (res.data.success) {
+          toast.success(res.data.message);
+          await getAppointments(); // re-fetch fresh list
+        } else {
+          toast.error(res.data.message);
         }
+      } catch (err) {
+        console.error("Cancel error:", err.message);
+        toast.error("Failed to cancel appointment. Please try again.");
+      } finally {
+        dispatch(setIsLoading(false));
       }
-    );
-    console.log('payment res is', res.data);
-    window.location.href = res.data.url; // redirect to Stripe checkout
-  } catch (err) {
-    console.log("Payment error:", err.response?.data || err.message);
-  }
-};
+    };
+
+    //pay online for appointment 
+    const payOnline = async (appointmentId) => {
+      try {
+        const res = await axios.post(
+          `${backUrl}/api/users/online-payment`,
+          { appointmentId }, //  matching  backend
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
+        );
+        console.log('payment res is', res.data);
+        window.location.href = res.data.url; // redirect to Stripe checkout
+      } catch (err) {
+        console.log("Payment error:", err.response?.data || err.message);
+      }
+    };
   
   return (
      <div className="my-2 mx-auto lg:w-[60%]  md:w-[85%]  sm:w-[95%]">
@@ -136,40 +136,40 @@ console.log('all appointments are;', appointments)
               {/* List of all appointments for this doctor */}
               <h4 className="font-semibold text-zinc-700 mt-4 border-t  border-gray-300 pt-4">Booked Slots:</h4>
               {doctor.appointments.map((item, appointmentIndex) => {
-  console.log("doctor appointment item is:", item);
-  return (
-    <div
-      key={appointmentIndex}
-      className="flex flex-col sm:flex-row justify-between gap-4 px-2 py-4 border-b last:border-b-0"
-    >
-      {/* Date */}
-      <div className="text-sm text-zinc-600">
-        <span className="font-semibold text-zinc-800">Date:</span> {item.slotDate}
-      </div>
+                console.log("doctor appointment item is:", item);
+                return (
+                  <div
+                    key={appointmentIndex}
+                    className="flex flex-col sm:flex-row justify-between gap-4 px-2 py-4 border-b last:border-b-0"
+                  >
+              {/* Date */}
+              <div className="text-sm text-zinc-600">
+                <span className="font-semibold text-zinc-800">Date:</span> {item.slotDate}
+              </div>
 
-      {/* Time */}
-      <div className="text-sm text-zinc-600">
-        <span className="font-semibold text-zinc-800">Time:</span> {item.slotTime}
-      </div>
+              {/* Time */}
+              <div className="text-sm text-zinc-600">
+                <span className="font-semibold text-zinc-800">Time:</span> {item.slotTime}
+              </div>
 
-      {/* Actions */}
-      <div className="flex gap-2 items-center">
-        {item.isPaid ? (
-          <>
-            <span className="text-green-600 text-sm font-medium">
-              Payment is done
-            </span>
-            <button
-              onClick={() =>
-                cancelPayment(item._id) // your cancel payment handler
-              }
-              className="px-4 py-1 border border-blue-500 text-blue-500 text-sm cursor-pointer rounded-md transition-all duration-300 hover:text-white hover:bg-blue-500"
-            >
-              Cancel Payment
-            </button>
-          </>
-        ) : (
-          <>
+              {/* Actions */}
+              <div className="flex gap-2 items-center">
+                {item.isPaid ? (
+                  <>
+                  <span className="text-green-600 text-sm font-medium">
+                    Payment is done
+                  </span>
+                  <button
+                    onClick={() =>
+                      cancelPayment(item._id) // your cancel payment handler
+                    }
+                    className="px-4 py-1 border border-blue-500 text-blue-500 text-sm cursor-pointer rounded-md transition-all duration-300 hover:text-white hover:bg-blue-500"
+                  >
+                    Cancel Payment
+                  </button>
+                </>
+              ) : (
+                <>
             <button
               onClick={() =>
                 payOnline(item.doctorId, item.slotDate, item.slotTime)

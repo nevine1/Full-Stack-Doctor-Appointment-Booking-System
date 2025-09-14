@@ -23,6 +23,7 @@ app.use('/api/admin', adminRoute) // <--- Multer middleware is applied within ad
 app.use('/api/doctors', doctorRoute);
 app.use('/api/users', userRoute);
 
+
 app.get('/', (req, res) => {
     res.send("app is working")
 })

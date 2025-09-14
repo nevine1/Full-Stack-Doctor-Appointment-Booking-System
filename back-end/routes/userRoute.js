@@ -3,9 +3,11 @@ import  authUser  from '../middleware/authUser.js'
 import {
     registerUser, loginUser, updateUser,
     userDetails, bookAppointment, getUserAppointments,
-    onlinePayment, cancelAppointment, confirmPayment
+     cancelAppointment
 } from '../controllers/userController.js';
-import  upload from '../middleware/multer.js'
+import { confirmPayment, onlinePayment } from '../controllers/paymentController.js';
+import upload from '../middleware/multer.js';
+
 const userRoute = express.Router();
 
 
