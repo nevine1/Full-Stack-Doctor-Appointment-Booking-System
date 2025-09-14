@@ -92,24 +92,27 @@ console.log('all appointments are;', appointments)
     };
 
     //pay online for appointment 
-    const payOnline = async (appointmentId) => {
-      try {
-        const res = await axios.post(
-          `${backUrl}/api/users/online-payment`,
-          { appointmentId }, //  matching  backend
-          {
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
-          }
-        );
-        console.log('payment res is', res.data);
-        window.location.href = res.data.url; // redirect to Stripe checkout
-      } catch (err) {
-        console.log("Payment error:", err.response?.data || err.message);
-      }
+  const payOnline = async (appointmentId) => {
+  try {
+    const res = await axios.post(`${backUrl}/api/users/online-payment`, 
+      { appointmentId },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    console.log('appointment id for only payment is:', appointmentId)
+console.log('online paymeent responsd ied is', res)
+    if (res.data.success) {
+      // Save paymentIntentId temporarily for confirm step
+      localStorage.setItem("paymentIntentId", res.data.paymentIntentId);
+      console.log('online paymeent responsd ied is', res.data)
+      // Redirect to Stripe checkout
+      window.location.href = res.data.url;
+    }
+  } catch (err) {
+    console.error(err);
+    toast.error("Payment failed to start");
+  }
     };
-  
+
   return (
      <div className="my-2 mx-auto lg:w-[60%]  md:w-[85%]  sm:w-[95%]">
         <p className="mt-12 pb-2  text-center text-lg font-semibold">My Appointments</p>
@@ -172,7 +175,7 @@ console.log('all appointments are;', appointments)
                 <>
             <button
               onClick={() =>
-                payOnline(item.doctorId, item.slotDate, item.slotTime)
+                payOnline(item._id, item.slotDate, item.slotTime)
               }
               className="px-4 py-1 border border-green-500 text-green-500 text-sm cursor-pointer rounded-md transition-all duration-300 hover:text-white hover:bg-green-500"
             >
