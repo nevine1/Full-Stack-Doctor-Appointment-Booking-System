@@ -13,8 +13,8 @@ const CheckoutPage = () => {
 
   const success = searchParams.get("success");
   const canceled = searchParams.get("canceled");
-  const appointmentId = searchParams.get("appointmentId"); //  should come from success_url
-  const sessionId = searchParams.get("session_id");        //  Stripe session id
+  const appointmentId = searchParams.get("appointmentId"); // comes from success_url
+  const sessionId = searchParams.get("session_id");        // Stripe session id
 
   const confirmPayment = async () => {
     try {
@@ -22,33 +22,38 @@ const CheckoutPage = () => {
 
       toast.info("Payment successful! Confirming appointment...");
 
-      //get paymentIntentId from Stripe session
-      const sessionRes = await axios.get(`${backUrl}/api/payment/session/${sessionId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
+      //  Get Stripe session info
+      const sessionRes = await axios.get(
+        `${backUrl}/api/payment/session/${sessionId}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+ 
       const paymentIntentId = sessionRes.data.payment_intent;
 
-      // Confirm appointment in backend
+      // confirm appointment in backend
       const res = await axios.post(
         `${backUrl}/api/users/confirm-payment`,
         { appointmentId, paymentIntentId },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-console.log('payment res is;', res)
+
       if (res.data.success) {
         toast.success("Appointment confirmed!");
-        router.push("/auth/profile");
+        router.push("/auth/myAppointments");
       }
     } catch (err) {
-      console.log(err.message);
-      toast.error("Could not confirm appointment.");
+      console.log("Error confirming payment:", err.message);
+      toast.error(err.message);
     }
   };
 
   useEffect(() => {
     confirmPayment();
   }, [searchParams]);
+
+  if (canceled) {
+    return <h1>Payment canceled. Please try again.</h1>;
+  }
 
   return <h1>Processing Checkout...</h1>;
 };
