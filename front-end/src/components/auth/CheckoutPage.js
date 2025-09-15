@@ -13,8 +13,8 @@ const CheckoutPage = () => {
 
   const success = searchParams.get("success");
   const canceled = searchParams.get("canceled");
-  const appointmentId = searchParams.get("appointmentId"); // comes from success_url
-  const sessionId = searchParams.get("session_id");        // Stripe session id
+  const appointmentId = searchParams.get("appointmentId");
+  const sessionId = searchParams.get("session_id");
 
   const confirmPayment = async () => {
     try {
@@ -22,15 +22,13 @@ const CheckoutPage = () => {
 
       toast.info("Payment successful! Confirming appointment...");
 
-      //  Get Stripe session info
       const sessionRes = await axios.get(
         `${backUrl}/api/payment/session/${sessionId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
- 
+
       const paymentIntentId = sessionRes.data.payment_intent;
 
-      // confirm appointment in backend
       const res = await axios.post(
         `${backUrl}/api/users/confirm-payment`,
         { appointmentId, paymentIntentId },
@@ -39,23 +37,42 @@ const CheckoutPage = () => {
 
       if (res.data.success) {
         toast.success("Appointment confirmed!");
-        router.push("/auth/myAppointments");
+        router.push("/auth/profile");
       }
     } catch (err) {
-      console.log("Error confirming payment:", err.message);
-      toast.error(err.message);
+      console.log(" Error confirming payment:", err.message);
+      toast.error("Could not confirm appointment.");
+    }
+  };
+
+  const cancelPayment = async () => {
+    try {
+      if (!canceled || !appointmentId) return;
+
+      toast.warning("Payment canceled. Updating appointment...");
+
+      await axios.post(
+        `${backUrl}/api/users/cancel-payment`,
+        { appointmentId },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      router.push("/auth/myAppointments"); // go back to appointments page
+    } catch (err) {
+      console.log(" Error canceling payment:", err.message);
+      toast.error("Could not cancel payment.");
     }
   };
 
   useEffect(() => {
-    confirmPayment();
+    if (success) confirmPayment();
+    if (canceled) cancelPayment();
   }, [searchParams]);
 
-  if (canceled) {
-    return <h1>Payment canceled. Please try again.</h1>;
-  }
+  if (success) return <h1>Processing Checkout...</h1>;
+  if (canceled) return <h1>Payment canceled. Redirecting...</h1>;
 
-  return <h1>Processing Checkout...</h1>;
+  return <h1>Loading...</h1>;
 };
 
 export default CheckoutPage;

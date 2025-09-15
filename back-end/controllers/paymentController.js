@@ -9,11 +9,9 @@ const onlinePayment = async (req, res) => {
   try {
     const { appointmentId } = req.body;
     const appointment = await Appointment.findById(appointmentId).populate("doctorId");
-
     if (!appointment) {
       return res.json({ success: false, message: "This appointment not found!" });
     }
-
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       line_items: [
@@ -90,4 +88,39 @@ const getSession = async (req, res) => {
   }
 };
 
-export { onlinePayment, confirmPayment, getSession };
+
+
+//cancel payment
+const cancelPayment = async (req, res) => {
+  try {
+    const { appointmentId } = req.body;
+
+    const appointment = await Appointment.findById(appointmentId);
+    if (!appointment) {
+      return res.status(404).json({ success: false, message: "Appointment not found" });
+    }
+
+    // make appointment as canceled (not paid)
+    appointment.canceled = true;
+    appointment.onlinePayment = false;
+    appointment.isPaid = false;
+
+    await appointment.save();
+
+    res.json({
+      success: true,
+      message: "Appointment canceled successfully",
+      appointment,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error canceling payment",
+      error: error.message,
+    });
+  }
+};
+
+
+
+export { onlinePayment, confirmPayment, getSession , cancelPayment};

@@ -6,12 +6,14 @@ import Image from 'next/image'
 import { toast } from 'react-toastify'
 import axios from 'axios'
 import { setAppointments, clearAppointments } from '../../store/slices/appointmentsSlice'
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link'
 
 const MyAppointments = () => {
   const dispatch = useDispatch();
   const router = useRouter();
+  const searchParams = useSearchParams();
+    const canceled = searchParams.get("canceled");
   const { token, isLoading, users } = useSelector((state) => state.users)
   const backUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
@@ -98,12 +100,11 @@ console.log('all appointments are;', appointments)
       { appointmentId },
       { headers: { Authorization: `Bearer ${token}` } }
     );
-    console.log('appointment id for only payment is:', appointmentId)
-console.log('online paymeent responsd ied is', res)
+   
     if (res.data.success) {
       // Save paymentIntentId temporarily for confirm step
       localStorage.setItem("paymentIntentId", res.data.paymentIntentId);
-      console.log('online paymeent responsd ied is', res.data)
+      
       // Redirect to Stripe checkout
       window.location.href = res.data.url;
     }
@@ -113,6 +114,31 @@ console.log('online paymeent responsd ied is', res)
   }
     };
 
+  //cancel payment 
+  const cancelPayment = async () => {
+      try {
+        if (!canceled || !appointmentId) return;
+  
+        toast.warning("Payment canceled. Updating appointment...");
+  
+        await axios.post(
+          `${backUrl}/api/users/cancel-payment`,
+          { appointmentId },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+  
+        router.push("/auth/myAppointments"); // go back to appointments page
+      } catch (err) {
+        console.log(err.message);
+        toast.error("Could not cancel payment.");
+      }
+  };
+  
+  useEffect(() => {
+    
+      if (canceled) cancelPayment();
+    
+  }, [searchParams])
   return (
      <div className="my-2 mx-auto lg:w-[60%]  md:w-[85%]  sm:w-[95%]">
         <p className="mt-12 pb-2  text-center text-lg font-semibold">My Appointments</p>
@@ -164,7 +190,7 @@ console.log('online paymeent responsd ied is', res)
                   </span>
                   <button
                     onClick={() =>
-                      cancelPayment(item._id) // your cancel payment handler
+                      cancelPayment(item._id) 
                     }
                     className="px-4 py-1 border border-blue-500 text-blue-500 text-sm cursor-pointer rounded-md transition-all duration-300 hover:text-white hover:bg-blue-500"
                   >

@@ -5,7 +5,7 @@ import {
     userDetails, bookAppointment, getUserAppointments,
      cancelAppointment
 } from '../controllers/userController.js';
-import { confirmPayment, onlinePayment } from '../controllers/paymentController.js';
+import { confirmPayment, onlinePayment, cancelPayment } from '../controllers/paymentController.js';
 import upload from '../middleware/multer.js';
 
 const userRoute = express.Router();
@@ -20,6 +20,7 @@ userRoute.post('/get-appointment', authUser, getUserAppointments);
 userRoute.post('/cancel-appointment', authUser, cancelAppointment);
 userRoute.post('/online-payment', authUser, onlinePayment);
 userRoute.post('/confirm-payment', authUser, confirmPayment);
+userRoute.post('/cancel-payment', authUser, cancelPayment);
 
 
 export default userRoute; 
