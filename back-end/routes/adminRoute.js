@@ -1,6 +1,6 @@
 
 import express from 'express';
-import { addDoctor, adminLogin } from '../controllers/adminController.js';
+import { addDoctor, adminLogin, appointmentsAdmin } from '../controllers/adminController.js';
 import { changeAvailability } from '../controllers/doctorController.js';
 import upload from '../middleware/multer.js';
 import authAdmin from '../middleware/authAdmin.js';
@@ -13,4 +13,5 @@ adminRoute.post('/add-doctor', authAdmin, upload.single('image'), addDoctor);
 //adminRoute.post('/get-doctors', authAdmin, getDoctors); // admin login first to get the admin token and use this token for this route to get all doctors
 adminRoute.post('/change-availability', authAdmin, changeAvailability);
 adminRoute.post('/admin-login', adminLogin);
+adminRoute.get('/appointments-admin', authAdmin, appointmentsAdmin);
 export default adminRoute;

@@ -4,6 +4,7 @@ import Doctor from '../models/doctorModel.js'; // Ensure this path is correct
 import { v2 as cloudinary } from 'cloudinary';
 import fs from 'fs';
 import jwt from 'jsonwebtoken'
+import Appointment from '../models/appointmentModel.js'
 
 const addDoctor = async (req, res) => {
   try {
@@ -155,6 +156,24 @@ const adminLogin = async (req, res) => {
   }
 };
 
+const appointmentsAdmin = async (req, res) => {
+  try {
+    
+    const appointments = await Appointment.find({});// gets all the appointments
+    
+    return res.json({
+      success: true,
+      data: appointments
+    })
+  } catch (err) {
+    console.log('appointmnte error are', err.message)
+    return res.json({
+      success: false, 
+      message: err.message
+    })
+  }
+}
 export {
-  addDoctor, adminLogin
+  addDoctor, adminLogin,
+  appointmentsAdmin
 };
