@@ -173,7 +173,69 @@ const appointmentsAdmin = async (req, res) => {
     })
   }
 }
+
+
+
+const adminCancelAppointment = async (req, res) => {
+  try {
+    const { appointmentId } = req.body;
+    
+
+    if (!appointmentId) {
+      return res.status(400).json({
+        success: false,
+        message: "Appointment ID is required."
+      });
+    }
+
+
+    const appointment = await Appointment.findOne(appointmentId);
+    if (!appointment) {
+      return res.status(404).json({
+        success: false,
+        message: "Appointment not found or does not belong to the user."
+      });
+    }
+
+    if (appointment.canceled) {
+      return res.status(200).json({
+        success: true,
+        message: "Appointment is already canceled."
+      });
+    }
+
+  
+    const updatedAppointment = await Appointment.findByIdAndUpdate(
+      appointmentId,
+      { canceled: true },
+      { new: true }
+    );
+
+    // free the doctor's slot 
+    await Doctor.findByIdAndUpdate(appointment.doctorId, {
+      $pull: { [`slots_booked.${appointment.slotDate}`]: appointment.slotTime }
+    });
+
+    res.status(200).json({
+      success: true,
+      message: `Appointment canceled successfully. Slot ${appointment.slotTime} on ${appointment.slotDate} is now available again.`,
+      data: updatedAppointment,
+    });
+
+
+    } catch (err) {
+        console.error("Error canceling appointment:", err);
+        res.status(500).json({
+            success: false,
+            message: "Server error"
+        });
+    }
+};
+
+
+
 export {
   addDoctor, adminLogin,
-  appointmentsAdmin
+  appointmentsAdmin,
+  adminCancelAppointment
 };
