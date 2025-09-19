@@ -1,10 +1,11 @@
 import validator from 'validator';
 import bcrypt from 'bcrypt';
-import Doctor from '../models/doctorModel.js'; // Ensure this path is correct
 import { v2 as cloudinary } from 'cloudinary';
 import fs from 'fs';
 import jwt from 'jsonwebtoken'
 import Appointment from '../models/appointmentModel.js'
+import Doctor from '../models/doctorModel.js'
+import User from '../models/userModel.js'
 
 const addDoctor = async (req, res) => {
   try {
@@ -189,7 +190,7 @@ const adminCancelAppointment = async (req, res) => {
     }
 
 
-    const appointment = await Appointment.findOne(appointmentId);
+    const appointment = await Appointment.findById(appointmentId);
     if (!appointment) {
       return res.status(404).json({
         success: false,
@@ -200,7 +201,7 @@ const adminCancelAppointment = async (req, res) => {
     if (appointment.canceled) {
       return res.status(200).json({
         success: true,
-        message: "Appointment is already canceled."
+        message: "Appointment is  canceled."
       });
     }
 
@@ -233,9 +234,37 @@ const adminCancelAppointment = async (req, res) => {
 };
 
 
+//api to get the admin dashboard data
+const adminDashboardData = async (req, res) => {
+  
+  try {
+    const doctors = await Doctor.find({});
+    const users = await User.find({});
+    const appointments = await Appointment.find({})
+
+    const dashedData = {
+      doctors: doctors.length,
+      patients: users.length,
+      appointments: appointments.length,
+      latestAppointments: appointments.reverse().slice(0, 5), //latest 5 appointments
+    }
+
+    return res.json({
+      success: true, 
+      data: dashedData
+    })
+
+  } catch (err) {
+    return res.json({
+      success: false,
+      message: err.message
+    })
+  }
+}
 
 export {
   addDoctor, adminLogin,
   appointmentsAdmin,
-  adminCancelAppointment
+  adminCancelAppointment, 
+  adminDashboardData
 };

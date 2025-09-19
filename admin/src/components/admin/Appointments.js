@@ -4,8 +4,7 @@ import axios from 'axios'
 import { useState , useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import Image from 'next/image'
-import Link from 'next/link'
-import { format, parse } from 'date-fns'
+
 import { toast } from 'react-toastify'
 const Appointments = () => {
   const backUrl = process.env.NEXT_PUBLIC_BACKEND_URL 
@@ -66,9 +65,9 @@ const Appointments = () => {
           Authorization: `Bearer ${adminToken}`
         }
       })
-console.log('cancel appointment console', res)
       if (res.data.success) {
         toast.success('appointment is canceled')
+        dispatch(setAllAppointments())
       }
 
     } catch (err) {
