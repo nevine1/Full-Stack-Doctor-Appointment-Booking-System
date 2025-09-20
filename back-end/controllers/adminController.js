@@ -248,7 +248,7 @@ const adminDashboardData = async (req, res) => {
       appointments: appointments.length,
       latestAppointments: appointments.reverse().slice(0, 5), //latest 5 appointments
     }
-
+console.log('admin dashed data is:', dashedData)
     return res.json({
       success: true, 
       data: dashedData
