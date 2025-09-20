@@ -65,6 +65,24 @@ console.log("getting doctor data is", doctor )
   }
 };
 
+const doctorLogin = async (req, res) => {
+
+  try {
+    const { email, password } = req.body; 
+    const doctor = await Doctor.findOne({ email });
+    if (!doctor) {
+      return res.json({
+        success: false,
+        message: "doctor is not found"
+      })
+    }
+  } catch (err) {
+    return res.json({
+      success: false, 
+      message: err.message
+    })
+  }
+}
 export  {
     changeAvailability,
     getDoctors,
