@@ -6,7 +6,8 @@ import Image from 'next/image'
 import { assets } from '@/assets/assets'
 import { setIsLogin} from '../store/slices/adminSlice'
 const Navbar = () => {
-  const { adminToken, isLoading } = useSelector((state) => state.admin)
+  const { adminToken, isLoading } = useSelector((state) => state.admin);
+  const { doctorToken } = useSelector((state) => state.doctors)
   const router = useRouter();
   const dispatch = useDispatch();
 

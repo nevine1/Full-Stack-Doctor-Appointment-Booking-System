@@ -1,5 +1,6 @@
 import Doctor from '../models/doctorModel.js'
-
+import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
 const changeAvailability = async (req, res) => {
     try {
         
@@ -73,9 +74,30 @@ const doctorLogin = async (req, res) => {
     if (!doctor) {
       return res.json({
         success: false,
-        message: "doctor is not found"
+        message: "Invalid credentials"
       })
     }
+
+    // check if the req.body(email and password) matching with email & password at the database
+    const isMatchedPassword = await bcrypt.compare(password, doctor.password); //doctor.password is the one getting from database
+    //if password is the same of doctor.password it means it is true, then get the token and login  
+    
+    if (isMatchedPassword) {
+      //it the password is the same , then return token
+      const token = jwt.sign({ id: doctor._id }, process.env.STRIPE_KEY_ID);
+      return res.json({
+        success: true,
+        message: "doctor logged in successfully", 
+         token
+      })
+
+    } else {
+      return res.json({
+        success: false, 
+        message: "Invalid credentials"
+      })
+    }
+
   } catch (err) {
     return res.json({
       success: false, 
@@ -86,5 +108,6 @@ const doctorLogin = async (req, res) => {
 export  {
     changeAvailability,
     getDoctors,
-    getDoctorData
+    getDoctorData,
+    doctorLogin
     }

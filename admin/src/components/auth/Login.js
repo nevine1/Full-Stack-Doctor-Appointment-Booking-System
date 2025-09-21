@@ -1,16 +1,17 @@
 "use client";
-import { useState } from "react";
+import { useState , useEffect} from "react";
 import { useRouter } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import { updateAdminToken, setIsLoading } from "@/store/slices/adminSlice";
+import { setDoctorToken } from "@/store/slices/doctorsSlice";
 import { toast } from "react-toastify";
 
 const Login = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const { isLoading, adminToken } = useSelector((state) => state.admin);
-
+const {doctorToken} = useSelector((state) => state.doctors);
   const [state, setState] = useState("Admin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -34,9 +35,23 @@ const Login = () => {
         } else {
           toast.error(res.data.message || "Login failed");
         }
+
       } else {
-        toast.error("Only admin login is implemented.");
+        //login as doctor
+        const res = await axios.post(`${backUrl}/api/doctors/doctor-login`, {
+          email, password
+        })
+        console.log('doctor token is', res.data.token)
+        if (res.data.success) {
+          dispatch(setDoctorToken(res.data.token));
+          router.push('/doctor')
+          toast.success('doctor successfully logged in')
+          
+        }
+        
       }
+
+      console.log('doctor token is ')
     } catch (err) {
       console.error("Login error:", err);
       toast.error("An error occurred during login");
@@ -44,6 +59,13 @@ const Login = () => {
       dispatch(setIsLoading(false));
     }
   };
+
+
+  
+
+useEffect(() => {
+  console.log("Doctor token in Redux:", doctorToken);
+}, [doctorToken]);
 
   return (
     <div>

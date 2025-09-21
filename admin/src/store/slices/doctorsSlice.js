@@ -4,6 +4,7 @@ const doctorsSlice = createSlice({
     name: 'doctors', 
     initialState: {
         doctors: [], 
+        doctorToken: "",
         isLoading: null,
 
     }, 
@@ -13,9 +14,12 @@ const doctorsSlice = createSlice({
         },
         setAllDoctors: (state, action) => {
             state.doctors = action.payload; 
+        }, 
+        setDoctorToken: (state, action) => {
+            state.doctorToken = action.payload;
         }
     }
 })
 
-export const { setAllDoctors, setIsLoading } = doctorsSlice.actions;
+export const { setAllDoctors, setIsLoading, setDoctorToken } = doctorsSlice.actions;
 export default doctorsSlice.reducer
