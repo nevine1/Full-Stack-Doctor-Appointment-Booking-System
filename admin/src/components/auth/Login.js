@@ -71,7 +71,7 @@ useEffect(() => {
     <div>
       <form
         onSubmit={handleSubmit}
-        className="mt-40 md:w-[30vw] w-[400px] mx-auto md:mt-20 sm:mt-5 sm:w-[90vw] bg-blue-50 border shadow-md border-gray-300 m-auto p-10 rounded-xl"
+        className="mt-40 lg:w-[30%] md:w-[45%]  mx-auto md:mt-40 sm:mt-25 sm:w-[90%] bg-blue-50 border shadow-md border-gray-300 m-auto p-10 rounded-xl"
       >
         <div className="flex flex-col gap-6 items-center justify-start">
           <p className="text-lg font-semibold">
