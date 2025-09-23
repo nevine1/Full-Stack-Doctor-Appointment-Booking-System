@@ -1,8 +1,10 @@
 import React from 'react'
-
+import DoctorDashboard from '../../../components/doctor/DoctorDashboard'
 const page = () => {
   return (
-    <div>doctor dashboard</div>
+    <div>
+      <DoctorDashboard/>
+    </div>
   )
 }
 
