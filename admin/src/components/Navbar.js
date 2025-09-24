@@ -1,17 +1,17 @@
 "use client";
-import React from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { logout } from "../store/slices/adminSlice";
-import { setDoctorToken } from "@/store/slices/doctorsSlice";
+
+import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { assets } from "@/assets/assets";
+import { assets } from "../assets/assets"
+import { logout } from "@/store/slices/adminSlice";
+import { setDoctorToken } from "@/store/slices/doctorsSlice";
 
-const Navbar = () => {
-  const { adminToken } = useSelector((state) => state.admin);
-  const { doctorToken } = useSelector((state) => state.doctors);
-  const router = useRouter();
+const Navbar = ({ role }) => {
   const dispatch = useDispatch();
+  const router = useRouter();
+  const { adminToken } = useSelector((state) => state.admin)
+  const { doctorToken } = useSelector((state) => state.doctors)
 
   const handleLogout = () => {
     localStorage.clear();
@@ -20,40 +20,41 @@ const Navbar = () => {
     router.push("/");
   };
 
-  // determine admin role or doctor role 
-  const role = adminToken ? "Admin" : doctorToken ? "Doctor" : "";
-  const logo = adminToken ? assets.admin_logo : doctorToken ? assets.doctor_logo : assets.default_logo;
-
-  // determine redirectPath after role login 
-  const redirectPath = adminToken ? "/admin/dashboard" : doctorToken ? "/doctor/dashboard" : "/";
-
   return (
-    <div className="flex items-center justify-between shadow-md w-full py-4 px-6 sm:px-10 border-b border-gray-300 bg-white">
-      <div className="flex items-center gap-4">
-        <Image
-          src={logo}
-          alt="logo"
-          width={100}
-          height={100}
-          className="cursor-pointer"
-          onClick={() => router.push(redirectPath)}
-        />
-        {role && (
-          <p className="text-xs text-gray-600 py-0.5 px-3 rounded-full border border-gray-300">
-            {role}
-          </p>
-        )}
+    <div className="flex flex-row items-center justify-between w-full px-6 sm:px-10">
+      <div className="flex flex-row items-center gap-4">
+        { role === "Admin" && assets.admin_logo ? (
+          <Image
+            src={assets.admin_logo}
+            alt="Admin Logo"
+            width={120}
+            height={50}
+            className="cursor-pointer"
+            onClick={() => router.push("/admin/dashboard")}
+          />
+        ) : role === "Doctor" &&  (
+          <Image
+            src={assets.admin_logo}
+            alt="Doctor Logo"
+            width={120}
+            height={50}
+            className="cursor-pointer"
+            onClick={() => router.push("/doctor/dashboard")}
+          />
+        ) }
+
+        <span className="text-sm text-gray-600 px-2 py-0.5 rounded-full bg-gray-100">
+          {role}
+        </span>
       </div>
 
-      {(adminToken || doctorToken) && (
-        <button
-          type="button"
-          onClick={handleLogout}
-          className="px-6 py-1 bg-blue-500 text-sm text-white rounded-lg hover:bg-white hover:text-blue-500 hover:border hover:border-blue-500 transition"
-        >
-          Log out
-        </button>
-      )}
+      <button
+        type="button"
+        onClick={handleLogout}
+        className="px-6 py-2 bg-blue-500 text-[12px] text-white rounded-lg transition-all duration-300 hover:border hover:border-blue-500 hover:text-blue-500 hover:bg-white"
+      >
+        {  role } log out
+      </button>
     </div>
   );
 };

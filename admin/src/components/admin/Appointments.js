@@ -1,5 +1,5 @@
 "use client"
-import { setAllAppointments, setIsLoading } from '@/store/slices/appointmentsSlice'
+import { setAllAppointments, setIsLoading } from '../../store/slices/appointmentsSlice'
 import axios from 'axios'
 import { useState , useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
@@ -11,7 +11,6 @@ const Appointments = () => {
   const dispatch = useDispatch();
   const { adminToken } = useSelector((state) => state.admin)
   const { appointments } = useSelector((state) => state.appointments)
-  const [isPast, setIsPast  ] = useState(false)
   const fetchAllAppointments = async () => {
     try {
       dispatch(setIsLoading(true))
@@ -90,7 +89,7 @@ const Appointments = () => {
       </div>
 
    
-      {appointments.length > 0 && appointments.map((item, index) => {
+      {appointments?.length > 0 && appointments?.map((item, index) => {
         /* console.log('dates in map function is', item.slotDate) */
         return (
         <div 
