@@ -53,14 +53,14 @@ const SideBar = () => {
   return (
     <div>
       {adminToken ?  (
-        <ul className="text-xs py-4 px-5 mt-4 flex flex-col gap-4">
+        <ul className=" py-4 px-5 mt-4 flex flex-col gap-4">
           {navLinks.slice(0, 4).map(({ href, icon, label }) => {
             const isActive = pathname === href;
             return (
-              <li key={href}>
+              <li key={href} >
                 <Link
                   href={href}
-                  className={`flex items-center gap-3 px-4 py-2 rounded-md transition-all duration-300 ${
+                  className={`flex items-center gap-3 px-4 text-[18px] py-2 rounded-md transition-all duration-300 ${
                     isActive
                       ? 'bg-blue-100 text-blue-600 font-semibold'
                       : 'text-gray-700 hover:bg-gray-100'

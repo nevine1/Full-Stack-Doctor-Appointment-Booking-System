@@ -1,6 +1,7 @@
 import Doctor from '../models/doctorModel.js'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
+import Appointment from '../models/appointmentModel.js'
 const changeAvailability = async (req, res) => {
     try {
         
@@ -105,9 +106,39 @@ const doctorLogin = async (req, res) => {
     })
   }
 }
+
+//api for getting doctor appointments 
+const getDoctorAppointments = async () => {
+
+  try {
+    /* const { docId } = req.body; 
+    const doctor = await Doctor.findById(docId);
+
+    if (!doctor) {
+      return res.json({
+        success: false,
+        message: "Doctor is not found!"
+      })
+    } */
+    
+    const appointments = await Appointment.find({ docId });
+
+    return res.json({
+      success: true, 
+      data: appointments
+    })
+    
+  } catch (err) {
+    return res.json({
+      success: false, 
+      message: err.message
+    })
+  }
+}
 export  {
     changeAvailability,
     getDoctors,
     getDoctorData,
-    doctorLogin
+    doctorLogin,
+    getDoctorAppointments
     }

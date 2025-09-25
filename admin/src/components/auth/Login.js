@@ -42,6 +42,7 @@ const {doctorToken} = useSelector((state) => state.doctors);
           email, password
         })
         console.log('doctor token is', res.data.token)
+        
         if (res.data.success) {
           dispatch(setDoctorToken(res.data.token));
           router.push('/doctor/dashboard')
