@@ -13,9 +13,12 @@ const appointmentsSlice = createSlice({
         },
         setAllAppointments: (state, action) => {
             state.appointments = action.payload; 
+        },
+        setDoctorAppointments: (state, action) => {
+            state.appointments = action.payload; //this is the appointments for each doctor
         }
     }
 })
 
-export const { setAllAppointments, setIsLoading } = appointmentsSlice.actions;
+export const { setAllAppointments, setIsLoading, setDoctorAppointments } = appointmentsSlice.actions;
 export default appointmentsSlice.reducer

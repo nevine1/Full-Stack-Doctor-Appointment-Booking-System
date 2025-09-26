@@ -3,13 +3,13 @@ import {
     getDoctors, getDoctorData,
     doctorLogin , getDoctorAppointments
 } from '../controllers/doctorController.js'
-import doctorAuth  from '../middleware/authDoctor.js'
+import authDoctor  from '../middleware/authDoctor.js'
 
 const doctorRoute = express.Router();
 
 doctorRoute.get('/get-doctors', getDoctors);
 doctorRoute.get('/get-doctor/:id', getDoctorData);
 doctorRoute.post('/doctor-login', doctorLogin);
-doctorRoute.get('/doctor-appointments', doctorAuth, getDoctorAppointments);
+doctorRoute.get('/doctor-appointments', authDoctor, getDoctorAppointments);
 
 export default doctorRoute; 

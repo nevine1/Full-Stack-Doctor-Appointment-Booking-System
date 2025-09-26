@@ -35,12 +35,14 @@ const Appointments = () => {
     }
   }, [adminToken])
   
+  //calculate age for the patient
   const calculateAge = ( dob) => {
     const today = new Date();
     const birthDate = new Date(dob);
     const age = today.getFullYear() - birthDate.getFullYear()
     return age 
   }
+
   //formate date 
  const formatSlot = (slotDate, slotTime) => {
   const [day, month, year] = slotDate.split("-").map(Number);
@@ -52,8 +54,6 @@ const Appointments = () => {
     day: "numeric",
     year: "numeric"
   });
-
-
   return  `${formatted} at ${slotTime}` ;
 };
 

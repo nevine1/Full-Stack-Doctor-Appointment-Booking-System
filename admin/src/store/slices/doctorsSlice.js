@@ -5,6 +5,7 @@ const doctorsSlice = createSlice({
     initialState: {
         doctors: [], 
         doctorToken: "",
+        
         isLoading: null,
 
     }, 

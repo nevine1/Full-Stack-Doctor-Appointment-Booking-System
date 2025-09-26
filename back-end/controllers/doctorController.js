@@ -85,7 +85,7 @@ const doctorLogin = async (req, res) => {
     
     if (isMatchedPassword) {
       //it the password is the same , then return token
-      const token = jwt.sign({ id: doctor._id }, process.env.STRIPE_KEY_ID);
+      const token = jwt.sign({ id: doctor._id }, process.env.JWT_SECRET);
       return res.json({
         success: true,
         message: "doctor logged in successfully", 
@@ -108,33 +108,26 @@ const doctorLogin = async (req, res) => {
 }
 
 //api for getting doctor appointments 
-const getDoctorAppointments = async () => {
-
+ const getDoctorAppointments = async (req, res) => {
   try {
-    /* const { docId } = req.body; 
-    const doctor = await Doctor.findById(docId);
+    // doctorId comes from the decoded token(when the doctor login)
+    const docId = req.doctor._id;
 
-    if (!doctor) {
-      return res.json({
-        success: false,
-        message: "Doctor is not found!"
-      })
-    } */
-    
-    const appointments = await Appointment.find({ docId });
+    const appointments = await Appointment.find({ doctorId: docId });
 
     return res.json({
-      success: true, 
-      data: appointments
-    })
-    
+      success: true,
+      data: appointments,
+    });
+
   } catch (err) {
-    return res.json({
-      success: false, 
-      message: err.message
-    })
+    return res.status(500).json({
+      success: false,
+      message: err.message,
+    });
   }
-}
+};
+
 export  {
     changeAvailability,
     getDoctors,
