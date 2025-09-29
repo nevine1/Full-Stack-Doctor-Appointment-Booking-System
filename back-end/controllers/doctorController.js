@@ -128,6 +128,24 @@ const doctorLogin = async (req, res) => {
   }
 };
 
+
+//api to make the appointments completed
+const makeAppointmentComplete = async (req, res) => {
+  try {
+    
+    const doctorId  = req.doctor._id; 
+
+    const appointment = await Appointment.find({ docId: doctorId });
+    const completedAppointment = await Appointment.findByIdAndUpdate(
+      { docId: doctorId }, {
+      completed: true }, { new : true})
+  } catch (err) {
+    return res.json({
+      success: false, 
+      message: "Appointment is false"
+    })
+  }
+}
 export  {
     changeAvailability,
     getDoctors,
