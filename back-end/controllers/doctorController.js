@@ -129,16 +129,62 @@ const doctorLogin = async (req, res) => {
 };
 
 
-//api to make the appointments completed
-const makeAppointmentComplete = async (req, res) => {
+//api to make the appointments completed for doctor panel
+const doctorCompleteAppointment = async (req, res) => {
   try {
     
-    const doctorId  = req.doctor._id; 
+    const { docId, appointmentId } = req.body
 
-    const appointment = await Appointment.find({ docId: doctorId });
-    const completedAppointment = await Appointment.findByIdAndUpdate(
-      { docId: doctorId }, {
-      completed: true }, { new : true})
+    const appointmentData = await Appointment.find(appointmentId);
+   
+    if (appointmentData && appointmentData.docId === docId) { //getting docId from the doctorAuth
+      const completedAppointments = await Appointment.findByIdAndUpdate(appointmentId,
+        { isPaid: true },
+        { new: true}
+      )
+      return res.json({
+        success: true,
+        message: "Appointment completed", 
+        data: completedAppointments
+      })
+    } else {
+      return res.json({
+        success: false,
+        message: "Appointment is not completed"
+      })
+    }
+  } catch (err) {
+    return res.json({
+      success: false, 
+      message: "Appointment is false"
+    })
+  }
+}
+
+//api to make the appointments completed for doctor panel
+const doctorCancelAppointment = async (req, res) => {
+  try {
+    
+    const { docId, appointmentId } = req.body
+
+    const appointmentData = await Appointment.find(appointmentId);
+   
+    if (appointmentData && appointmentData.docId === docId) { //getting docId from the doctorAuth
+      const canceledAppointments = await Appointment.findByIdAndUpdate(appointmentId,
+        { canceled: true },
+        { new: true}
+      )
+      return res.json({
+        success: true,
+        message: "Appointment canceled", 
+        data: canceledAppointments
+      })
+    } else {
+      return res.json({
+        success: false,
+        message: "Appointment is not canceled"
+      })
+    }
   } catch (err) {
     return res.json({
       success: false, 
@@ -151,5 +197,8 @@ export  {
     getDoctors,
     getDoctorData,
     doctorLogin,
-    getDoctorAppointments
+  getDoctorAppointments,
+  doctorCompleteAppointment,
+  doctorCancelAppointment
+  
     }
