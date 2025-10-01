@@ -133,13 +133,14 @@ const doctorLogin = async (req, res) => {
 const doctorCompleteAppointment = async (req, res) => {
   try {
     
-    const { docId, appointmentId } = req.body
+    const { appointmentId } = req.body
+    const docId = req.doctor._id
 
-    const appointmentData = await Appointment.find(appointmentId);
+    const appointmentData = await Appointment.findById(appointmentId);
    
-    if (appointmentData && appointmentData.docId === docId) { //getting docId from the doctorAuth
+    if (appointmentData && appointmentData.doctorId === docId) { //getting docId from the doctorAuth
       const completedAppointments = await Appointment.findByIdAndUpdate(appointmentId,
-        { isPaid: true },
+        { completed: true },
         { new: true}
       )
       return res.json({
@@ -165,20 +166,22 @@ const doctorCompleteAppointment = async (req, res) => {
 const doctorCancelAppointment = async (req, res) => {
   try {
     
-    const { docId, appointmentId } = req.body
+    const { appointmentId } = req.body
+    const docId = req.doctor._id
 
-    const appointmentData = await Appointment.find(appointmentId);
+    const appointmentData = await Appointment.findById(appointmentId);
    
-    if (appointmentData && appointmentData.docId === docId) { //getting docId from the doctorAuth
-      const canceledAppointments = await Appointment.findByIdAndUpdate(appointmentId,
+    if (appointmentData && appointmentData.doctorId.toString() === docId.toString()) { //getting docId from the doctorAuth
+      const canceledAppointment = await Appointment.findByIdAndUpdate(appointmentId,
         { canceled: true },
         { new: true}
       )
       return res.json({
         success: true,
         message: "Appointment canceled", 
-        data: canceledAppointments
+        data: canceledAppointment
       })
+
     } else {
       return res.json({
         success: false,

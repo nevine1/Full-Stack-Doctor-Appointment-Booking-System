@@ -61,6 +61,54 @@ const DoctorAppointments = () => {
   return  `${formatted} at ${slotTime}` ;
   };
   
+  const doctorCancelAppointment = async (appointmentId) => {
+    console.log('appointments id r', appointmentId )
+    try {
+      dispatch(setIsLoading(true));
+      const res = await axios.post(`${backUrl}/api/doctors/doctor-cancel-appointment`,
+        { appointmentId },
+        {
+          headers: {
+            Authorization: `Bearer ${doctorToken}`
+          }
+        }
+      )
+      if (res.data.success) {
+        dispatch(setDoctorAppointments())
+        console.log('canceled appointments:', res.data.data)
+      }
+      console.log('res for cancel is :', res)
+    } catch (err) {
+      console.log(err.message)
+    } finally {
+      dispatch(setIsLoading(false))
+    }
+  }
+
+  const doctorCompleteAppointment = async (appointmentId) => {
+    console.log('appointments id r', appointmentId )
+    try {
+      dispatch(setIsLoading(true));
+      const res = await axios.post(`${backUrl}/api/doctors/doctor-complete-appointment`,
+        { appointmentId },
+        {
+          headers: {
+            Authorization: `Bearer ${doctorToken}`
+          }
+        }
+      )
+      if (res.data.success) {
+        console.log('completed appointments:', res.data.data)
+        dispatch(setDoctorAppointments())
+      }
+      console.log('res for cancel is :', res)
+    } catch (err) {
+      console.log(err.message)
+    } finally {
+      dispatch(setIsLoading(false))
+    }
+  }
+  console.log('appointments length are;', appointments?.length)
   return (
     <div className="m-6  ">
       <h1 className="md:text-lg sm:text-sm font-medium text-center text-gray-700">All Appointments</h1>
@@ -77,7 +125,7 @@ const DoctorAppointments = () => {
         </div>
       <div >
          {
-        appointments.length > 0 && appointments.map((item, index) => (
+        appointments?.length > 0 && appointments?.map((item, index) => (
           <div key={index} className="flex flex-wrap justify-between hover:bg-gray-100 duration-300 transition-all
              sm:grid sm:grid-cols-[0.5fr_3fr_1fr_1fr_3fr_2fr_2fr] p-2 text-center text-[13px] gap-1 items-center text-gray-600 border border-gray-100">
             <p className="max-sm:hidden">{index+1}</p>
@@ -101,14 +149,16 @@ const DoctorAppointments = () => {
                 alt="cancel icon"
                 width={30}
                 height={30}
-                className="w-8 h-8 rounded-full text-red-500"
+                className="w-8 h-8 rounded-full text-red-500 cursor-pointer"
+                onClick={() => doctorCancelAppointment(item._id)}
               />
               <Image
                 src={assets.tick_icon}
                 alt="completed icon"
                 width={30}
                 height={30}
-                className="w-8 h-8 rounded-full text-green-500"
+                className="w-8 h-8 rounded-full text-green-500 cursor-pointer"
+                onClick={() => doctorCompleteAppointment(item._id)}
               />
             </div>
             

@@ -43,10 +43,10 @@ const appointmentSchema = new mongoose.Schema({
         type: Boolean, 
         default: false,
     }, 
-    isPaid: {
+    completed: {
         type: Boolean,
         default: false,
-    }
+        },
 
 })
 
