@@ -5,23 +5,24 @@ import { toast } from 'react-toastify';
 import axios from 'axios';
 import Image from 'next/image';
 import { assets } from '@/assets/assets';
-import { setAllAppointments } from '../../store/slices/appointmentsSlice'
+//import { setAllAppointments } from '../../store/slices/appointmentsSlice'
 const DoctorDashboard = () => {
      const backUrl = process.env.NEXT_PUBLIC_BACKEND_URL 
     const dispatch = useDispatch();
-    const { adminToken } = useSelector((state) => state.admin)
+    
     const { doctorToken } = useSelector((state) => state.doctors)
     const [dashedData, setDashedData] = useState({});
 
     const dashboardData = async () => {
         try{
-            const res = await axios.get(`${backUrl}/api/admin/dashboard-data`, {
+            const res = await axios.get(`${backUrl}/api/doctors/doctor-dashboard`, {
                 headers: {
-                    Authorization: `Bearer ${adminToken}`
+                    Authorization: `Bearer ${doctorToken}`
                     }
             })
             if (res.data.success) {
                 setDashedData(res.data.data)
+                console.log('doctor dashboard is',res.data.data)
             }
         } catch (err) {
             toast.error(err.message)
@@ -29,10 +30,10 @@ const DoctorDashboard = () => {
     }
 
     useEffect(() => {
-        if (adminToken) {
+        if (doctorToken) {
             dashboardData(); 
         }
-    }, [adminToken])
+    }, [doctorToken])
 
     const cancelAppointment = async (appointmentId) => {
         try {

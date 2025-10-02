@@ -138,7 +138,7 @@ const doctorCompleteAppointment = async (req, res) => {
 
     const appointmentData = await Appointment.findById(appointmentId);
    
-    if (appointmentData && appointmentData.doctorId === docId) { //getting docId from the doctorAuth
+    if (appointmentData && appointmentData.doctorId.toString() === docId.toString()) { //getting docId from the doctorAuth
       const completedAppointments = await Appointment.findByIdAndUpdate(appointmentId,
         { completed: true },
         { new: true}
@@ -195,13 +195,57 @@ const doctorCancelAppointment = async (req, res) => {
     })
   }
 }
+
+//api for doctor dashboard
+const doctorDashboardData = async (req , res) => {
+  try {
+    
+    const doctorId = req.doctor._id; 
+    const appointments = await Appointment.find({ doctorId })
+
+    //calculate the total earning money
+    let earnings = 0; 
+    appointments.map((item) => {
+      if (item.completed || item.onlinePayment) {
+        earnings += item.amount; 
+      }
+    })
+
+    //get the # of patients
+    let patients = []
+    appointments.map((item) => {
+      if (!patients.includes(item.userId)) {
+        patients.push(item.userId)
+      }
+    })
+    
+    //doctor dashboard data 
+    const docDashboardData = {
+      appointments: appointments.length,
+      patients: patients.length,
+      latestAppointments: appointments.reverse().slice(0, 5), 
+      earnings
+    }
+
+    return res.json({
+      success: true,
+      data: docDashboardData
+    })
+  } catch (err) {
+    console.log(err.message)
+    return res.json({
+      success: false, 
+      message: err.message
+    })
+  }
+}
 export  {
     changeAvailability,
     getDoctors,
     getDoctorData,
     doctorLogin,
-  getDoctorAppointments,
-  doctorCompleteAppointment,
-  doctorCancelAppointment
-  
+    getDoctorAppointments,
+    doctorCompleteAppointment,
+    doctorCancelAppointment,
+    doctorDashboardData
     }

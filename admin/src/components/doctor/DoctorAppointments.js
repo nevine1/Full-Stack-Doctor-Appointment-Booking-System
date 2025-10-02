@@ -2,7 +2,7 @@
 import axios from "axios";
 import { useSelector, dispatch, useDispatch } from "react-redux";
 import { useEffect } from "react";
-import { setDoctorAppointments , setIsLoading} from '../../store/slices/appointmentsSlice'
+import { setDoctorAppointments, setAllAppointments , setIsLoading } from '../../store/slices/appointmentsSlice'
 import Image from 'next/image'
 import { assets } from "@/assets/assets";
 const DoctorAppointments = () => {
@@ -34,11 +34,7 @@ const DoctorAppointments = () => {
     }
   };
 
-  useEffect(() => {
-    if (doctorToken) {
-      getDocAppointments();
-    }
-  }, [doctorToken]);
+  
 
   const calculateAge = ( dob) => {
     const today = new Date();
@@ -74,7 +70,7 @@ const DoctorAppointments = () => {
         }
       )
       if (res.data.success) {
-        dispatch(setDoctorAppointments())
+        getDocAppointments()
         console.log('canceled appointments:', res.data.data)
       }
       console.log('res for cancel is :', res)
@@ -86,7 +82,7 @@ const DoctorAppointments = () => {
   }
 
   const doctorCompleteAppointment = async (appointmentId) => {
-    console.log('appointments id r', appointmentId )
+   
     try {
       dispatch(setIsLoading(true));
       const res = await axios.post(`${backUrl}/api/doctors/doctor-complete-appointment`,
@@ -99,7 +95,7 @@ const DoctorAppointments = () => {
       )
       if (res.data.success) {
         console.log('completed appointments:', res.data.data)
-        dispatch(setDoctorAppointments())
+        getDocAppointments()
       }
       console.log('res for cancel is :', res)
     } catch (err) {
@@ -109,6 +105,12 @@ const DoctorAppointments = () => {
     }
   }
   console.log('appointments length are;', appointments?.length)
+  
+  useEffect(() => {
+    if (doctorToken) {
+      getDocAppointments();
+    }
+  }, [doctorToken]);
   return (
     <div className="m-6  ">
       <h1 className="md:text-lg sm:text-sm font-medium text-center text-gray-700">All Appointments</h1>
@@ -144,22 +146,25 @@ const DoctorAppointments = () => {
             <p>{formatSlot(item.slotDate, item.slotTime)}</p>
             <p>{item.onlinePayment ? "online" : "Cash"}</p>
             <div className="flex flex-row gap-2 items-center justify-center">
-              <Image
-                src={assets.cancel_icon}
-                alt="cancel icon"
-                width={30}
-                height={30}
-                className="w-8 h-8 rounded-full text-red-500 cursor-pointer"
-                onClick={() => doctorCancelAppointment(item._id)}
-              />
-              <Image
-                src={assets.tick_icon}
-                alt="completed icon"
-                width={30}
-                height={30}
-                className="w-8 h-8 rounded-full text-green-500 cursor-pointer"
-                onClick={() => doctorCompleteAppointment(item._id)}
-              />
+              {
+                item.canceled 
+                  ? <p className="text-red-500 text-[12px]">Canceled</p> 
+                  : item.completed 
+                    ? <p className="text-green-500 text-[12px]">Completed</p>
+                    : (
+                      <div className="flex flex-row gap-2 items-center justify-center">
+                        <button className="text-[12px] text-white px-2 py-1 rounded-md cursor-pointer bg-red-400"
+                          onClick={() => doctorCancelAppointment(item._id)}
+                          >Cancel
+                        </button>
+                        <button className="text-[12px] text-white px-2 py-1 rounded-md cursor-pointer bg-green-400"
+                          onClick={() => doctorCompleteAppointment(item._id)}
+                          >Complete
+                        </button>
+                      </div>
+                    )
+              }
+              
             </div>
             
           </div>
