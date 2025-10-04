@@ -35,7 +35,7 @@ const DoctorDashboard = () => {
         }
     }, [doctorToken])
 
-    const cancelAppointment = async (appointmentId) => {
+    /* const cancelAppointment = async (appointmentId) => {
         try {
           const res = await axios.post(`${backUrl}/api/admin/admin-cancel-appointment`, {appointmentId}, {
             headers: {
@@ -51,7 +51,7 @@ const DoctorDashboard = () => {
           console.log(err.message);
           toast.error(err.message)
         }
-      }
+      } */
 const formatSlot = (slotDate, slotTime) => {
   const [day, month, year] = slotDate.split("-").map(Number);
   const d = new Date(year, month - 1, day);
@@ -67,20 +67,21 @@ const formatSlot = (slotDate, slotTime) => {
   return  `${formatted} at ${slotTime}` ;
 };
 
+    console.log(dashedData)
   return dashedData && (
       <div className="m-5">
           <div className="flex flex-wrap gap-7 items-center ">
               <div className="flex items-center gap-2 bg-white p-4 min-w-52 rounded border-2 border-gray-100 cursor-pointer transition-all duration-300 hover:scale-105">
                   <Image
-                      src={assets.doctor_icon}
+                      src={assets.earning_icon}
                       width={100}
                       height={100}
                       className="w-14"
                       alt="doctor_icon"
                   />
                   <div>
-                      <p className="text-xl font-semibold text-gary-500">{dashedData.doctors}</p>
-                      <p className="text-xs text-gray-400">Doctors</p>
+                      <p className="text-xl font-semibold text-gary-500"> $ {dashedData.earnings}</p>
+                      
                   </div>
               </div>
               <div className="flex items-center gap-2 bg-white p-4 min-w-52 rounded border-2 border-gray-100 cursor-pointer transition-all duration-300 hover:scale-105">
@@ -127,14 +128,14 @@ const formatSlot = (slotDate, slotTime) => {
                           <div className="flex items-center hover:bg-gray-100 px-4 py-5 gap-4 transition-all duration-300"
                               key={index}>
                               <Image
-                                  src={item.docData.image}
+                                  src={item.userData.image}
                                   alt="patient image"
                                   width={50}
                                   height={50}
                                   className="w-10 h-10 rounded-full"
                               />
                               <div className="flex-1 text-sm">
-                                  <p className="text-gray-500">{item.docData.name}</p>
+                                  <p className="text-gray-500">{item.userData.name}</p>
                                   <p className="text-gray-400 text-[12px]">{formatSlot(item.slotDate, item.slotTime)}</p>
                               </div> 
                               <div>

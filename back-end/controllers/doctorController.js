@@ -199,7 +199,6 @@ const doctorCancelAppointment = async (req, res) => {
 //api for doctor dashboard
 const doctorDashboardData = async (req , res) => {
   try {
-    
     const doctorId = req.doctor._id; 
     const appointments = await Appointment.find({ doctorId })
 
@@ -210,7 +209,6 @@ const doctorDashboardData = async (req , res) => {
         earnings += item.amount; 
       }
     })
-
     //get the # of patients
     let patients = []
     appointments.map((item) => {
