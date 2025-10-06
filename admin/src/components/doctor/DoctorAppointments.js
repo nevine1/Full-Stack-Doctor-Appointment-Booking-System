@@ -5,36 +5,12 @@ import { useEffect } from "react";
 import { setDoctorAppointments, setAllAppointments , setIsLoading } from '../../store/slices/appointmentsSlice'
 import Image from 'next/image'
 import { assets } from "@/assets/assets";
+import { doctorCancelAppointment, doctorCompleteAppointment, getDocAppointments } from '../../store/async/doctorAsync'
 const DoctorAppointments = () => {
   const dispatch = useDispatch();
   const { doctorToken } = useSelector((state) => state.doctors);
   const { appointments, isLoading } = useSelector((state) => state.appointments);
   const backUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-
-  const getDocAppointments = async () => {
-    try {
-      dispatch(setIsLoading(true))
-      const res = await axios.get(`${backUrl}/api/doctors/doctor-appointments`, {
-        headers: {
-          Authorization: `Bearer ${doctorToken}`,
-        },
-      });
-
-      if (res.data.success) {
-        dispatch(setDoctorAppointments(res.data.data))
-      }
-  
-      console.log('doctor appointments are:', appointments)
-    } catch (err) {
-
-      console.log("Error:", err.response?.data || err.message);
-
-    } finally {
-      setIsLoading(false)
-    }
-  };
-
-  
 
   const calculateAge = ( dob) => {
     const today = new Date();
@@ -57,58 +33,12 @@ const DoctorAppointments = () => {
   return  `${formatted} at ${slotTime}` ;
   };
   
-  const doctorCancelAppointment = async (appointmentId) => {
-    console.log('appointments id r', appointmentId )
-    try {
-      dispatch(setIsLoading(true));
-      const res = await axios.post(`${backUrl}/api/doctors/doctor-cancel-appointment`,
-        { appointmentId },
-        {
-          headers: {
-            Authorization: `Bearer ${doctorToken}`
-          }
-        }
-      )
-      if (res.data.success) {
-        getDocAppointments()
-        console.log('canceled appointments:', res.data.data)
-      }
-      console.log('res for cancel is :', res)
-    } catch (err) {
-      console.log(err.message)
-    } finally {
-      dispatch(setIsLoading(false))
-    }
-  }
-
-  const doctorCompleteAppointment = async (appointmentId) => {
-   
-    try {
-      dispatch(setIsLoading(true));
-      const res = await axios.post(`${backUrl}/api/doctors/doctor-complete-appointment`,
-        { appointmentId },
-        {
-          headers: {
-            Authorization: `Bearer ${doctorToken}`
-          }
-        }
-      )
-      if (res.data.success) {
-        console.log('completed appointments:', res.data.data)
-        getDocAppointments()
-      }
-      console.log('res for cancel is :', res)
-    } catch (err) {
-      console.log(err.message)
-    } finally {
-      dispatch(setIsLoading(false))
-    }
-  }
+ 
   console.log('appointments length are;', appointments?.length)
   
   useEffect(() => {
     if (doctorToken) {
-      getDocAppointments();
+      getDocAppointments(dispatch, doctorToken);
     }
   }, [doctorToken]);
   return (
@@ -154,11 +84,11 @@ const DoctorAppointments = () => {
                     : (
                       <div className="flex flex-row gap-2 items-center justify-center">
                         <button className="text-[12px] text-white px-2 py-1 rounded-md cursor-pointer bg-red-400"
-                          onClick={() => doctorCancelAppointment(item._id)}
+                          onClick={() => doctorCancelAppointment(dispatch, item._id, doctorToken)}
                           >Cancel
                         </button>
                         <button className="text-[12px] text-white px-2 py-1 rounded-md cursor-pointer bg-green-400"
-                          onClick={() => doctorCompleteAppointment(item._id)}
+                          onClick={() => doctorCompleteAppointment(dispatch, item._id, doctorToken)}
                           >Complete
                         </button>
                       </div>

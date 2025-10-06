@@ -71,7 +71,7 @@ const formatSlot = (slotDate, slotTime) => {
   return dashedData && (
       <div className="m-5">
           <div className="flex flex-wrap gap-7 items-center ">
-              <div className="flex items-center gap-2 bg-white p-4 min-w-52 rounded border-2 border-gray-100 cursor-pointer transition-all duration-300 hover:scale-105">
+              <div className="flex items-center gap-2 bg-white p-4 min-w-52 rounded shadow border-2 border-gray-200 cursor-pointer transition-all duration-300 hover:scale-105">
                   <Image
                       src={assets.earning_icon}
                       width={100}
@@ -84,7 +84,7 @@ const formatSlot = (slotDate, slotTime) => {
                       
                   </div>
               </div>
-              <div className="flex items-center gap-2 bg-white p-4 min-w-52 rounded border-2 border-gray-100 cursor-pointer transition-all duration-300 hover:scale-105">
+              <div className="flex items-center gap-2 bg-white p-4 min-w-52 shadow rounded border-2 border-gray-200 cursor-pointer transition-all duration-300 hover:scale-105">
                   <Image
                       src={assets.appointment_icon}
                       width={100}
@@ -97,7 +97,7 @@ const formatSlot = (slotDate, slotTime) => {
                       <p className="text-xs text-gray-400">Appointments</p>
                   </div>
               </div>
-              <div className="flex items-center gap-3 bg-white p-4 min-w-52 rounded border-2 border-gray-100 cursor-pointer transition-all duration-300 hover:scale-105">
+              <div className="flex items-center gap-3 bg-white p-4 min-w-52 rounded shadow border-2 border-gray-200 cursor-pointer transition-all duration-300 hover:scale-105">
                   <Image
                       src={assets.patients_icon}
                       width={100}
@@ -111,7 +111,7 @@ const formatSlot = (slotDate, slotTime) => {
                   </div>
               </div>
           </div>
-          <div className="mt-10 border-2 border-gray-200 rounded py-2 px-4 ">
+          <div className="mt-10  border-2 border-gray-200 bg-gray-200 rounded sm:w-[85%] md:w-[75%] lg:w-[%] py-2 px-4 ">
               <div className=" flex  items-center gap-4 p-3 rounded-t border-b border-gray-200">
                   <Image
                       src={assets.list_icon}
@@ -122,10 +122,10 @@ const formatSlot = (slotDate, slotTime) => {
                   />
                   <p className="font-semibold">Latest booking appointments</p>
               </div>
-              <div className="mt-4 bg-white">
+              <div className="mt-4 bg-gray-200">
                   {
                       dashedData.latestAppointments?.map((item, index) => (
-                          <div className="flex items-center hover:bg-gray-100 px-4 py-5 gap-4 transition-all duration-300"
+                          <div className="flex items-center bg-white mb-2 hover:bg-gray-100 px-4 py-5 gap-4 transition-all duration-300"
                               key={index}>
                               <Image
                                   src={item.userData.image}
