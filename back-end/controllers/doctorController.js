@@ -237,6 +237,31 @@ const doctorDashboardData = async (req , res) => {
     })
   }
 }
+
+// api for doctor profile
+const getDoctorProfile = async (req, res) => {
+  try {
+    
+    const docId = req.doctor._id;
+    const doctor = await Doctor.findById(docId);
+    if (!doctor) {
+      return res.json({
+      success: false, 
+      message: "doctor not found"
+    })
+    }
+
+    return res.json({
+      success: true,
+      data: doctor
+    })
+  } catch (err) {
+    return res.json({
+      success: false, 
+      message: err.message
+    })
+  }
+}
 export  {
     changeAvailability,
     getDoctors,
@@ -245,5 +270,6 @@ export  {
     getDoctorAppointments,
     doctorCompleteAppointment,
     doctorCancelAppointment,
-    doctorDashboardData
+    doctorDashboardData,
+    getDoctorProfile
     }

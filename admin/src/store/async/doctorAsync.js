@@ -34,7 +34,7 @@ export const doctorCancelAppointment = async (dispatch, appointmentId, doctorTok
     );
 
     if (res.data.success) {
-      // Refresh appointments
+     
       await getDocAppointments(dispatch, doctorToken);
     }
   } catch (err) {
@@ -64,3 +64,5 @@ export const doctorCompleteAppointment = async (dispatch, appointmentId, doctorT
     dispatch(setIsLoading(false));
   }
 };
+
+//export const doctorProfile = async (dispatch, doctorToken)

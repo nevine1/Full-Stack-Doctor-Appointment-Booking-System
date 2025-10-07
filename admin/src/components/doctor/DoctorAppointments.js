@@ -41,6 +41,7 @@ const DoctorAppointments = () => {
       getDocAppointments(dispatch, doctorToken);
     }
   }, [doctorToken]);
+
   return (
     <div className="m-6  ">
       <h1 className="md:text-lg sm:text-sm font-medium text-center text-gray-700">All Appointments</h1>
