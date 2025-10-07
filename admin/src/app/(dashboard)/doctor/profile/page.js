@@ -1,9 +1,10 @@
 import React from 'react'
-
+import DoctorProfile from '@/components/doctor/DoctorProfile'
 const page = () => {
   return (
       <div>
-          <p>Hello doctor profile </p>
+    
+      <DoctorProfile/>
     </div>
   )
 }
