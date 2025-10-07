@@ -295,7 +295,7 @@ const updateDoctorProfile = async (req, res) => {
       fees,
       address: JSON.parse(doctor.address)
     }
-    
+
       // if a new image was uploaded, upload to Cloudinary
     if (fileImage) {
       const uploadImage = await cloudinary.uploader.upload(fileImage.path, {
@@ -330,5 +330,6 @@ export  {
     doctorCompleteAppointment,
     doctorCancelAppointment,
     doctorDashboardData,
-    getDoctorProfile
+  getDoctorProfile,
+    updateDoctorProfile
     }
