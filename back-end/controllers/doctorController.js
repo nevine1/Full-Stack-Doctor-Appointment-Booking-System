@@ -262,6 +262,65 @@ const getDoctorProfile = async (req, res) => {
     })
   }
 }
+
+// api to update doctor's profile
+const updateDoctorProfile = async (req, res) => {
+  try {
+    const docId = req.doctor._id;
+      const {  name, email , about , speciality, address , degree, fees } = req.body
+    const fileImage = req.file;
+
+    if ( !docId || !name || !email || !about || !speciality || !address || !degree || !fees) {
+      return res.json({
+        success: false, 
+        message: "Missing doctor's data"
+      })
+    }
+
+    const doctor = await Doctor.findById(docId);
+
+    if (!docId || !doctor) {
+      return res.json({
+        success: false, 
+        message: "Doctor is not found"
+      })
+    }
+    
+    
+    const updatedDoctorInfo = {
+      name,
+      image, 
+      speciality,
+      about,
+      fees,
+      address: JSON.parse(doctor.address)
+    }
+    
+      // if a new image was uploaded, upload to Cloudinary
+    if (fileImage) {
+      const uploadImage = await cloudinary.uploader.upload(fileImage.path, {
+        resource_type: "image",
+      });
+      updateData.image = uploadImage.secure_url;
+      console.log("Uploaded new image URL:", updateData.image);
+    }
+    const updatedDoctor = await Doctor.findByIdAndUpdate(docId, updatedDoctorInfo, { new: true });
+
+    return res.json({
+      success: true, 
+      message: "Doctor profile has been successfully updated!",
+      data: updatedDoctor
+    })
+
+  } catch (err) {
+     return res.json({
+      success: false, 
+      message: err.message
+    })
+  }
+
+}
+
 export  {
     changeAvailability,
     getDoctors,
