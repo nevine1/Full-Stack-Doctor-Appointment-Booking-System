@@ -293,6 +293,7 @@ const updateDoctorProfile = async (req, res) => {
       speciality,
       about,
       fees,
+      degree,
       address: JSON.parse(doctor.address)
     }
 
