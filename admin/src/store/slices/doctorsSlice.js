@@ -18,6 +18,12 @@ const doctorsSlice = createSlice({
         }, 
         setDoctorToken: (state, action) => {
             state.doctorToken = action.payload;
+        }, 
+        updateDoctorInfo: (state, action) => {
+            const docId = action.payload 
+            const doctor = doctors.find((doc) => docId === doc._id)
+            const newDoctorData = action.payload;
+            return newDoctorData
         }
     }
 })

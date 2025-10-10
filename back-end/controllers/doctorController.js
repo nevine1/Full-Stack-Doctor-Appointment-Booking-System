@@ -2,6 +2,7 @@ import Doctor from '../models/doctorModel.js'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import Appointment from '../models/appointmentModel.js'
+import { v2 as cloudinary } from 'cloudinary'
 const changeAvailability = async (req, res) => {
     try {
         
@@ -267,18 +268,16 @@ const getDoctorProfile = async (req, res) => {
 const updateDoctorProfile = async (req, res) => {
   try {
     const docId = req.doctor._id;
-      const {  name, email , about , speciality, address , degree, fees } = req.body
+      const {  name, email , about, experience , speciality, address , degree, fees } = req.body
     const fileImage = req.file;
 
-    if ( !docId || !name || !email || !about || !speciality || !address || !degree || !fees) {
+    if ( !docId || !name || !email || !experience || !about || !speciality || !address || !degree || !fees) {
       return res.json({
         success: false, 
         message: "Missing doctor's data"
       })
     }
-
     const doctor = await Doctor.findById(docId);
-
     if (!docId || !doctor) {
       return res.json({
         success: false, 
@@ -286,24 +285,23 @@ const updateDoctorProfile = async (req, res) => {
       })
     }
     
-    
     const updatedDoctorInfo = {
-      name,
-      image, 
+      name, 
+      email,
       speciality,
+      experience,
       about,
       fees,
       degree,
-      address: JSON.parse(doctor.address)
+      address: JSON.parse(address),
     }
-
       // if a new image was uploaded, upload to Cloudinary
     if (fileImage) {
       const uploadImage = await cloudinary.uploader.upload(fileImage.path, {
         resource_type: "image",
       });
-      updateData.image = uploadImage.secure_url;
-      console.log("Uploaded new image URL:", updateData.image);
+      updatedDoctorInfo.image = uploadImage.secure_url;
+      console.log("Uploaded new image URL:", updatedDoctorInfo.image);
     }
     const updatedDoctor = await Doctor.findByIdAndUpdate(docId, updatedDoctorInfo, { new: true });
 
@@ -312,7 +310,7 @@ const updateDoctorProfile = async (req, res) => {
       message: "Doctor profile has been successfully updated!",
       data: updatedDoctor
     })
-
+  
   } catch (err) {
      return res.json({
       success: false, 

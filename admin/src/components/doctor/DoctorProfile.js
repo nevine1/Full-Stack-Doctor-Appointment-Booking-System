@@ -5,13 +5,14 @@ import axios from 'axios'
 import Image from 'next/image'
 import { assets } from '../../assets/assets'
 import { setIsLoading } from '@/store/slices/doctorsSlice'
-
+import { toast } from 'react-toastify'
 
 const DoctorProfile = () => {
-  const dispatch = useDispatch();
+    const dispatch = useDispatch();
     const { doctorToken} = useSelector((state) => state.doctors)
     const [doctorData, setDoctorData] = useState({})
     const [isEditable, setIsEditable] = useState(false);
+    const [fileImage, setFileImage ] = useState(null)
     const backUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
     const getDoctorProfile = async () => {
@@ -41,7 +42,7 @@ const DoctorProfile = () => {
     const file = e.target.files[0];
     if (file) {
       setFileImage(file);
-      setdoctorData((prev) => ({
+      setDoctorData((prev) => ({
         ...prev,
         image: URL.createObjectURL(file),
       }));
@@ -56,11 +57,11 @@ const DoctorProfile = () => {
         formData.append("docId", doctorData._id);
         formData.append("name", doctorData.name);
         formData.append("email", doctorData.email);
-        formData.append("phone", doctorData.speciality);
-        formData.append("phone", doctorData.about);
-        formData.append("phone", doctorData.experience);
-        formData.append("phone", doctorData.degree);
-        formData.append("phone", doctorData.fees);
+        formData.append("speciality", doctorData.speciality);
+        formData.append("about", doctorData.about);
+        formData.append("experience", doctorData.experience);
+        formData.append("degree", doctorData.degree);
+        formData.append("fees", doctorData.fees);
         formData.append("address", JSON.stringify(doctorData.address) || {}); 
 
       if (fileImage) {
@@ -76,10 +77,12 @@ const DoctorProfile = () => {
        
        if (res.data.success) {
         console.log('updated doctor data is:', (res.data.data))
-          dispatch(setUser(res.data.data));    
+          /* dispatch(setUser(res.data.data)); */  
+        
           setDoctorData(res.data.data);
             setIsEditable(false);
-          toast.success(`${doctor.name} information has been successfully updated!`)
+         toast.success(`${doctor.name} information has been successfully updated!`)
+         console.log('updated doctor data is: ', doctorData)
         }
 
           console.log('update doctor info is ',res.data.data)
@@ -98,9 +101,10 @@ const DoctorProfile = () => {
          <div className="flex flex-col  items-center justify-center p-8 w-full min-h-screen">
       {/* Profile image */}
 
-      <div className="mb-6">
+      {/* <div className="mb-6">
          {
-          isEditable ? (
+            isEditable ? (
+              
             <input
               type="file"
               onChange={handleImageChange}
@@ -117,13 +121,44 @@ const DoctorProfile = () => {
             )
           }
 
+      </div> */}
+
+      <div className="mb-6 flex flex-col items-center">
+        {isEditable ? (
+            <>
+              <div className="mt-4">
+        <Image
+          src={fileImage ? URL.createObjectURL(fileImage) : doctorData?.image || assets.doctor_icon}
+          alt="profile preview"
+          width={120}
+          height={120}
+          className="rounded-full shadow-lg p-2 bg-blue-100 object-cover"
+        />
+      </div>
+       
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleImageChange}
+          className="w-full mt-1 p-2 outline-none bg-blue-50 border border-blue-200 focus:border-blue-200 rounded-md"
+        />
+      
+       </>
+      ) : (
+        <Image
+          src={doctorData?.image || assets.doctor_icon}
+          alt="profile pic"
+          width={120}
+          height={120}
+          className="rounded-full shadow-lg p-2 bg-blue-100 object-cover"
+        />
+        )}
       </div>
 
-      
-      <div className="bg-gray-100 py-5 px-10 rounded-xl border border-gray-300 shadow-lg w-full max-w-md space-y-5">
+<div className="bg-white py-5 px-10 rounded-xl border border-gray-300 shadow-lg w-full max-w-2xl space-y-5">
        
         <div >
-          <label className="font-bold text-gray-500">Name</label>
+          <label className="font-bold text-[18px] text-black">Name</label>
           {isEditable ? (
             <input
               type="text"
@@ -133,12 +168,12 @@ const DoctorProfile = () => {
               className="w-full mt-1 p-2  outline-none bg-blue-50 border border-blue-200 focus:border-blue-200 rounded-md"
             />
           ) : (
-            <p className="text-gray-700 mt-1">{doctorData.name}</p>
+            <p className="text-sm text-gray-500 mt-1">{doctorData.name}</p>
           )}
         </div>
        
         <div>
-          <label className="font-bold text-gray-500">Email</label>
+          <label className="font-bold text-[18px] text-black">Email</label>
           {isEditable ? (
             <input
               type="email"
@@ -148,11 +183,11 @@ const DoctorProfile = () => {
               className="w-full mt-1 p-2  outline-none bg-blue-50 border border-blue-200 focus:border-blue-200 rounded-md"
             />
           ) : (
-            <p className="text-gray-700 mt-1">{doctorData.email}</p>
+            <p className="text-sm text-gray-500 mt-1">{doctorData.email}</p>
           )}
         </div>
        <div>
-          <label className="font-bold text-gray-500">Speciality</label>
+          <label className="font-bold text-[18px] text-black">Speciality</label>
           {isEditable ? (
             <input
               type="text"
@@ -162,12 +197,12 @@ const DoctorProfile = () => {
               className="w-full mt-1 p-2  outline-none bg-blue-50 border border-blue-200 focus:border-blue-200 rounded-md"
             />
           ) : (
-            <p className="text-gray-700 mt-1">{doctorData.speciality}</p>
+            <p className="text-sm text-gray-500 mt-1">{doctorData.speciality}</p>
           )}
           </div>
           
           <div>
-            <label className="font-bold text-gray-500">Experience</label>
+            <label className="font-bold text-[18px] text-black">Experience</label>
             {isEditable ? (
               <input
                 type="text"
@@ -177,11 +212,11 @@ const DoctorProfile = () => {
                 className="w-full mt-1 p-2  outline-none bg-blue-50 border border-blue-200 focus:border-blue-200 rounded-md"
               />
             ) : (
-              <p className="text-gray-700 mt-1">{doctorData.experience}Years</p>
+              <p className="text-sm text-gray-500 mt-1">{doctorData.experience}Years</p>
             )}
           </div>
           <div>
-          <label className="font-bold text-gray-500">Fees</label>
+          <label className="font-bold text-[18px] text-black">Fees</label>
           {isEditable ? (
             <input
               type="number"
@@ -191,11 +226,11 @@ const DoctorProfile = () => {
               className="w-full mt-1 p-2  outline-none bg-blue-50 border border-blue-200 focus:border-blue-200 rounded-md"
             />
           ) : (
-            <p className="text-gray-700 mt-1">${doctorData.fees}</p>
+            <p className="text-sm text-gray-500 mt-1">${doctorData.fees}</p>
           )}
         </div>
         <div>
-          <label className="font-bold text-gray-500">Address</label>
+          <label className="font-bold text-[18px] text-black">Address</label>
           {isEditable ? (
             <>
               <input
@@ -224,12 +259,28 @@ const DoctorProfile = () => {
               />
             </>
           ) : (
-            <p className="text-gray-700 mt-1">
+            <p className="text-sm text-gray-500 mt-1">
               {doctorData.address?.line1}, {doctorData.address?.line2}
             </p>
           )}
         </div>
      
+          <div>
+            <label className="font-bold text-[18px] text-black">About  {doctorData.name}</label>
+          {isEditable ? (
+              <textarea
+                rows="3"
+                cols="5"
+                value={doctorData.about}
+                onChange={handleChange}
+                className="w-full mt-1 p-2  outline-none bg-blue-50 border border-blue-200 focus:border-blue-200 rounded-md"
+              > </textarea>
+          ) : (
+            <p className="text-sm text-gray-500 mt-1">
+              {doctorData.about}
+            </p>
+          )}
+        </div>
         <div className="flex flex-col  pt-4">
           <button onClick={() => {
                 if (isEditable) {
