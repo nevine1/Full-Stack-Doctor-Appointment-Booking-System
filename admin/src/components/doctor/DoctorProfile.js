@@ -10,7 +10,9 @@ import { toast } from 'react-toastify'
 const DoctorProfile = () => {
     const dispatch = useDispatch();
     const { doctorToken} = useSelector((state) => state.doctors)
-    const [doctorData, setDoctorData] = useState({})
+    //make the doctor availability false to avoid error , and hte other properties gets from the doctor data
+    const [doctorData, setDoctorData] = useState({ available: false });
+
     const [isEditable, setIsEditable] = useState(false);
     const [fileImage, setFileImage ] = useState(null)
     const backUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
@@ -52,22 +54,21 @@ const DoctorProfile = () => {
         try {
         dispatch(setIsLoading(true));
         
-        //formData should be used here  because:  doctor data has text and image;
-        const formData = new FormData();
+         //formData should be used here  because:  doctor data has text and image;
+         const formData = new FormData();
         formData.append("docId", doctorData._id);
         formData.append("name", doctorData.name);
         formData.append("email", doctorData.email);
         formData.append("speciality", doctorData.speciality);
-        formData.append("about", doctorData.about);
         formData.append("experience", doctorData.experience);
         formData.append("degree", doctorData.degree);
         formData.append("fees", doctorData.fees);
-        formData.append("address", JSON.stringify(doctorData.address) || {}); 
+        formData.append("address", JSON.stringify(doctorData.address) || {});  
 
       if (fileImage) {
         formData.append("image", fileImage);
       }
-      const res = await axios.put(`${backUrl}/api/doctors/update-doctor-profile`, formData, {
+      const res = await axios.put(`${backUrl}/api/doctors/update-doctor-profile`, updatedData, {
         headers: {
           Authorization: `Bearer ${doctorToken}`, 
             "Content-Type": "multipart/form-data"
@@ -98,32 +99,9 @@ const DoctorProfile = () => {
         }
     }, [doctorToken])
     return (
-         <div className="flex flex-col  items-center justify-center p-8 w-full min-h-screen">
-      {/* Profile image */}
+         <div className="flex flex-col  justify-center p-4  min-h-screen">
 
-      {/* <div className="mb-6">
-         {
-            isEditable ? (
-              
-            <input
-              type="file"
-              onChange={handleImageChange}
-              className="w-full mt-1 p-2  outline-none bg-blue-50 border border-blue-200 focus:border-blue-200 rounded-md"
-            />
-            ): (
-              <Image
-                  src={doctorData?.image || assets.doctor_icon}
-                  alt="profile pic"
-                  width={100}
-                  height={100}
-                  className="rounded-full shadow-lg p-2 bg-blue-100"
-                />
-            )
-          }
-
-      </div> */}
-
-      <div className="mb-6 flex flex-col items-center">
+      <div className="mb-3 flex flex-col ">
         {isEditable ? (
             <>
               <div className="mt-4">
@@ -140,7 +118,7 @@ const DoctorProfile = () => {
           type="file"
           accept="image/*"
           onChange={handleImageChange}
-          className="w-full mt-1 p-2 outline-none bg-blue-50 border border-blue-200 focus:border-blue-200 rounded-md"
+          className="w-auto mt-1 p-2 outline-none bg-blue-50 border border-blue-200 focus:border-blue-200 rounded-md"
         />
       
        </>
@@ -229,21 +207,21 @@ const DoctorProfile = () => {
             <p className="text-sm text-gray-500 mt-1">${doctorData.fees}</p>
           )}
         </div>
-        <div>
+        <div className="flex flex-col">
           <label className="font-bold text-[18px] text-black">Address</label>
           {isEditable ? (
-            <>
+            <div className="flex flex-col">
               <input
                 type="text"
                 name= "address.line1"
-                value={doctorData.address?.line1 || " "}
+                value={doctorData.address?.line1 || " "} 
                 onChange={(e) =>
                   setDoctorData((prev) => ({
                     ...prev,
                     address: { ...prev.address, line1: e.target.value },
                   }))
                 }
-                className="w-full mt-1 p-2  outline-none bg-blue-50 border border-blue-200 focus:border-blue-200 rounded-md"
+                className="w-full block mt-1 p-2 text-sm  outline-none bg-blue-50 border border-blue-200 focus:border-blue-200 rounded-md"
               />
               <input
                 type="text"
@@ -255,9 +233,9 @@ const DoctorProfile = () => {
                     address: { ...prev.address, line2: e.target.value },
                   }))
                 }
-              className="w-full mt-1 p-2  outline-none bg-blue-50 border border-blue-200 focus:border-blue-200 rounded-md"
+              className="w-full mt-1 p-2 text-sm outline-none bg-blue-50 border border-blue-200 focus:border-blue-200 rounded-md"
               />
-            </>
+            </div>
           ) : (
             <p className="text-sm text-gray-500 mt-1">
               {doctorData.address?.line1}, {doctorData.address?.line2}
@@ -265,22 +243,28 @@ const DoctorProfile = () => {
           )}
         </div>
      
-          <div>
-            <label className="font-bold text-[18px] text-black">About  {doctorData.name}</label>
-          {isEditable ? (
-              <textarea
-                rows="3"
-                cols="5"
-                value={doctorData.about}
-                onChange={handleChange}
-                className="w-full mt-1 p-2  outline-none bg-blue-50 border border-blue-200 focus:border-blue-200 rounded-md"
-              > </textarea>
-          ) : (
-            <p className="text-sm text-gray-500 mt-1">
-              {doctorData.about}
-            </p>
-          )}
-        </div>
+         
+          <div className="flex flex-row gap-3">
+            <input
+                type="checkbox"
+                checked={!!doctorData.available}
+                onChange={() =>
+                  isEditable &&
+                  setDoctorData((prev) => ({
+                    ...prev,
+                    available: !prev.available,
+                  }))
+                }
+              />
+              <label className="font-bold text-[16px] text-black">
+                {doctorData.available ? (
+                  <span className="text-blue-500">Available</span>
+                ) : (
+                  <span className="text-gray-300">Not Available</span>
+                )}
+              </label>
+            </div>
+
         <div className="flex flex-col  pt-4">
           <button onClick={() => {
                 if (isEditable) {

@@ -20,6 +20,9 @@ const Navbar = ({ role }) => {
     router.push("/");
   };
 
+  const handleFrontEnd = () => {
+    router.push('../../../front-end/')
+  }
   return (
     <div className="flex flex-row items-center justify-between w-full px-6 sm:px-10">
       <div className="flex flex-row items-center gap-4">
@@ -47,7 +50,7 @@ const Navbar = ({ role }) => {
           {role}
         </span>
       </div>
-
+        <button onClick={handleFrontEnd}>FrontEnd</button>
       <button
         type="button"
         onClick={handleLogout}
