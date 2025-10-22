@@ -1,141 +1,180 @@
-"use client"
-import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { useSelector, useDispatch } from 'react-redux';
-import { setIsLoading, setToken } from '@/store/slices/usersSlice';
-import { toast } from 'react-toastify';
+"use client";
 
-import axios from 'axios'
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useSelector, useDispatch } from "react-redux";
+import { setIsLoading, setToken } from "@/store/slices/usersSlice";
+import { toast } from "react-toastify";
+import { FaRegEyeSlash, FaRegEye } from "react-icons/fa";
+import axios from "axios";
+
 const Login = () => {
   const router = useRouter();
   const dispatch = useDispatch();
-  const backUrl = process.env.NEXT_PUBLIC_BACKEND_URL
-  const { token, isLoading } = useSelector((state) => state.users)
-  //const [mode, setMode] = useState("Sign Up");
+  const backUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+  const { token, isLoading } = useSelector((state) => state.users);
+
   const [mode, setMode] = useState("login");
+  const [showPass, setShowPass] = useState(false);
   const [userInfo, setUserInfo] = useState({
-    name: " ", 
-    email: "", 
-    password: ""
-  })
-  
+    name: "",
+    email: "",
+    password: "",
+  });
+
   const handleChange = (e) => {
-    const { name, value } = e.target
-     setUserInfo((prev) => ({...prev, [name] : value}))
-  }
+    const { name, value } = e.target;
+    setUserInfo((prev) => ({ ...prev, [name]: value }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const { name, email, password } = userInfo; 
-      dispatch(setIsLoading(true))
-      if (mode === "Sign Up") { //register route
-        
-        const res = await axios.post(`${backUrl}/api/users/register`, { name, email, password });
+      const { name, email, password } = userInfo;
+      dispatch(setIsLoading(true));
+
+      if (mode === "Sign Up") {
         if (!name || !email || !password) {
           toast.error("Please fill all fields");
-            console.log("Please fill all fields");
-            return;
+          return;
         }
-       
+        const res = await axios.post(`${backUrl}/api/users/register`, {
+          name,
+          email,
+          password,
+        });
+
         if (res.data.success) {
-          console.log("User:", res.data.data);
-          toast.success(`${name} has been successfully registered, now you should login`);
-          
-          setMode('login')//to login after registration 
+          toast.success(`${name} registered successfully! Please log in.`);
+          setMode("login");
         } else {
-          console.log("Error from backend:", res.data.message);
+          toast.error(res.data.message || "Registration failed");
         }
       } else {
-        // when login 
-        const res = await axios.post(`${backUrl}/api/users/login`, { email, password });
         if (!email || !password) {
-          toast.error("Email or password should not be empty ");
+          toast.error("Email or password cannot be empty");
+          return;
         }
-        if (res.data.success && res.data.token) {
+        const res = await axios.post(`${backUrl}/api/users/login`, {
+          email,
+          password,
+        });
 
-          dispatch(setToken(res.data.token))
-          router.push('/auth/profile')
-          toast.success(`${name} has successfully logged in`);
-          
+        if (res.data.success && res.data.token) {
+          dispatch(setToken(res.data.token));
+          router.push("/auth/profile");
+          toast.success(`Welcome back!`);
         } else {
-          console.log(res.data.message || "Logged in failed")
+          toast.error(res.data.message || "Login failed");
         }
       }
-      
     } catch (err) {
-      console.log(err.message)
+      toast.error(err.message);
     } finally {
-      dispatch(setIsLoading(false))
+      dispatch(setIsLoading(false));
     }
-  }
+  };
 
   useEffect(() => {
-    if (token) {
-      router.push('/auth/profile')
-    }
-  }, [token, router])
-  console.log(' token is:', token)
+    if (token) router.push("/auth/profile");
+  }, [token, router]);
+
   return (
-    <div className="  rounded-xl  ">
-      <form className="lg:w-[30vw] md:w-[50vw] sm:w-[70vw] min-w-[500px] mx-auto md:mt-20 sm:mt-5  bg-blue-50  border shadow-md border-gray-300 m-auto p-10 rounded-xl"
+    <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-blue-100 to-blue-50 px-4">
+      <form
         onSubmit={handleSubmit}
-        >
-              <div className="flex flex-col gap-6 items-center justify-start">
-                <p className="text-lg font-semibold">{mode === `Sign Up` ? "Create account" : "Login"}</p>
-                <p>Please {mode === `Sign Up` ? "Create account" : "Login"} to book appointment</p>
-                    
-                {
-                  mode === "Sign Up" && 
-                  <input
-                    type="text"
-                    name="name"
-                    value={userInfo.name}
-                    onChange={handleChange}
-                    placeholder='Full Name'
-                    className="md:mx-10 sm:mx-2 mb-3 pl-3 py-2 border focus:outline-gray-200 border-gray-300 bg-white w-full rounded-md"
-                    required
-                   />
-                 }
-          
-                <input
-                  type="email"
-                  name="email"
-                  value={userInfo.email}
-                  onChange={handleChange}
-                  placeholder="Email"
-                  className="mb-3 pl-3 py-2 border focus:outline-gray-200 border-gray-300 bg-white w-full rounded-md"
-                  required
-                /> 
-                <input 
-                  type="password"
-                  name="password"
-                  value={userInfo.password}
-                  onChange={handleChange}
-                  placeholder='Password'
-                  className="md:mx-10 sm:mx-2 mb-3 pl-3 py-2 border focus:outline-gray-200 border-gray-300 bg-white w-full rounded-md"
-                     required
+        className="w-full max-w-md bg-white shadow-lg border border-gray-200 rounded-2xl p-8 sm:p-10 transition-all duration-300"
+      >
+        <div className="flex flex-col gap-5">
+          <div className="text-center">
+            <h2 className="text-2xl font-semibold text-gray-800">
+              {mode === "Sign Up" ? "Create Account" : "Welcome Back"}
+            </h2>
+            <p className="text-gray-500 mt-1 text-sm">
+              {mode === "Sign Up"
+                ? "Register to book your appointment"
+                : "Login to continue"}
+            </p>
+          </div>
+
+          {mode === "Sign Up" && (
+            <input
+              type="text"
+              name="name"
+              value={userInfo.name}
+              onChange={handleChange}
+              placeholder="Full Name"
+              className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300"
+              required
             />
-                  <button type="submit" className="py-3  md:mx-10 sm:mx-2 tex-lg  w-full text-white bg-blue-500 rounded-full">
-                 {
-                  mode === `Sign Up` ? "Create account" : "Login "
-                  
-                  }
-                  </button>
-                  <div>
-                    {
-                    mode === `Sign Up` 
-                    ?  <p>Already have an account? <span onClick={() => setMode("Login")} className="cursor-pointer">Log In</span></p>
-                    : <p>Create new account ? <span onClick={() => setMode("Sign Up")} className="cursor-pointer">Sign Up</span></p>
-                    
-                  }
-                </div>
+          )}
+
+          <input
+            type="email"
+            name="email"
+            value={userInfo.email}
+            onChange={handleChange}
+            placeholder="Email"
+            className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300"
+            required
+          />
+
+          <div className="relative flex items-center">
+            <input
+              type={showPass ? "text" : "password"}
+              name="password"
+              value={userInfo.password}
+              onChange={handleChange}
+              placeholder="Password"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300"
+              required
+            />
+            <div
+              onClick={() => setShowPass(!showPass)}
+              className="absolute right-3 text-gray-600 cursor-pointer hover:text-blue-500 transition"
+            >
+              {showPass ? <FaRegEyeSlash size={20} /> : <FaRegEye size={20} />}
             </div>
-                
-              
-             
+          </div>
+
+          <button
+            type="submit"
+            className="mt-2 bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 rounded-md transition-all duration-300 shadow-md"
+          >
+            {isLoading
+              ? "Please wait..."
+              : mode === "Sign Up"
+              ? "Create Account"
+              : "Login"}
+          </button>
+
+          <p className="text-center text-sm text-gray-600">
+            {mode === "Sign Up" ? (
+              <>
+                Already have an account?{" "}
+                <span
+                  onClick={() => setMode("login")}
+                  className="text-blue-600 cursor-pointer hover:underline"
+                >
+                  Log In
+                </span>
+              </>
+            ) : (
+              <>
+                Don’t have an account?{" "}
+                <span
+                  onClick={() => setMode("Sign Up")}
+                  className="text-blue-600 cursor-pointer hover:underline"
+                >
+                  Sign Up
+                </span>
+              </>
+            )}
+          </p>
+        </div>
       </form>
     </div>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;

@@ -3,7 +3,7 @@ import Image from 'next/image'
 import { assets } from '@/assets/assets'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import TrainingComp from '../components/TrainingComp'
+
 const Footer = () => {
     const router = useRouter();
   return (

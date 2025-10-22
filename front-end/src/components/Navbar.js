@@ -60,7 +60,7 @@ const Navbar = () => {
         {token ? (
           <div className="flex gap-2 items-center relative">
             <Image
-              src={user.image}
+              src={user?.image}
               alt="profile pic"
               width={32}
               height={32}
@@ -90,8 +90,8 @@ const Navbar = () => {
             )}
           </div>
         ) : (
-          <button onClick={handleClick} className="cursor-pointer bg-blue-500 text-white px-8 rounded-full py-2 hidden md:block">
-            Login
+          <button onClick={handleClick} className="cursor-pointer text-blue-500 bg-white px-6 rounded-md py-1 hidden md:block  border border-blue-200  hover:bg-blue-100 transition-all duration-300 hover:shadow-md">
+            Login   
           </button>
         )}
 
