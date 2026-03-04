@@ -13,52 +13,52 @@ const MyProfile = () => {
   const { token, user } = useSelector((state) => state.users);
   const [isEditable, setIsEditable] = useState(false);
   const [userData, setUserData] = useState(user || {});
-  const [fileImage, setFileImage ] = useState(null)
+  const [fileImage, setFileImage] = useState(null)
   const backUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
   useEffect(() => {
-    setUserData(user || {} )
+    setUserData(user || {})
   }, [user])
-  
-const getUserDetails = async ( ) => {
-  try {
-    dispatch(setIsLoading(true))
-    if (!token) {
-      toast.error('This user is not logged in')
-    }
 
-    const res = await axios.get(`${backUrl}/api/users/user-details`, {
-      headers: {
-        Authorization: `Bearer ${token}`
+  const getUserDetails = async () => {
+    try {
+      dispatch(setIsLoading(true))
+      if (!token) {
+        toast.error('This user is not logged in')
       }
 
-    });
-   
-    if (res.data.success) {
-      toast.success("User info updated successfully");
-      dispatch(setUser(res.data.data))
-      router.refresh();
-    } else {
-      console.log(res.data.message)
-    }
-    
-      } catch (err) {
-        console.log(err.message)
-  } finally {
-    dispatch(setIsLoading(false))
+      const res = await axios.get(`${backUrl}/api/users/user-details`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+
+      });
+
+      if (res.data.success) {
+        toast.success("User info updated successfully");
+        dispatch(setUser(res.data.data))
+        router.refresh();
+      } else {
+        console.log(res.data.message)
       }
-}
-  
-   
+
+    } catch (err) {
+      console.log(err.message)
+    } finally {
+      dispatch(setIsLoading(false))
+    }
+  }
+
+
   useEffect(() => {
-    getUserDetails( );
+    getUserDetails();
   }, [token]);
-  
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setUserData((prev) => ({ ...prev, [name]: value }));
   };
-   //  handle image upload preview
+  //  handle image upload preview
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -71,46 +71,46 @@ const getUserDetails = async ( ) => {
   };
   //updating user data and save it to mongoose db 
   const updateUserData = async () => {
-   
-     try {
-       dispatch(setIsLoading(true));
-      
-       //formData should be used here  because:  user data has text and image;
-       const formData = new FormData();
-       formData.append("userId", user._id);
-       formData.append("name", userData.name);
-       formData.append("email", userData.email);
-       formData.append("phone", userData.phone);
-       formData.append("DOB", userData.DOB);
-       formData.append("gender", userData.gender);
-       formData.append("address", JSON.stringify(userData.address) || {}); 
+
+    try {
+      dispatch(setIsLoading(true));
+
+      //formData should be used here  because:  user data has text and image;
+      const formData = new FormData();
+      formData.append("userId", user._id);
+      formData.append("name", userData.name);
+      formData.append("email", userData.email);
+      formData.append("phone", userData.phone);
+      formData.append("DOB", userData.DOB);
+      formData.append("gender", userData.gender);
+      formData.append("address", JSON.stringify(userData.address) || {});
 
       if (fileImage) {
         formData.append("image", fileImage);
       }
       const res = await axios.put(`${backUrl}/api/users/update-user`, formData, {
         headers: {
-          Authorization: `Bearer ${token}`, 
-            "Content-Type": "multipart/form-data"
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data"
         }
       })
 
-       
-       if (res.data.success) {
-        console.log('updated user data is:', (res.data.data))
-      dispatch(setUser(res.data.data));    
-      setUserData(res.data.data);
-        setIsEditable(false);
-      toast.success(`${user.name} information has been successfully updated!`)
-    }
 
-      console.log('updated user is ',res.data.data)
+      if (res.data.success) {
+        console.log('updated user data is:', (res.data.data))
+        dispatch(setUser(res.data.data));
+        setUserData(res.data.data);
+        setIsEditable(false);
+        toast.success(`${user.name} information has been successfully updated!`)
+      }
+
+      console.log('updated user is ', res.data.data)
     } catch (err) {
       console.log(err.message)
     } finally {
       dispatch(setIsLoading(false))
     }
-  } 
+  }
   return (
     <div className="flex flex-col  items-center justify-center p-8 w-full min-h-screen">
       {/* Profile image */}
@@ -123,22 +123,22 @@ const getUserDetails = async ( ) => {
               onChange={handleImageChange}
               className="w-full mt-1 p-2  outline-none bg-blue-50 border border-blue-200 focus:border-blue-200 rounded-md"
             />
-          ): (
+          ) : (
             <Image
-                src={userData?.image || assets.profile_pic}
-                alt="profile pic"
-                width={150}
-                height={150}
-                className="rounded-full shadow-lg p-2 bg-gray-100"
-              />
+              src={userData?.image || assets.profile_pic}
+              alt="profile pic"
+              width={150}
+              height={150}
+              className="rounded-full shadow-lg p-2 bg-gray-100"
+            />
           )
         }
 
       </div>
 
-      
+
       <div className="bg-gray-100 py-5 px-10 rounded-xl border border-gray-300 shadow-lg w-full max-w-md space-y-5">
-       
+
         <div >
           <label className="font-bold text-gray-500">Name</label>
           {isEditable ? (
@@ -154,7 +154,7 @@ const getUserDetails = async ( ) => {
           )}
         </div>
 
-       
+
         <div>
           <label className="font-bold text-gray-500">Email</label>
           {isEditable ? (
@@ -170,14 +170,14 @@ const getUserDetails = async ( ) => {
           )}
         </div>
 
-       
+
         <div>
           <label className="font-bold text-gray-500">Address</label>
           {isEditable ? (
             <>
               <input
                 type="text"
-                name= "address.line1"
+                name="address.line1"
                 value={userData.address?.line1 || " "}
                 onChange={(e) =>
                   setUserData((prev) => ({
@@ -197,7 +197,7 @@ const getUserDetails = async ( ) => {
                     address: { ...prev.address, line2: e.target.value },
                   }))
                 }
-              className="w-full mt-1 p-2  outline-none bg-blue-50 border border-blue-200 focus:border-blue-200 rounded-md"
+                className="w-full mt-1 p-2  outline-none bg-blue-50 border border-blue-200 focus:border-blue-200 rounded-md"
               />
             </>
           ) : (
@@ -207,7 +207,7 @@ const getUserDetails = async ( ) => {
           )}
         </div>
 
-        
+
         <div>
           <label className="font-bold text-gray-500">Date of Birth</label>
           {isEditable ? (
@@ -223,7 +223,7 @@ const getUserDetails = async ( ) => {
           )}
         </div>
 
-      
+
         <div>
           <label className="font-bold text-gray-500">Gender</label>
           {isEditable ? (
@@ -243,29 +243,29 @@ const getUserDetails = async ( ) => {
           )}
         </div>
 
-     
+
         <div className="flex flex-col  pt-4">
           <button onClick={() => {
-                if (isEditable) {
-                  updateUserData();   
-                }
-                setIsEditable(!isEditable);
-              }}
+            if (isEditable) {
+              updateUserData();
+            }
+            setIsEditable(!isEditable);
+          }}
             className="px-8 py-2 mb-5 text-[16px] width-auto
               rounded-full shadow  transition-all duration-500
-             bg-white text-blue-500 border border-blue-500" 
+             bg-white text-blue-500 border border-blue-500"
           >
             {isEditable ? "Save Changes" : "Edit Profile"}
           </button>
           <Link href={`/doctors`}
             className="flex justify-center hover:text-blue-500 duration-300 transition-all pb-3"
-            >All doctors' list 
+          >All doctors list
           </Link>
           <Link href={`/auth/myAppointments`}
             className="flex justify-center hover:text-blue-500 duration-300 transition-all pb-5"
-            >All my appointments 
+          >All my appointments
           </Link>
-          
+
         </div>
       </div>
     </div>
