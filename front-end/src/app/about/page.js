@@ -13,15 +13,15 @@ const page = () => {
           src={assets.about_image}
           width={300}
           height={400}
-          alt="about page's image"
+          alt="about page image"
           className="rounded-lg shadow-md w-full"
         />
         <div className="flex flex-col leading-loose ">
           <p className="py-2">Welcome to Prescripto, your trusted partner in managing your healthcare needs conveniently and efficiently. At Prescripto, we understand the challenges individuals face when it comes to scheduling doctor appointments and managing their health records.</p>
-          <p className="py-2">Prescripto is committed to excellence in healthcare technology. We continuously strive to enhance our platform, integrating the latest advancements to improve user experience and deliver superior service. Whether you're booking your first appointment or managing ongoing care, Prescripto is here to support you every step of the way.</p>
+          <p className="py-2">Prescripto is committed to excellence in healthcare technology. We continuously strive to enhance our platform, integrating the latest advancements to improve user experience and deliver superior service. Whether you are booking your first appointment or managing ongoing care, Prescripto is here to support you every step of the way.</p>
           <p className="py-2 font-semibold text-xl text-gray-600">Our Vision</p>
           <p className="py-2">Our vision at Prescripto is to create a seamless healthcare experience for every user. We aim to bridge the gap between patients and healthcare providers, making it easier for you to access the care you need, when you need it.</p>
-          
+
         </div>
       </div>
 
