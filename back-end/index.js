@@ -9,7 +9,7 @@ import userRoute from './routes/userRoute.js';
 import paymentRoute from './routes/paymentRoute.js';
 
 const app = express();
-const port = process.env.PORT || 4000 
+const port = process.env.PORT || 4000
 
 // using middleware 
 app.use(express.json()); // <--- This parses JSON bodies
@@ -28,7 +28,7 @@ app.use('/uploads', express.static('uploads'));
 connectDB();
 connectCloudinary()
 
-app.get("/", (req, res) => {
+/* app.get("/", (req, res) => {
   res.send(`
     <div style="font-family: sans-serif; text-align:center; padding-top: 50px;">
       <h1>Doctor Appointment API</h1>
@@ -37,7 +37,8 @@ app.get("/", (req, res) => {
       <a href="https://doctor-admin.vercel.app" target="_blank">Go to Admin/Doctor Dashboard</a>
     </div>
   `);
-});
+}); */
+
 //api end points 
 app.use('/api/admin', adminRoute) // <--- Multer middleware is applied within adminRoute.js
 app.use('/api/doctors', doctorRoute);
@@ -45,10 +46,10 @@ app.use('/api/users', userRoute);
 app.use('/api/payment', paymentRoute);
 
 
-/* app.get('/', (req, res) => {
-    res.send("app is working")
-}) */
+app.get('/', (req, res) => {
+  res.send("app is working")
+})
 //starting express app
 app.listen(port, () => {
-    console.log('Server is Starting at port #: ', port)
+  console.log('Server is Starting at port #: ', port)
 });

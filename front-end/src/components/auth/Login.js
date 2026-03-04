@@ -133,7 +133,7 @@ const Login = () => {
               onClick={() => setShowPass(!showPass)}
               className="absolute right-3 text-gray-600 cursor-pointer hover:text-blue-500 transition"
             >
-              {showPass ? <FaRegEyeSlash size={20} /> : <FaRegEye size={20} />}
+              {showConfirmPass ? <FaRegEye  size={20} /> : <FaRegEyeSlash size={20} />}
             </div>
           </div>
 
