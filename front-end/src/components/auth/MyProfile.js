@@ -51,7 +51,9 @@ const MyProfile = () => {
 
 
   useEffect(() => {
-    getUserDetails();
+    if (token) {
+      getUserDetails();
+    }
   }, [token]);
 
   const handleChange = (e) => {

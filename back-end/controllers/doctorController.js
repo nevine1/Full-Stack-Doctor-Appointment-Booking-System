@@ -4,37 +4,19 @@ import jwt from 'jsonwebtoken'
 import Appointment from '../models/appointmentModel.js'
 import { v2 as cloudinary } from 'cloudinary'
 const changeAvailability = async (req, res) => {
-    try {
-        
-        const { docId } = req.body; 
-        const docInfo = await Doctor.findById(docId).select("-password");
-
-        const finalDoctorInfo = await Doctor.findByIdAndUpdate(docId, { available: !docInfo.available })
-        return res.json({
-            success: true,
-            message: "Doctor availability changed successfully", 
-            data: finalDoctorInfo,
-        })
-    } catch (err) {
-        console.log(err.message);
-        return res.json({
-            success: false,
-            message: err.message
-        })
-    }
-}
-
-//get all doctors
-
-const getDoctors = async (req, res) => {
   try {
-    
-    const doctors = await Doctor.find({}).select(['-password', '-email'])
-    
+
+    const { docId } = req.body;
+    const docInfo = await Doctor.findById(docId).select("-password");
+
+    const finalDoctorInfo = await Doctor.findByIdAndUpdate(docId, { available: !docInfo.available })
     return res.json({
-      success: true, data: doctors
+      success: true,
+      message: "Doctor availability changed successfully",
+      data: finalDoctorInfo,
     })
-  } catch(err) {
+  } catch (err) {
+    console.log(err.message);
     return res.json({
       success: false,
       message: err.message
@@ -42,9 +24,30 @@ const getDoctors = async (req, res) => {
   }
 }
 
+//get all doctors
+
+const getDoctors = async (req, res) => {
+  try {
+
+    const doctors = await Doctor.find().select(['-password', '-email'])
+    console.log("getting doctors list is,", doctors)
+    return res.status(200).json({
+      success: true,
+      data: doctors
+    })
+
+
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: `error while getting doctors: ${err.message}`
+    })
+  }
+}
+
 const getDoctorData = async (req, res) => {
   try {
-    const { id } = req.params; 
+    const { id } = req.params;
     const doctor = await Doctor.findById(id).select("-password");
 
     if (!doctor) {
@@ -53,13 +56,13 @@ const getDoctorData = async (req, res) => {
         message: "Doctor not found",
       });
     }
-console.log("getting doctor data is", doctor )
+    console.log("getting doctor data is", doctor)
     return res.status(200).json({
       success: true,
       message: "Doctor data fetched successfully",
       data: doctor,
     });
-    
+
   } catch (err) {
     return res.status(500).json({
       success: false,
@@ -71,7 +74,7 @@ console.log("getting doctor data is", doctor )
 const doctorLogin = async (req, res) => {
 
   try {
-    const { email, password } = req.body; 
+    const { email, password } = req.body;
     const doctor = await Doctor.findOne({ email });
     if (!doctor) {
       return res.json({
@@ -83,33 +86,33 @@ const doctorLogin = async (req, res) => {
     // check if the req.body(email and password) matching with email & password at the database
     const isMatchedPassword = await bcrypt.compare(password, doctor.password); //doctor.password is the one getting from database
     //if password is the same of doctor.password it means it is true, then get the token and login  
-    
+
     if (isMatchedPassword) {
       //it the password is the same , then return token
       const token = jwt.sign({ id: doctor._id }, process.env.JWT_SECRET);
       return res.json({
         success: true,
-        message: "doctor logged in successfully", 
-         token
+        message: "doctor logged in successfully",
+        token
       })
 
     } else {
       return res.json({
-        success: false, 
+        success: false,
         message: "Invalid credentials"
       })
     }
 
   } catch (err) {
     return res.json({
-      success: false, 
+      success: false,
       message: err.message
     })
   }
 }
 
 //api for getting doctor appointments 
- const getDoctorAppointments = async (req, res) => {
+const getDoctorAppointments = async (req, res) => {
   try {
     // doctorId comes from the decoded token(when the doctor login)
     const docId = req.doctor._id;
@@ -133,20 +136,20 @@ const doctorLogin = async (req, res) => {
 //api to make the appointments completed for doctor panel
 const doctorCompleteAppointment = async (req, res) => {
   try {
-    
+
     const { appointmentId } = req.body
     const docId = req.doctor._id
 
     const appointmentData = await Appointment.findById(appointmentId);
-   
+
     if (appointmentData && appointmentData.doctorId.toString() === docId.toString()) { //getting docId from the doctorAuth
       const completedAppointments = await Appointment.findByIdAndUpdate(appointmentId,
         { completed: true },
-        { new: true}
+        { new: true }
       )
       return res.json({
         success: true,
-        message: "Appointment completed", 
+        message: "Appointment completed",
         data: completedAppointments
       })
     } else {
@@ -157,7 +160,7 @@ const doctorCompleteAppointment = async (req, res) => {
     }
   } catch (err) {
     return res.json({
-      success: false, 
+      success: false,
       message: "Appointment is false"
     })
   }
@@ -166,20 +169,20 @@ const doctorCompleteAppointment = async (req, res) => {
 //api to make the appointments completed for doctor panel
 const doctorCancelAppointment = async (req, res) => {
   try {
-    
+
     const { appointmentId } = req.body
     const docId = req.doctor._id
 
     const appointmentData = await Appointment.findById(appointmentId);
-   
+
     if (appointmentData && appointmentData.doctorId.toString() === docId.toString()) { //getting docId from the doctorAuth
       const canceledAppointment = await Appointment.findByIdAndUpdate(appointmentId,
         { canceled: true },
-        { new: true}
+        { new: true }
       )
       return res.json({
         success: true,
-        message: "Appointment canceled", 
+        message: "Appointment canceled",
         data: canceledAppointment
       })
 
@@ -191,23 +194,23 @@ const doctorCancelAppointment = async (req, res) => {
     }
   } catch (err) {
     return res.json({
-      success: false, 
+      success: false,
       message: "Appointment is false"
     })
   }
 }
 
 //api for doctor dashboard
-const doctorDashboardData = async (req , res) => {
+const doctorDashboardData = async (req, res) => {
   try {
-    const doctorId = req.doctor._id; 
+    const doctorId = req.doctor._id;
     const appointments = await Appointment.find({ doctorId })
 
     //calculate the total earning money
-    let earnings = 0; 
+    let earnings = 0;
     appointments.map((item) => {
       if (item.completed || item.onlinePayment) {
-        earnings += item.amount; 
+        earnings += item.amount;
       }
     })
     //get the # of patients
@@ -217,12 +220,12 @@ const doctorDashboardData = async (req , res) => {
         patients.push(item.userId)
       }
     })
-    
+
     //doctor dashboard data 
     const docDashboardData = {
       appointments: appointments.length,
       patients: patients.length,
-      latestAppointments: appointments.reverse().slice(0, 5), 
+      latestAppointments: appointments.reverse().slice(0, 5),
       earnings
     }
 
@@ -233,7 +236,7 @@ const doctorDashboardData = async (req , res) => {
   } catch (err) {
     console.log(err.message)
     return res.json({
-      success: false, 
+      success: false,
       message: err.message
     })
   }
@@ -242,14 +245,14 @@ const doctorDashboardData = async (req , res) => {
 // api for doctor profile
 const getDoctorProfile = async (req, res) => {
   try {
-    
+
     const docId = req.doctor._id;
     const doctor = await Doctor.findById(docId);
     if (!doctor) {
       return res.json({
-      success: false, 
-      message: "doctor not found"
-    })
+        success: false,
+        message: "doctor not found"
+      })
     }
 
     return res.json({
@@ -258,7 +261,7 @@ const getDoctorProfile = async (req, res) => {
     })
   } catch (err) {
     return res.json({
-      success: false, 
+      success: false,
       message: err.message
     })
   }
@@ -268,25 +271,25 @@ const getDoctorProfile = async (req, res) => {
 const updateDoctorProfile = async (req, res) => {
   try {
     const docId = req.doctor._id;
-      const {  name, email , about, experience , speciality, address , degree, fees } = req.body
+    const { name, email, about, experience, speciality, address, degree, fees } = req.body
     const fileImage = req.file;
 
-    if ( !docId || !name || !email || !experience || !about || !speciality || !address || !degree || !fees) {
+    if (!docId || !name || !email || !experience || !about || !speciality || !address || !degree || !fees) {
       return res.json({
-        success: false, 
+        success: false,
         message: "Missing doctor's data"
       })
     }
     const doctor = await Doctor.findById(docId);
     if (!docId || !doctor) {
       return res.json({
-        success: false, 
+        success: false,
         message: "Doctor is not found"
       })
     }
-    
+
     const updatedDoctorInfo = {
-      name, 
+      name,
       email,
       speciality,
       experience,
@@ -295,7 +298,7 @@ const updateDoctorProfile = async (req, res) => {
       degree,
       address: JSON.parse(address),
     }
-      // if a new image was uploaded, upload to Cloudinary
+    // if a new image was uploaded, upload to Cloudinary
     if (fileImage) {
       const uploadImage = await cloudinary.uploader.upload(fileImage.path, {
         resource_type: "image",
@@ -306,29 +309,29 @@ const updateDoctorProfile = async (req, res) => {
     const updatedDoctor = await Doctor.findByIdAndUpdate(docId, updatedDoctorInfo, { new: true });
 
     return res.json({
-      success: true, 
+      success: true,
       message: "Doctor profile has been successfully updated!",
       data: updatedDoctor
     })
-  
+
   } catch (err) {
-     return res.json({
-      success: false, 
+    return res.json({
+      success: false,
       message: err.message
     })
   }
 
 }
 
-export  {
-    changeAvailability,
-    getDoctors,
-    getDoctorData,
-    doctorLogin,
-    getDoctorAppointments,
-    doctorCompleteAppointment,
-    doctorCancelAppointment,
-    doctorDashboardData,
+export {
+  changeAvailability,
+  getDoctors,
+  getDoctorData,
+  doctorLogin,
+  getDoctorAppointments,
+  doctorCompleteAppointment,
+  doctorCancelAppointment,
+  doctorDashboardData,
   getDoctorProfile,
-    updateDoctorProfile
-    }
+  updateDoctorProfile
+}

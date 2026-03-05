@@ -9,15 +9,17 @@ import userRoute from './routes/userRoute.js';
 import paymentRoute from './routes/paymentRoute.js';
 
 const app = express();
-const port = process.env.PORT || 4000
+const port = process.env.PORT || 5000
 
 // using middleware 
-app.use(express.json()); // <--- This parses JSON bodies
+app.use(express.json());
 app.use(
   cors({
     origin: [
-      "https://doctor-frontend.vercel.app", // deploy the project on vercel
-      "https://doctor-admin.vercel.app",
+      /* "https://doctor-frontend.vercel.app",
+      "https://doctor-admin.vercel.app", */
+      "http://localhost:3000",
+      "http://localhost:3001"
     ],
     credentials: true,
   })

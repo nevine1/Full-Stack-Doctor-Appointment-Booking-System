@@ -1,5 +1,6 @@
 "use client";
-import { useEffect } from "react";
+
+import { useEffect, useCallback } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -16,9 +17,10 @@ const CheckoutPage = () => {
   const appointmentId = searchParams.get("appointmentId");
   const sessionId = searchParams.get("session_id");
 
-  const confirmPayment = async () => {
+
+  const confirmPayment = useCallback(async () => {
     try {
-      if (!success || !appointmentId || !sessionId) return;
+      if (!success || !appointmentId || !sessionId || !token) return;
 
       toast.info("Payment successful! Confirming appointment...");
 
@@ -37,17 +39,18 @@ const CheckoutPage = () => {
 
       if (res.data.success) {
         toast.success("Appointment confirmed!");
-        router.push("/auth/profile");
+        router.replace("/auth/profile");
       }
     } catch (err) {
-      console.log(" Error confirming payment:", err.message);
+      console.log("Error confirming payment:", err.message);
       toast.error("Could not confirm appointment.");
     }
-  };
+  }, [success, appointmentId, sessionId, token, backUrl, router]);
 
-  const cancelPayment = async () => {
+
+  const cancelPayment = useCallback(async () => {
     try {
-      if (!canceled || !appointmentId) return;
+      if (!canceled || !appointmentId || !token) return;
 
       toast.warning("Payment canceled. Updating appointment...");
 
@@ -57,17 +60,19 @@ const CheckoutPage = () => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      router.push("/auth/myAppointments"); // go back to appointments page
+      router.replace("/auth/myAppointments");
     } catch (err) {
-      console.log(" Error canceling payment:", err.message);
+      console.log("Error canceling payment:", err.message);
       toast.error("Could not cancel payment.");
     }
-  };
+  }, [canceled, appointmentId, token, backUrl, router]);
+
 
   useEffect(() => {
     if (success) confirmPayment();
     if (canceled) cancelPayment();
-  }, [searchParams]);
+  }, [success, canceled, confirmPayment, cancelPayment]);
+
 
   if (success) return <h1>Processing Checkout...</h1>;
   if (canceled) return <h1>Payment canceled. Redirecting...</h1>;
