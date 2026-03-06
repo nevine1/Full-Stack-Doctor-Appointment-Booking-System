@@ -1,41 +1,60 @@
-import React from 'react'
-import { assets } from '@/assets/assets'
-import Image from 'next/image'
-import Link from 'next/link'
-import { FaArrowRightLong } from "react-icons/fa6";
+import { assets } from "@/assets/assets"
+import Image from "next/image"
+import Link from "next/link"
+import { FaArrowRightLong } from "react-icons/fa6"
 
 const Banner = () => {
+
+  const handleScrollTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" })
+  }
+
   return (
-      <div className="flex flex-col md:flex-row flex-wrap rounded-lg md:px-10 lg:px-20 bg-blue-500 mx-10">
-          {/* left side */}
-        <div className="md:w-1/2 flex flex-col justify-center items-start gap-4 py-8 m-auto md:py-14 md:mb-[-30px]">
-            <p className="leading-loose text-2xl md:text-3xl text-white font-semibold  ">
-                  Book Appointment <br />
-                  With 100+ Trusted Doctors
-            </p>
-              <Link href="/auth/register"
-                    onClick={() =>scrollTo(0,0)}
-                  className="md:text-[16px] sm:text-[14px] xs:text-[13px] my-4 hover:scale-105
-                  transition-all duration-500
-                    px-7 md:px-6 xs:px-4 py-3 md:py-3 sm:py-2 bg-white rounded-full text-gray-600
-                  ">
-                    Create Account 
-                </Link>
-            
-                
-          </div>
-         {/*  right side  */}
-        <div className="flex justify-end items-end md:w-1/2 relative ">
-             <Image
-                src={assets.appointment_img}
-                width={300}
-                height={200}
-                alt="banner image"
-                className=" hidden  md:absolute md:block md:right-12  bottom-0 h-auto  md:w-[55%] "
-              />
-          </div>
+
+    <div className="flex flex-col md:flex-row items-center justify-between
+    bg-blue-500 rounded-xl px-6 md:px-12 lg:px-20 py-10 mx-4 md:mx-10">
+
+      {/* left side */}
+
+      <div className="md:w-1/2 text-center md:text-left flex flex-col gap-6">
+
+        <h1 className="text-white text-2xl sm:text-3xl lg:text-4xl font-semibold leading-relaxed">
+          Book Appointment <br />
+          With 100+ Trusted Doctors
+        </h1>
+
+        <Link
+          href="/auth/register"
+          onClick={handleScrollTop}
+          className="flex items-center justify-center md:justify-start gap-2
+          bg-white text-gray-700 font-medium
+          px-6 py-3 rounded-full w-fit
+          hover:scale-105 transition"
+        >
+          Create Account
+          <FaArrowRightLong />
+        </Link>
+
+      </div>
+
+
+      {/* right side */}
+
+      <div className="md:w-1/2 flex justify-center mt-10 md:mt-0">
+
+        <Image
+          src={assets.appointment_img}
+          alt="appointment"
+          width={400}
+          height={350}
+          className="w-[250px] sm:w-[320px] md:w-[380px] lg:w-[420px] h-auto"
+        />
+
+      </div>
+
     </div>
+
   )
 }
 
-export default Banner;
+export default Banner

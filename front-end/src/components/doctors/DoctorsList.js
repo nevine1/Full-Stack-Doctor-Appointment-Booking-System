@@ -1,65 +1,99 @@
 "use client"
 
-import Image from 'next/image'
-import Link from 'next/link'
-import { useSelector } from 'react-redux'
-
+import Image from "next/image"
+import Link from "next/link"
+import { useSelector } from "react-redux"
 
 const DoctorsList = () => {
-   const { doctors } = useSelector((state) => state.doctors)
- 
+
+  const { doctors } = useSelector((state) => state.doctors)
+
   return (
-    <div className="flex flex-col items-center mt-10 mb-20">
-    <h1 className="text-gray-900 md:text-3xl sm:text-xl font-semibold my-2">
-      Top Doctors to Book
-    </h1>
-    <p className="text-gray-800 text-sm py-4">
-      Simply browse through our extensive list of trusted doctors.
-    </p>
-  
-   
-    <div className="w-full px-3 sm:px-0">
-      <div className="lg:mx-20 xl:mx-20 sm:mx-10 my-3 max-w-7xl px-5 xl:px-0">
+    <div className="flex flex-col items-center mt-10 mb-20 px-4">
+
+      <h1 className="text-gray-900 text-2xl md:text-3xl font-semibold text-center">
+        Top Doctors to Book
+      </h1>
+
+      <p className="text-gray-600 text-sm md:text-base py-4 text-center max-w-xl">
+        Simply browse through our extensive list of trusted doctors.
+      </p>
+
+
+
+      <div className="w-full max-w-7xl">
+
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-         
-            {
-            doctors.map((item, index) => (
-              <div
-                key={index}
-                className="border border-blue-200 rounded-lg cursor-pointer hover:translate-y-[-10px] duration-500 transition-all overflow-hidden"
-              >
-                   
-                    <Link href={`/doctors/${item._id}`}>
-                        <Image
-                            src={item.image}
-                            alt={item.name}
-                            width={150}
-                            height={300}
-                            className="bg-blue-50 rounded-lg w-full"
-                        />
-                    </Link>
-                <div className="flex flex-col justify-start p-4">
-                  <div className=" flex flex-row gap-2 items-center">
-                    <p className={`w-2 h-2 rounded-full ${item.available ? "bg-green-500" : "bg-gray-500"}`}></p>
-                    <p className={`font-light text-xs ${item.available ? "text-green-500": "text-gray-500"}`}>
-                      {
-                        item.available ? "Available" : "Unavailable"
-                      }
-                    </p>
-                  </div>
-                  <p className="text-[17px] font-semibold py-1">{item.name}</p>
-                  <p className="text-[13px] font-light py-1 text-gray-600">{item.speciality}</p>
+
+          {doctors.slice(0, 10).map((doctor) => (
+
+            <div
+              key={doctor._id}
+              className="border border-blue-200 rounded-xl overflow-hidden
+              hover:-translate-y-2 hover:shadow-lg transition-all duration-300 bg-white"
+            >
+
+
+
+              <Link href={`/doctors/${doctor._id}`}>
+                <div className="relative w-full h-[220px] bg-blue-50">
+                  <Image
+                    src={doctor.image}
+                    alt={doctor.name}
+                    fill
+                    className="object-cover"
+                  />
                 </div>
+              </Link>
+
+
+
+              <div className="p-4">
+
+                <div className="flex items-center gap-2">
+
+                  <span
+                    className={`w-2 h-2 rounded-full ${doctor.available ? "bg-green-500" : "bg-gray-400"
+                      }`}
+                  ></span>
+
+                  <p
+                    className={`text-xs font-light ${doctor.available ? "text-green-500" : "text-gray-500"
+                      }`}
+                  >
+                    {doctor.available ? "Available" : "Unavailable"}
+                  </p>
+
+                </div>
+
+                <p className="text-lg font-semibold mt-2">
+                  {doctor.name}
+                </p>
+
+                <p className="text-sm text-gray-600">
+                  {doctor.speciality}
+                </p>
+
               </div>
-            ))}
-           <div>
-              <Link href="/doctors">More</Link>          
-           </div>             
+
+            </div>
+
+          ))}
+
         </div>
-        
+
       </div>
+
+
+
+      <Link
+        href="/doctors"
+        className="mt-10 px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
+      >
+        View All Doctors
+      </Link>
+
     </div>
-  </div>
   )
 }
 

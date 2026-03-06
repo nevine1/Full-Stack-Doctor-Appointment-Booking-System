@@ -1,100 +1,158 @@
 "use client"
-import { useState, useEffect } from 'react'
-import Link from 'next/link'
-import { useParams, useRouter } from 'next/navigation';
-import { useSelector } from 'react-redux';
-import Image from 'next/image';
-import _ from 'lodash';
+
+import { useState, useEffect } from "react"
+import Link from "next/link"
+import { useParams, useRouter } from "next/navigation"
+import { useSelector } from "react-redux"
+import Image from "next/image"
 
 const Specialist = () => {
-  const params = useParams();
-  const router = useRouter();
-  const { specialist } = params;
-  const { doctors } = useSelector((state) => state.doctors);
-  const [filterDoc, setFilterDoc] = useState([]);
-  const [showFilter, setShowFilter] = useState(false)
-  const [selectedSpecialist, setSelectedSpecialist] = useState(specialist)
 
-  //getting the specilities 
-  const specialities = [
-    ...new Set(doctors.map(doctor => doctor.speciality))
-  ];
+  const params = useParams()
+  const router = useRouter()
 
-  const applyFilter = (specialist) => {
-    if (specialist) {
+  const { specialist } = params
+  const { doctors } = useSelector((state) => state.doctors)
 
-      setFilterDoc(doctors.filter((doc) => doc.speciality === specialist));
+  const [filterDoc, setFilterDoc] = useState([])
+  const [selectedSpecialist, setSelectedSpecialist] = useState("Dermatologist")
 
+  // get unique specialities
+  const specialities = [...new Set(doctors.map((doc) => doc.speciality))]
+
+  const applyFilter = (spec) => {
+
+    if (spec) {
+      const filtered = doctors.filter((doc) => doc.speciality === spec)
+      setFilterDoc(filtered)
     } else {
       setFilterDoc(doctors)
     }
+
   }
 
   useEffect(() => {
-    applyFilter(specialist);
-  }, [specialist]);
 
+    setSelectedSpecialist(specialist)
+    applyFilter(specialist)
+
+  }, [specialist, doctors])
 
   return (
-    <div>
-      <p className="m-4">Browse through the doctors specialist.</p>
-      <h1 className="flex justify-center m-5">Selected specialist is: {specialist}</h1>
-      <div className=" grid grid-cols-[1fr_3fr]  gap-8">
+
+    <div className="px-4 md:px-10">
+
+      <p className="my-6 text-gray-600">
+        Browse through the doctors specialist.
+      </p>
+
+      <h1 className="text-center text-xl md:text-2xl font-semibold mb-6">
+        Selected Specialist: {specialist}
+      </h1>
+
+
+
+      <div className="flex flex-col md:flex-row gap-8">
+
         {/* left side */}
 
-        <div>
-          {
-            specialities.map((spec, index) => (
+        <div className="md:w-1/4">
 
-              <div key={index} className="  px-4 py-1">
-                <h1 className={`text-sm py-3 px-5 my-1 border border-blue-200 shadow-md
-                          cursor-pointer transition-all duration-500 rounded-sm
-                  ${spec === selectedSpecialist ? "bg-blue-500 text-white font-semibold" : ""}`}
-                  onClick={() => router.push(`/doctors/specialist/${spec}`)}
-                >{spec}</h1>
-              </div>
-            ))
-          }
+          <div className="flex md:flex-col gap-3 overflow-x-auto md:overflow-visible">
+
+            {specialities.map((spec) => (
+
+              <button
+                key={spec}
+                onClick={() => router.push(`/doctors/specialist/${spec}`)}
+                className={`whitespace-nowrap text-sm py-2 px-5 border border-blue-200 rounded-md transition
+                ${spec === selectedSpecialist
+                    ? "bg-blue-500 text-white font-semibold"
+                    : "hover:bg-blue-50"
+                  }`}
+              >
+                {spec}
+              </button>
+
+            ))}
+
+          </div>
+
         </div>
 
-        {/* right side  */}
+        {/* right side */}
 
+        <div className="md:w-3/4">
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3  gap-6">
-          {filterDoc.length > 0 &&
-            filterDoc.map((item, index) => (
+          <div className="grid
+              grid-cols-1
+              sm:grid-cols-2
+              md:grid-cols-2
+              lg:grid-cols-3
+              xl:grid-cols-4
+              gap-6">
+
+            {filterDoc.map((item) => (
+
               <div
+                key={item._id}
                 onClick={() => router.push(`/doctors/${item._id}/appointment`)}
-                key={index}
-                className="border border-blue-200 rounded-lg cursor-pointer hover:translate-y-[-10px] duration-500 transition-all overflow-hidden"
+                className="border border-blue-200 rounded-lg cursor-pointer hover:-translate-y-2 transition-all duration-300 overflow-hidden"
               >
+
                 <Link href={`/doctors/${item._id}/appointment`}>
+
                   <Image
                     src={item.image}
                     alt={item.name}
-                    width={150}
-                    height={300}
-                    className="bg-blue-50 rounded-lg w-full"
+                    width={300}
+                    height={200}
+                    className="bg-blue-50 w-full h-[220px] object-cover"
                   />
+
                 </Link>
-                <div className="flex flex-col justify-start p-4">
-                  <div className=" flex flex-row gap-2 items-center">
-                    <p className="w-2 h-2 rounded-full bg-green-500"></p>
-                    <p className="text-green-500 font-light text-xs">
-                      Available
+
+                <div className="p-4">
+
+                  <div className="flex items-center gap-2">
+
+                    <span
+                      className={`w-2 h-2 rounded-full ${item.available ? "bg-green-500" : "bg-gray-400"
+                        }`}
+                    />
+
+                    <p
+                      className={`text-xs ${item.available ? "text-green-500" : "text-gray-400"
+                        }`}
+                    >
+                      {item.available ? "Available" : "Unavailable"}
                     </p>
+
                   </div>
-                  <p className="text-[17px] font-semibold py-1">{item.name}</p>
-                  <p className="text-[13px] font-light py-1 text-gray-600">{item.speciality}</p>
+
+                  <p className="text-lg font-semibold mt-2">
+                    {item.name}
+                  </p>
+
+                  <p className="text-sm text-gray-600">
+                    {item.speciality}
+                  </p>
+
                 </div>
+
               </div>
+
             ))}
 
+          </div>
 
         </div>
+
       </div>
+
     </div>
-  );
+
+  )
 }
 
 export default Specialist
