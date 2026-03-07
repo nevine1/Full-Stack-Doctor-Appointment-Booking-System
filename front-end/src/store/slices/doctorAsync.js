@@ -29,7 +29,7 @@ export const fetchAllDoctors = () => {
       dispatch(setIsLoading(true));
 
       const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/doctors/get-doctors`
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/doctors/get-doctors`, { withCredentials: true }
       );
 
       if (res.data.success) {
