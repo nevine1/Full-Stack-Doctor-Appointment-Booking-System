@@ -14,18 +14,17 @@ const port = process.env.PORT || 5000
 // using middleware 
 app.use(express.json());
 
-/* app.use(
+app.use(
   cors({
     origin: [
       "http://localhost:3000",
       "http://localhost:3001",
       "https://full-stack-doctor-appointment-booking-1vky.vercel.app",
-      "https://full-stack-doctor-appointment-booking-1vky.onrender.com"
+      /* "https://full-stack-doctor-appointment-booking-1vky.onrender.com" */
     ],
     credentials: true,
   })
-); */
-app.use(corse())
+);
 
 app.use(express.urlencoded({ extended: true })); // <--- This parses URL-encoded bodies
 app.use('/uploads', express.static('uploads'));
