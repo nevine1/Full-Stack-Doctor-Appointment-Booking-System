@@ -19,7 +19,8 @@ app.use(
     origin: [
       "http://localhost:3000",
       "http://localhost:3001",
-      "https://full-stack-doctor-appointment-booking-1vky.vercel.app"
+      "https://full-stack-doctor-appointment-booking-1vky.vercel.app",
+      "https://full-stack-doctor-appointment-booking-1vky.onrender.com"
     ],
     credentials: true,
   })
@@ -31,16 +32,7 @@ app.use('/uploads', express.static('uploads'));
 connectDB();
 connectCloudinary()
 
-/* app.get("/", (req, res) => {
-  res.send(`
-    <div style="font-family: sans-serif; text-align:center; padding-top: 50px;">
-      <h1>Doctor Appointment API</h1>
-      <p>✅ Backend is running successfully!</p>
-      <a href="https://doctor-frontend.vercel.app" target="_blank" style="margin-right:10px;">Go to User App</a>
-      <a href="https://doctor-admin.vercel.app" target="_blank">Go to Admin/Doctor Dashboard</a>
-    </div>
-  `);
-}); */
+
 
 //api end points 
 app.use('/api/admin', adminRoute) // <--- Multer middleware is applied within adminRoute.js
