@@ -14,7 +14,7 @@ const port = process.env.PORT || 5000
 // using middleware 
 app.use(express.json());
 
-app.use(
+/* app.use(
   cors({
     origin: [
       "http://localhost:3000",
@@ -24,7 +24,8 @@ app.use(
     ],
     credentials: true,
   })
-);
+); */
+app.use(corse())
 
 app.use(express.urlencoded({ extended: true })); // <--- This parses URL-encoded bodies
 app.use('/uploads', express.static('uploads'));
