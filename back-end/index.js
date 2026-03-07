@@ -13,17 +13,18 @@ const port = process.env.PORT || 5000
 
 // using middleware 
 app.use(express.json());
+
 app.use(
   cors({
     origin: [
-      /* "https://doctor-frontend.vercel.app",
-      "https://doctor-admin.vercel.app", */
       "http://localhost:3000",
-      "http://localhost:3001"
+      "http://localhost:3001",
+      "https://full-stack-doctor-appointment-booking-1vky.vercel.app"
     ],
     credentials: true,
   })
 );
+
 app.use(express.urlencoded({ extended: true })); // <--- This parses URL-encoded bodies
 app.use('/uploads', express.static('uploads'));
 //connect to mongodb and cloudinary 
