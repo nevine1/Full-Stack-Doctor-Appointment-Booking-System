@@ -17,7 +17,9 @@ app.use(express.json());
 const allowedOrigins = [
   "http://localhost:3000",
   "https://full-stack-doctor-appointment-booki-ten.vercel.app",
-  "https://full-stack-doctor-appointment-booking-system-d8kozoegn.vercel.app"
+  "https://full-stack-doctor-appointment-booking-system-d8kozoegn.vercel.app",
+  "full-stack-doctor-appointment-booking-system-v6je-r7963bujl.vercel.app",
+  "https://full-stack-doctor-appointment-booki-six.vercel.app/"
 ];
 
 app.use(
