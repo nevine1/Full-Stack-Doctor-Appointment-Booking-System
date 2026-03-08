@@ -14,17 +14,23 @@ const port = process.env.PORT || 5000
 // using middleware 
 app.use(express.json());
 
-/* app.use(
-  cors({
-    origin: [
-      "http://localhost:3000",
-      "http://localhost:3001",
-      "https://full-stack-doctor-appointment-booking-1vky.vercel.app",
-      "https://full-stack-doctor-appointment-booking-1vky.onrender.com"
-    ],
-    credentials: true,
-  })
-); */
+const allowedOrigins = [
+  'https://full-stack-doctor-appointment-booki-ten.vercel.app',
+  'http://localhost:3000', // Include  local dev port if needed
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  },
+  credentials: true // This matches the 'include' mode from your frontend
+}));
 
 app.use(cors())
 app.use(express.urlencoded({ extended: true })); // <--- This parses URL-encoded bodies
