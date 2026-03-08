@@ -15,24 +15,14 @@ const port = process.env.PORT || 5000
 app.use(express.json());
 
 const allowedOrigins = [
-  'https://full-stack-doctor-appointment-booki-ten.vercel.app',
-  'http://localhost:3000', // Include  local dev port if needed
+  "http://localhost:3000",
+  "https://full-stack-doctor-appointment-booki-ten.vercel.app/"
 ];
 
 app.use(cors({
-  origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl)
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) === -1) {
-      const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
-      return callback(new Error(msg), false);
-    }
-    return callback(null, true);
-  },
-  credentials: true // This matches the 'include' mode from your frontend
+  origin: allowedOrigins,
+  credentials: true
 }));
-
-app.use(cors())
 app.use(express.urlencoded({ extended: true })); // <--- This parses URL-encoded bodies
 app.use('/uploads', express.static('uploads'));
 //connect to mongodb and cloudinary 
