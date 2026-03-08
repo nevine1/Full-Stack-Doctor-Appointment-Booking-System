@@ -16,13 +16,16 @@ app.use(express.json());
 
 const allowedOrigins = [
   "http://localhost:3000",
-  "https://full-stack-doctor-appointment-booki-ten.vercel.app/"
+  "https://full-stack-doctor-appointment-booking-system-d8kozoegn.vercel.app"
 ];
 
-app.use(cors({
-  origin: allowedOrigins,
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: allowedOrigins,
+    credentials: true
+  })
+);
+
 app.use(express.urlencoded({ extended: true })); // <--- This parses URL-encoded bodies
 app.use('/uploads', express.static('uploads'));
 //connect to mongodb and cloudinary 
