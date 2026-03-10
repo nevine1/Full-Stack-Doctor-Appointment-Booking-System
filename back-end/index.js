@@ -21,6 +21,8 @@ const allowedOrigins = [
   "https://full-stack-doctor-appointment-booking-system-v6je-r7963bujl.vercel.app",
   "https://full-stack-doctor-appointment-booki-six.vercel.app/",
   "https://full-stack-doctor-appointment-booking-system-v6je-cnexvwsg2.vercel.app",
+  "https://full-stack-doctor-appointment-book-git-d0c86b-nevine1s-projects.vercel.app",
+  "https://full-stack-doctor-appointment-booking-system-v6je-9ceczkts2.vercel.app"
 
 ];
 
