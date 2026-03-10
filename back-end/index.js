@@ -19,7 +19,9 @@ const allowedOrigins = [
   "https://full-stack-doctor-appointment-booki-ten.vercel.app",
   "https://full-stack-doctor-appointment-booking-system-d8kozoegn.vercel.app",
   "https://full-stack-doctor-appointment-booking-system-v6je-r7963bujl.vercel.app",
-  "https://full-stack-doctor-appointment-booki-six.vercel.app/"
+  "https://full-stack-doctor-appointment-booki-six.vercel.app/",
+  "https://full-stack-doctor-appointment-booking-system-v6je-cnexvwsg2.vercel.app",
+
 ];
 
 app.use(
