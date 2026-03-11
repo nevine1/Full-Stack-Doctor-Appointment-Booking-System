@@ -1,68 +1,99 @@
 import axios from "axios";
 import { setIsLoading, setDoctorAppointments } from "../slices/appointmentsSlice";
+import { setAllDoctors } from '../slices/doctorsSlice'
 
 const backUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-export const getDocAppointments = async (dispatch, doctorToken) => {
-  try {
-    dispatch(setIsLoading(true));
-    const res = await axios.get(`${backUrl}/api/doctors/doctor-appointments`, {
-      headers: {
-        Authorization: `Bearer ${doctorToken}`,
-      },
-    });
 
-    if (res.data.success) {
-      dispatch(setDoctorAppointments(res.data.data));
-    }
-  } catch (err) {
-    console.log("Error:", err.response?.data || err.message);
-  } finally {
-    dispatch(setIsLoading(false));
-  }
-};
+export const getDoctorAppointments = () => {
 
-export const doctorCancelAppointment = async (dispatch, appointmentId, doctorToken) => {
-  try {
-    dispatch(setIsLoading(true));
-    const res = await axios.post(
-      `${backUrl}/api/doctors/doctor-cancel-appointment`,
-      { appointmentId },
-      {
-        headers: { Authorization: `Bearer ${doctorToken}` },
+  return async (dispatch, getState) => {
+    try {
+      dispatch(setIsLoading(true));
+
+      const doctorToken = getState().doctors;
+      const res = await axios.get(`${backUrl}/api/doctors/doctor-appointments`, {
+        headers: {
+          Authorization: `Bearer ${doctorToken}`,
+        },
+      });
+
+      if (res.data.success) {
+        dispatch(setDoctorAppointments(res.data.data));
       }
-    );
-
-    if (res.data.success) {
-     
-      await getDocAppointments(dispatch, doctorToken);
+    } catch (err) {
+      console.log("Error:", err.response?.data || err.message);
+    } finally {
+      dispatch(setIsLoading(false));
     }
-  } catch (err) {
-    console.log(err.message);
-  } finally {
-    dispatch(setIsLoading(false));
   }
 };
 
-export const doctorCompleteAppointment = async (dispatch, appointmentId, doctorToken) => {
-  try {
-    dispatch(setIsLoading(true));
-    const res = await axios.post(
-      `${backUrl}/api/doctors/doctor-complete-appointment`,
-      { appointmentId },
-      {
-        headers: { Authorization: `Bearer ${doctorToken}` },
+export const doctorCancelAppointment = async (appointmentId) => {
+  return async (dispatch, getState) => {
+
+    try {
+      dispatch(setIsLoading(true));
+      const doctorToken = getState().doctors;
+      const res = await axios.post(
+        `${backUrl}/api/doctors/doctor-cancel-appointment`,
+        { appointmentId },
+        {
+          headers: { Authorization: `Bearer ${doctorToken}` },
+        }
+      );
+
+      if (res.data.success) {
+
+        await getDocAppointments(dispatch, doctorToken);
       }
-    );
-
-    if (res.data.success) {
-      await getDocAppointments(dispatch, doctorToken);
+    } catch (err) {
+      console.log(err.message);
+    } finally {
+      dispatch(setIsLoading(false));
     }
-  } catch (err) {
-    console.log(err.message);
-  } finally {
-    dispatch(setIsLoading(false));
   }
 };
 
+export const doctorCompleteAppointment = (appointmentId) => {
+
+
+  return async (dispatch, getState) => {
+    try {
+      dispatch(setIsLoading(true));
+      const doctorToken = getState().doctors;
+      const res = await axios.post(
+        `${backUrl}/api/doctors/doctor-complete-appointment`,
+        { appointmentId },
+        {
+          headers: { Authorization: `Bearer ${doctorToken}` },
+        }
+      );
+
+      if (res.data.success) {
+        await getDocAppointments(dispatch, doctorToken);
+      }
+    } catch (err) {
+      console.log(err.message);
+    } finally {
+      dispatch(setIsLoading(false));
+    }
+  }
+};
+
+export const fetchAllDoctors = () => {
+  return async (dispatch) => {
+    try {
+      dispatch(setIsLoading(true))
+      const res = await axios.get(`${backUrl}/api/doctors/get-doctors`);
+      if (res.data.success) {
+        dispatch(setAllDoctors(res.data.data));
+      }
+    } catch (err) {
+      console.log(`Getting doctor list error: ${err.message}`)
+    } finally {
+      dispatch(setIsLoading(false))
+    }
+  }
+}
 //export const doctorProfile = async (dispatch, doctorToken)

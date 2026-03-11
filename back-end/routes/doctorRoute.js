@@ -1,13 +1,13 @@
 import express from 'express';
 import {
     getDoctors, getDoctorData,
-    doctorLogin, getDoctorAppointments, 
+    doctorLogin, getDoctorAppointments,
     doctorCompleteAppointment,
-    doctorCancelAppointment, 
+    doctorCancelAppointment,
     doctorDashboardData,
     getDoctorProfile, updateDoctorProfile
 } from '../controllers/doctorController.js'
-import authDoctor  from '../middleware/authDoctor.js'
+import authDoctor from '../middleware/authDoctor.js'
 import upload from '../middleware/multer.js';
 
 const doctorRoute = express.Router();

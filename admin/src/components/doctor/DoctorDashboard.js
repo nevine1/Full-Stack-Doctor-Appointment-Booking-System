@@ -15,7 +15,7 @@ const DoctorDashboard = () => {
   const backUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
   const dispatch = useDispatch();
 
- 
+
   const { doctorToken } = useSelector((state) => state.doctors);
   const { appointments } = useSelector((state) => state.appointments);
 
@@ -41,7 +41,7 @@ const DoctorDashboard = () => {
   useEffect(() => {
     if (doctorToken) {
       dashboardData();
-      getDocAppointments(dispatch, doctorToken);
+      dispatch(getDocAppointments());
     }
   }, [doctorToken]);
 
@@ -160,16 +160,13 @@ const DoctorDashboard = () => {
                   <div className="flex flex-row gap-3">
                     <button
                       className="text-[12px] text-white px-4 py-1 rounded-md cursor-pointer bg-red-400"
-                      onClick={() =>
-                        doctorCancelAppointment(dispatch, item._id, doctorToken)
-                      }
-                    >
+                      onClick={() => dispatch(doctorCancelAppointment(item._id))}>
                       Cancel
                     </button>
                     <button
                       className="text-[12px] text-white px-4 py-1 rounded-md cursor-pointer bg-green-400"
-                      onClick={() => doctorCompleteAppointment(dispatch,item._id,doctorToken)}
-                        >
+                      onClick={() => dispatch(doctorCompleteAppointment(item._id))}
+                    >
                       Complete
                     </button>
                   </div>

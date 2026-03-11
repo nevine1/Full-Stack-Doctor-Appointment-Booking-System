@@ -2,7 +2,7 @@
 import axios from "axios";
 import { useSelector, dispatch, useDispatch } from "react-redux";
 import { useEffect } from "react";
-import { setDoctorAppointments, setAllAppointments , setIsLoading } from '../../store/slices/appointmentsSlice'
+import { setDoctorAppointments, setAllAppointments, setIsLoading } from '../../store/slices/appointmentsSlice'
 import Image from 'next/image'
 import { assets } from "@/assets/assets";
 import { doctorCancelAppointment, doctorCompleteAppointment, getDocAppointments } from '../../store/async/doctorAsync'
@@ -12,33 +12,33 @@ const DoctorAppointments = () => {
   const { appointments, isLoading } = useSelector((state) => state.appointments);
   const backUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-  const calculateAge = ( dob) => {
+  const calculateAge = (dob) => {
     const today = new Date();
     const birthDate = new Date(dob);
     const age = today.getFullYear() - birthDate.getFullYear()
-    return age 
+    return age
   }
 
-   //formate date 
- const formatSlot = (slotDate, slotTime) => {
-  const [day, month, year] = slotDate.split("-").map(Number);
-  const d = new Date(year, month - 1, day);
-  const today = new Date();
-  const formatted = d.toLocaleDateString("en-US", {
-    weekday: "short",
-    month: "short",
-    day: "numeric",
-    year: "numeric"
-  });
-  return  `${formatted} at ${slotTime}` ;
+  //formate date 
+  const formatSlot = (slotDate, slotTime) => {
+    const [day, month, year] = slotDate.split("-").map(Number);
+    const d = new Date(year, month - 1, day);
+    const today = new Date();
+    const formatted = d.toLocaleDateString("en-US", {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+      year: "numeric"
+    });
+    return `${formatted} at ${slotTime}`;
   };
-  
- 
+
+
   console.log('appointments length are;', appointments?.length)
-  
+
   useEffect(() => {
     if (doctorToken) {
-      getDocAppointments(dispatch, doctorToken);
+      dispatch(getDocAppointments());
     }
   }, [doctorToken]);
 
@@ -54,54 +54,54 @@ const DoctorAppointments = () => {
           <p>Date & Time</p>
           <p>Payment</p>
           <p>Action</p>
-        
+
         </div>
-      <div >
-         {
-        appointments?.length > 0 && appointments?.map((item, index) => (
-          <div key={index} className="flex flex-wrap justify-between hover:bg-gray-100 duration-300 transition-all
+        <div >
+          {
+            appointments?.length > 0 && appointments?.map((item, index) => (
+              <div key={index} className="flex flex-wrap justify-between hover:bg-gray-100 duration-300 transition-all
              sm:grid sm:grid-cols-[0.5fr_3fr_1fr_1fr_3fr_2fr_2fr] p-2 text-center text-[13px] gap-1 items-center text-gray-600 border border-gray-100">
-            <p className="max-sm:hidden">{index+1}</p>
-            <div className="flex flex-row gap-3 items-center justify-start sm:justify-center text-left">
-                <Image
-                src={item.userData.image}
-                alt="patient image"
-                width={40}
-                height={40}
-                className="md:w-8 md:h-8 sm:w-4 sm:h-4 rounded-full bg-blue-100"
-                />
-              <p>{item.userData.name}</p>
-            </div>
-            <p>{item.onlinePayment ? "online" : "Cash"}</p>
-            <p>{calculateAge(item.userData.DOB)} Y</p>
-            <p>{formatSlot(item.slotDate, item.slotTime)}</p>
-            <p>{item.onlinePayment ? "online" : "Cash"}</p>
-            <div className="flex flex-row gap-2 items-center justify-center">
-              {
-                item.canceled 
-                  ? <p className="text-red-500 text-[12px]">Canceled</p> 
-                  : item.completed 
-                    ? <p className="text-green-500 text-[12px]">Completed</p>
-                    : (
-                      <div className="flex flex-row gap-2 items-center justify-center">
-                        <button className="text-[12px] text-white px-2 py-1 rounded-md cursor-pointer bg-red-400"
-                          onClick={() => doctorCancelAppointment(dispatch, item._id, doctorToken)}
-                          >Cancel
-                        </button>
-                        <button className="text-[12px] text-white px-2 py-1 rounded-md cursor-pointer bg-green-400"
-                          onClick={() => doctorCompleteAppointment(dispatch, item._id, doctorToken)}
-                          >Complete
-                        </button>
-                      </div>
-                    )
-              }
-              
-            </div>
-            
-          </div>
-        ))
-      }
-      </div>
+                <p className="max-sm:hidden">{index + 1}</p>
+                <div className="flex flex-row gap-3 items-center justify-start sm:justify-center text-left">
+                  <Image
+                    src={item.userData.image}
+                    alt="patient image"
+                    width={40}
+                    height={40}
+                    className="md:w-8 md:h-8 sm:w-4 sm:h-4 rounded-full bg-blue-100"
+                  />
+                  <p>{item.userData.name}</p>
+                </div>
+                <p>{item.onlinePayment ? "online" : "Cash"}</p>
+                <p>{calculateAge(item.userData.DOB)} Y</p>
+                <p>{formatSlot(item.slotDate, item.slotTime)}</p>
+                <p>{item.onlinePayment ? "online" : "Cash"}</p>
+                <div className="flex flex-row gap-2 items-center justify-center">
+                  {
+                    item.canceled
+                      ? <p className="text-red-500 text-[12px]">Canceled</p>
+                      : item.completed
+                        ? <p className="text-green-500 text-[12px]">Completed</p>
+                        : (
+                          <div className="flex flex-row gap-2 items-center justify-center">
+                            <button className="text-[12px] text-white px-2 py-1 rounded-md cursor-pointer bg-red-400"
+                              onClick={() => dispatch(doctorCancelAppointment(item._id))}
+                            >Cancel
+                            </button>
+                            <button className="text-[12px] text-white px-2 py-1 rounded-md cursor-pointer bg-green-400"
+                              onClick={() => dispatch(doctorCompleteAppointment(item._id))}
+                            >Complete
+                            </button>
+                          </div>
+                        )
+                  }
+
+                </div>
+
+              </div>
+            ))
+          }
+        </div>
       </div>
     </div>
   )

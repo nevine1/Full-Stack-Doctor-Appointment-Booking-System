@@ -23,7 +23,7 @@ const addDoctor = async (req, res) => {
       return res.status(400).json({ success: false, message: "Image file is missing." });
     }
 
-    if (!email) { 
+    if (!email) {
       console.error("Validation Error: Email is missing.");
       return res.status(400).json({ success: false, message: "Email is required." });
     }
@@ -32,7 +32,7 @@ const addDoctor = async (req, res) => {
       return res.status(400).json({ success: false, message: "Please enter a valid email." });
     }
 
-    if (!password) { 
+    if (!password) {
       console.error("Validation Error: Password is missing.");
       return res.status(400).json({ success: false, message: "Password is required." });
     }
@@ -68,7 +68,7 @@ const addDoctor = async (req, res) => {
       image: imageUrl,
       speciality,
       degree,
-      fees: Number(fees), 
+      fees: Number(fees),
       experience,
       about,
       available, //available === 'true', // Ensure conversion to Boolean from string "true" / "false"
@@ -119,6 +119,7 @@ const addDoctor = async (req, res) => {
     })
   }
 } */
+
 //api for admin login
 const adminLogin = async (req, res) => {
   try {
@@ -159,9 +160,9 @@ const adminLogin = async (req, res) => {
 
 const appointmentsAdmin = async (req, res) => {
   try {
-    
+
     const appointments = await Appointment.find({});// gets all the appointments
-    
+
     return res.json({
       success: true,
       data: appointments
@@ -169,7 +170,7 @@ const appointmentsAdmin = async (req, res) => {
   } catch (err) {
     console.log('appointmnte error are', err.message)
     return res.json({
-      success: false, 
+      success: false,
       message: err.message
     })
   }
@@ -180,7 +181,7 @@ const appointmentsAdmin = async (req, res) => {
 const adminCancelAppointment = async (req, res) => {
   try {
     const { appointmentId } = req.body;
-    
+
 
     if (!appointmentId) {
       return res.status(400).json({
@@ -205,7 +206,7 @@ const adminCancelAppointment = async (req, res) => {
       });
     }
 
-  
+
     const updatedAppointment = await Appointment.findByIdAndUpdate(
       appointmentId,
       { canceled: true },
@@ -224,19 +225,19 @@ const adminCancelAppointment = async (req, res) => {
     });
 
 
-    } catch (err) {
-        console.error("Error canceling appointment:", err);
-        res.status(500).json({
-            success: false,
-            message: "Server error"
-        });
-    }
+  } catch (err) {
+    console.error("Error canceling appointment:", err);
+    res.status(500).json({
+      success: false,
+      message: "Server error"
+    });
+  }
 };
 
 
 //api to get the admin dashboard data
 const adminDashboardData = async (req, res) => {
-  
+
   try {
     const doctors = await Doctor.find({});
     const users = await User.find({});
@@ -248,9 +249,9 @@ const adminDashboardData = async (req, res) => {
       appointments: appointments.length,
       latestAppointments: appointments.reverse().slice(0, 5), //latest 5 appointments
     }
-console.log('admin dashed data is:', dashedData)
+    console.log('admin dashed data is:', dashedData)
     return res.json({
-      success: true, 
+      success: true,
       data: dashedData
     })
 
@@ -265,6 +266,6 @@ console.log('admin dashed data is:', dashedData)
 export {
   addDoctor, adminLogin,
   appointmentsAdmin,
-  adminCancelAppointment, 
+  adminCancelAppointment,
   adminDashboardData
 };
