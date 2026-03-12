@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
-import { updateAdminToken, setIsLoading } from "@/store/slices/adminSlice";
+import { updateAdminToken, setAdminLoading } from "@/store/slices/adminSlice";
 import { setDoctorToken } from "@/store/slices/doctorsSlice";
 import { toast } from "react-toastify";
 import { FaRegEyeSlash, FaRegEye } from "react-icons/fa";
@@ -13,7 +13,6 @@ const Login = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const { isLoading } = useSelector((state) => state.admin);
-  const { doctorToken } = useSelector((state) => state.doctors);
 
   const [role, setRole] = useState("Admin");
   const [email, setEmail] = useState("");
@@ -22,9 +21,13 @@ const Login = () => {
 
   const backUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
+  useEffect(() => {
+    dispatch(setAdminLoading(false));
+  }, [dispatch]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    dispatch(setIsLoading(true));
+    dispatch(setAdminLoading(true));
 
     try {
       if (role === "Admin") {
@@ -55,18 +58,12 @@ const Login = () => {
         }
       }
     } catch (err) {
-      console.error("Login error:", err);
-      toast.error("An error occurred during login");
+      console.error(err);
+      toast.error("Login error");
     } finally {
-      dispatch(setIsLoading(false));
+      dispatch(setAdminLoading(false));
     }
   };
-
-  useEffect(() => {
-    if (doctorToken) {
-      console.log("Doctor token in Redux:", doctorToken);
-    }
-  }, [doctorToken]);
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-blue-100 to-blue-50 px-4">
@@ -75,79 +72,45 @@ const Login = () => {
         className="w-full max-w-md bg-white border border-gray-200 shadow-lg rounded-2xl p-8 sm:p-10"
       >
         <div className="flex flex-col gap-5">
-          {/* Header */}
           <div className="text-center">
             <h2 className="text-2xl font-semibold text-gray-800">
               {role === "Admin" ? "Admin Login" : "Doctor Login"}
             </h2>
-            <p className="text-gray-500 text-sm mt-1">
-              {role === "Admin"
-                ? "Login to manage the system"
-                : "Login to access your dashboard"}
-            </p>
           </div>
 
-          {/* Email Input */}
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Email"
-            className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300"
+            className="px-3 py-2 border border-gray-300 rounded-md"
             required
           />
 
-          {/* Password Input */}
           <div className="relative flex items-center">
             <input
               type={showPass ? "text" : "password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Password"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md"
               required
             />
             <div
               onClick={() => setShowPass(!showPass)}
-              className="absolute right-3 text-gray-600 cursor-pointer hover:text-blue-500 transition"
+              className="absolute right-3 cursor-pointer"
             >
               {showPass ? <FaRegEyeSlash size={20} /> : <FaRegEye size={20} />}
             </div>
           </div>
 
-          {/* Submit Button */}
           <button
             type="submit"
             disabled={isLoading}
-            className="mt-2 bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 rounded-md transition-all duration-300 shadow-md disabled:opacity-70 disabled:cursor-not-allowed"
+            className="mt-2 bg-blue-500 text-white py-2 rounded-md"
           >
-            {isLoading === true ? "Logging in..." : "Login"}
+            {isLoading ? "Logging in..." : "Login"}
           </button>
-
-          {/* Toggle Between Admin / Doctor */}
-          <p className="text-center text-sm text-gray-600 mt-2">
-            {role === "Admin" ? (
-              <>
-                Are you a doctor?{" "}
-                <span
-                  onClick={() => setRole("Doctor")}
-                  className="text-blue-600 cursor-pointer hover:underline"
-                >
-                  Login here
-                </span>
-              </>
-            ) : (
-              <>
-                Are you an admin?{" "}
-                <span
-                  onClick={() => setRole("Admin")}
-                  className="text-blue-600 cursor-pointer hover:underline"
-                >
-                  Login here
-                </span>
-              </>
-            )}
-          </p>
         </div>
       </form>
     </div>

@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   isLoading: false,
@@ -6,18 +6,17 @@ const initialState = {
 };
 
 const adminSlice = createSlice({
-  name: 'admin',
+  name: "admin",
   initialState,
-
   reducers: {
-    setIsLoading: (state, action) => {
+    setAdminLoading: (state, action) => {
       state.isLoading = action.payload;
     },
+
     updateAdminToken: (state, action) => {
       state.adminToken = action.payload;
-      localStorage.setItem('token', state.adminToken); // i do not need to use it because I am using redux-persist
-    
     },
+
     logout: (state) => {
       state.isLoading = false;
       state.adminToken = null;
@@ -25,5 +24,5 @@ const adminSlice = createSlice({
   },
 });
 
-export const { setIsLoading, logout, updateAdminToken } = adminSlice.actions;
+export const { setAdminLoading, logout, updateAdminToken } = adminSlice.actions;
 export default adminSlice.reducer;

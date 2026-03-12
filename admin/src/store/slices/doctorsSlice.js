@@ -1,32 +1,41 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const doctorsSlice = createSlice({
-    name: 'doctors', 
+    name: "doctors",
     initialState: {
-        doctors: [], 
+        doctors: [],
         doctorToken: "",
-        
-        isLoading: null,
+        isLoading: false,
+    },
 
-    }, 
     reducers: {
-        setIsLoading: (state, action) => {
-            state.isLoading = action.payload
+        setDoctorsLoading: (state, action) => {
+            state.isLoading = action.payload;
         },
+
         setAllDoctors: (state, action) => {
-            state.doctors = action.payload; 
-        }, 
+            state.doctors = action.payload;
+        },
+
         setDoctorToken: (state, action) => {
             state.doctorToken = action.payload;
-        }, 
-        updateDoctorInfo: (state, action) => {
-            const docId = action.payload 
-            const doctor = doctors.find((doc) => docId === doc._id)
-            const newDoctorData = action.payload;
-            return newDoctorData
-        }
-    }
-})
+        },
 
-export const { setAllDoctors, setIsLoading, setDoctorToken } = doctorsSlice.actions;
-export default doctorsSlice.reducer
+        updateDoctorInfo: (state, action) => {
+            const docId = action.payload._id;
+            const doctor = state.doctors.find((doc) => doc._id === docId);
+
+            if (doctor) {
+                Object.assign(doctor, action.payload);
+            }
+        },
+    },
+});
+
+export const {
+    setAllDoctors,
+    setDoctorsLoading,
+    setDoctorToken,
+} = doctorsSlice.actions;
+
+export default doctorsSlice.reducer;
