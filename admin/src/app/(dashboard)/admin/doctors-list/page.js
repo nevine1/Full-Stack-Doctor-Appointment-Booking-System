@@ -13,35 +13,7 @@ const page = () => {
   const { doctors } = useSelector((state) => state.doctors)
   console.log('doctors list admin token is:', adminToken)
 
-  /* const fetchAllDoctors = async () => {
-    try {
-      const backUrl = process.env.NEXT_PUBLIC_BACKEND_URL
-      dispatch(setIsLoading(true));
-      if (adminToken) {
-        const res = await axios.post(`${backUrl}/api/admin/get-doctors`, {}, {
-          headers: {
-            Authorization: `Bearer ${adminToken}`
-          }
-        })
 
-        if (res.data) {
-          setDoctors(res.data.data)
-        } else {
-          toast.error(error.message)
-        }
-
-      }
-
-    } catch (err) {
-      console.log(err.message)
-    }
-  } */
-
-  /* useEffect(() => {
-    if (adminToken) {
-      dispatch(fetchAllDoctors());
-    }
-  }, [adminToken]) */
 
   console.log('doctors list are:', doctors)
   return (

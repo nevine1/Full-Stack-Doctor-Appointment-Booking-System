@@ -121,7 +121,7 @@ const Login = () => {
             disabled={isLoading}
             className="mt-2 bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 rounded-md transition-all duration-300 shadow-md disabled:opacity-70 disabled:cursor-not-allowed"
           >
-            {isLoading ? "Logging in..." : "Login"}
+            {isLoading === true ? "Logging in..." : "Login"}
           </button>
 
           {/* Toggle Between Admin / Doctor */}
