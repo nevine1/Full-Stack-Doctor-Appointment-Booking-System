@@ -1,50 +1,47 @@
 "use client";
-import { assets } from '@/assets/assets';
-import { useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import Image from 'next/image';
-import Link from 'next/link';
-import axios from 'axios';
-import {setIsLoading } from '../../../../store/slices/adminSlice'
-import { toast } from 'react-toastify'
-import { useRouter } from 'next/navigation';
-const Page = () => {
+import { assets } from "@/assets/assets";
+import { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import Image from "next/image";
+import axios from "axios";
+import { setAdminLoading } from "../../../../store/slices/adminSlice";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
+
+const page = () => {
   const dispatch = useDispatch();
   const router = useRouter();
-  const backUrl = process.env.NEXT_PUBLIC_BACKEND_URL
+  const backUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
   const { isLoading, adminToken } = useSelector((state) => state.admin);
   const experienceOptions = Array.from({ length: 10 }, (_, i) => i + 1);
 
   const [doctor, setDoctor] = useState({
-    name: '',
-    email: '',
-    password: '',
-    image: '',
+    name: "",
+    email: "",
+    password: "",
+    image: null,
     imagePreview: "",
-    speciality: 'General-physician',
-    degree: '',
-    experience: '5 Years',
-    fees: '',
-    address1: '',
-    address2: '',
-    about: '',
+    speciality: "General-physician",
+    degree: "",
+    experience: "5",
+    fees: "",
+    address1: "",
+    address2: "",
+    about: "",
     available: true,
     slots_booked: 0,
   });
 
-
   const handleChange = (e) => {
     const { name, value, type, files } = e.target;
     if (type === "file") {
-      const file = files[0] || ""; // file object not a string
-      const imageURL = URL.createObjectURL(file); //to can see  the image preview url 
+      const file = files[0] || null;
+      const imageURL = file ? URL.createObjectURL(file) : "";
       setDoctor((prev) => ({
         ...prev,
-        image: file || "",
-        imagePreview: imageURL || ""
+        image: file,
+        imagePreview: imageURL,
       }));
-
-
     } else {
       setDoctor((prev) => ({
         ...prev,
@@ -53,50 +50,22 @@ const Page = () => {
     }
   };
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("⏩ Submitting to:", `${backUrl}/api/admin/add-doctor`);
+    if (!adminToken) return toast.error("You are not logged in as admin.");
+
+    dispatch(setAdminLoading(true));
+
     try {
-      dispatch(setIsLoading(true));
-
-      if (!adminToken) return;
-
-      // Upload image
-      //const uploadedImageUrl = await uploadFile(doctor.image, adminToken);
-
-      // all doctor data
-      /* const docData = {
-          name: doctor.name, 
-          email: doctor.email,
-          password: doctor.password,
-          image: uploadedImageUrl, 
-          speciality: doctor.speciality,
-          degree: doctor.degree,
-          experience: doctor.experience,
-          fees: doctor.fees,
-          address: JSON.stringify({ address1: doctor.address1, address2: doctor.address2 }),
-          about: doctor.about, 
-          available: doctor.available,
-          slots_booked: doctor.slots_booked,
-            
-          }; */
-
-      // doctor data
       const formData = new FormData();
-      formData.append("name", doctor.name);
-      formData.append("email", doctor.email);
-      formData.append("password", doctor.password);
-      formData.append("image", doctor.image);
-      formData.append("speciality", doctor.speciality);
-      formData.append("degree", doctor.degree);
-      formData.append("fees", doctor.fees);
-      formData.append("experience", doctor.experience);
-      formData.append("about", doctor.about);
-      formData.append("available", doctor.available);
-      formData.append("slots_booked", doctor.slots_booked);
-      formData.append("address", JSON.stringify({ address1: doctor.address1, address2: doctor.address2 }));
-
+      Object.entries(doctor).forEach(([key, value]) => {
+        if (key === "address1" || key === "address2") return;
+        formData.append(key, value);
+      });
+      formData.append(
+        "address",
+        JSON.stringify({ address1: doctor.address1, address2: doctor.address2 })
+      );
 
       const res = await axios.post(`${backUrl}/api/admin/add-doctor`, formData, {
         headers: {
@@ -105,191 +74,254 @@ const Page = () => {
         },
       });
 
-      if (res.data) {
-        toast.success(`${doctor.name} added successfully `)
-        console.log("Doctor added successfully:", res.data);
-
+      if (res.data.success) {
+        toast.success(`${doctor.name} added successfully`);
         setDoctor({
-          name: '',
-          email: '',
-          password: '',
-          image: '',
+          name: "",
+          email: "",
+          password: "",
+          image: null,
           imagePreview: "",
-          degree: '',
-          fees: '',
-          address1: '',
-          address2: '',
-          about: '',
+          speciality: "General-physician",
+          degree: "",
+          experience: "5",
+          fees: "",
+          address1: "",
+          address2: "",
+          about: "",
           available: true,
           slots_booked: 0,
-        })
+        });
       } else {
-        toast.error(data.message)
+        toast.error(res.data.message || "Failed to add doctor");
       }
-
-
-
     } catch (err) {
       console.error(err.response?.data || err.message);
+      toast.error("Error adding doctor");
     } finally {
-      dispatch(setIsLoading(false));
+      dispatch(setAdminLoading(false));
     }
   };
 
-
   return (
-    <div className="my-1 mx-auto w-[80%] max-w-6xl px-4 md:px-8 max-h-[80vh] ">
-
+    <div className="my-4 mx-auto w-[95%] max-w-6xl px-4 md:px-8 min-h-screen">
       <form
         onSubmit={handleSubmit}
-        className="mt-5 mb-4  border shadow-lg border-gray-300 w-full max-w-4xl mx-auto p-8 md:p-10 rounded-xl"
+        className="mt-5 mb-6 border shadow-lg border-gray-300 w-full max-w-4xl mx-auto p-6 md:p-10 rounded-xl bg-white"
       >
-        <p className="pb-3 text-center text-xl font-semibold">Adding New Doctor</p>
+        <p className="pb-4 text-center text-2xl font-semibold">Adding New Doctor</p>
 
-        <div className="flex items-center justify-center m-1">
-
-          <Link href={`${doctor.imagePreview}`}>
-            <Image
-              src={doctor.image ? doctor.imagePreview : assets.upload_area}
-              width={60}
-              height={60}
-              alt="Preview"
-              className="rounded-full object-cover border border-gray-200 mb-2"
-            />
-          </Link>
-
+        <div className="flex items-center justify-center mb-4">
+          <Image
+            src={doctor.imagePreview || assets.upload_area}
+            width={80}
+            height={80}
+            alt="Preview"
+            className="rounded-full object-cover border border-gray-200"
+          />
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
-          <input
-            name="name"
-            type="text"
-            onChange={handleChange}
-            value={doctor.name}
-            placeholder="Full Name"
-            className="pl-3 py-2 border border-gray-300 bg-white rounded-md w-full text-sm"
-          />
 
-          <input
-            name="email"
-            type="email"
-            onChange={handleChange}
-            value={doctor.email}
-            placeholder="Email"
-            className="pl-3 py-2 border border-gray-300 bg-white rounded-md w-full text-sm"
-          />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
 
-          <input
-            name="password"
-            type="password"
-            onChange={handleChange}
-            value={doctor.password}
-            placeholder="Password"
-            className="pl-3 py-2 border border-gray-300 bg-white rounded-md w-full text-sm"
-            required
-          />
-
-          <input
-            type="file"
-            name="image"
-            onChange={handleChange}
-            className="pl-3 py-2 border text-sm border-gray-300 bg-white rounded-md w-full text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200"
-            required
-          />
-
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 col-span-full">
+          <div className="flex flex-col">
+            <label htmlFor="name" className="mb-1 text-sm font-medium text-gray-700">
+              Full Name
+            </label>
             <input
-              name="address1"
+              id="name"
+              name="name"
               type="text"
+              placeholder="Enter full name"
+              value={doctor.name}
               onChange={handleChange}
-              value={doctor.address1}
-              placeholder="Address Line 1"
-              className="pl-3 py-2 border border-gray-300 bg-white rounded-md w-full text-sm"
+              className="pl-3 py-2 border border-gray-300 rounded-md w-full text-sm"
               required
-            />
-            <input
-              name="address2"
-              type="text"
-              onChange={handleChange}
-              value={doctor.address2}
-              placeholder="Address Line 2"
-              className="pl-3 py-2 border border-gray-300 bg-white rounded-md w-full text-sm"
             />
           </div>
 
-          <input
-            name="fees"
-            type="number"
-            onChange={handleChange}
-            value={doctor.fees}
-            placeholder="Fees"
-            className="pl-3 py-2 border border-gray-300 bg-white rounded-md w-full text-sm"
-            required
-          />
 
-          <select
-            name="speciality"
-            className="pl-3 py-2 border border-gray-300 bg-white rounded-md w-full text-gray-500 text-sm"
-            onChange={handleChange}
-            value={doctor.speciality}
-            required
-          >
-            <option value="General-physician">General-physician</option>
-            <option value="Gynecologist">Gynecologist</option>
-            <option value="Dermatologist">Dermatologist</option>
-            <option value="Neurologist">Neurologist</option>
-            <option value="Gastroenterologist">Gastroenterologist</option>
-            <option value="Pediatricians">Pediatricians</option>
-          </select>
-
-          <select
-            name="experience"
-            className="pl-3 py-2 border border-gray-300 bg-white rounded-md w-full text-gray-500 text-sm"
-            onChange={handleChange}
-            value={doctor.experience}
-            required
-          >
-            <option value="">Experience</option>
-            {experienceOptions.map((year) => (
-              <option key={year} value={year}>
-                {year} {year === 1 ? 'year' : 'years'}
-              </option>
-            ))}
-          </select>
+          <div className="flex flex-col">
+            <label htmlFor="email" className="mb-1 text-sm font-medium text-gray-700">
+              Email
+            </label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              placeholder="Enter email"
+              value={doctor.email}
+              onChange={handleChange}
+              className="pl-3 py-2 border border-gray-300 rounded-md w-full text-sm"
+              required
+            />
+          </div>
 
 
-          <input
-            name="degree"
-            type="text"
-            onChange={handleChange}
-            value={doctor.degree}
-            placeholder="Degree"
-            className="pl-3 py-2 border border-gray-300 bg-white rounded-md w-full text-sm"
-          />
+          <div className="flex flex-col">
+            <label htmlFor="password" className="mb-1 text-sm font-medium text-gray-700">
+              Password
+            </label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              placeholder="Enter password"
+              value={doctor.password}
+              onChange={handleChange}
+              className="pl-3 py-2 border border-gray-300 rounded-md w-full text-sm"
+              required
+            />
+          </div>
 
 
-          <div className="col-span-full">
+          <div className="flex flex-col">
+            <label htmlFor="image" className="mb-1 text-sm font-medium text-gray-700">
+              Profile Image
+            </label>
+            <input
+              id="image"
+              type="file"
+              name="image"
+              onChange={handleChange}
+              className="pl-3 py-2 border text-sm border-gray-300 rounded-md w-full text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200"
+            />
+          </div>
+
+
+          <div className="flex flex-col">
+            <label htmlFor="address1" className="mb-1 text-sm font-medium text-gray-700">
+              Address Line 1
+            </label>
+            <input
+              id="address1"
+              name="address1"
+              type="text"
+              placeholder="Address line 1"
+              value={doctor.address1}
+              onChange={handleChange}
+              className="pl-3 py-2 border border-gray-300 rounded-md w-full text-sm"
+              required
+            />
+          </div>
+
+
+          <div className="flex flex-col">
+            <label htmlFor="address2" className="mb-1 text-sm font-medium text-gray-700">
+              Address Line 2
+            </label>
+            <input
+              id="address2"
+              name="address2"
+              type="text"
+              placeholder="Address line 2"
+              value={doctor.address2}
+              onChange={handleChange}
+              className="pl-3 py-2 border border-gray-300 rounded-md w-full text-sm"
+            />
+          </div>
+
+
+          <div className="flex flex-col">
+            <label htmlFor="fees" className="mb-1 text-sm font-medium text-gray-700">
+              Fees $:
+            </label>
+            <input
+              id="fees"
+              name="fees"
+              type="number"
+              placeholder="Fees"
+              value={doctor.fees}
+              onChange={handleChange}
+              className="pl-3 py-2 border border-gray-300 rounded-md w-full text-sm"
+              required
+            />
+          </div>
+
+
+          <div className="flex flex-col">
+            <label htmlFor="speciality" className="mb-1 text-sm font-medium text-gray-700">
+              Speciality
+            </label>
+            <select
+              id="speciality"
+              name="speciality"
+              value={doctor.speciality}
+              onChange={handleChange}
+              className="pl-3 py-2 border border-gray-300 rounded-md w-full text-sm text-gray-500"
+            >
+              <option value="General-physician">General-physician</option>
+              <option value="Gynecologist">Gynecologist</option>
+              <option value="Dermatologist">Dermatologist</option>
+              <option value="Neurologist">Neurologist</option>
+              <option value="Gastroenterologist">Gastroenterologist</option>
+              <option value="Pediatricians">Pediatricians</option>
+            </select>
+          </div>
+
+
+          <div className="flex flex-col">
+            <label htmlFor="experience" className="mb-1 text-sm font-medium text-gray-700">
+              Experience
+            </label>
+            <select
+              id="experience"
+              name="experience"
+              value={doctor.experience}
+              onChange={handleChange}
+              className="pl-3 py-2 border border-gray-300 rounded-md w-full text-sm text-gray-500"
+            >
+              <option value="">Experience</option>
+              {experienceOptions.map((year) => (
+                <option key={year} value={year}>
+                  {year} {year === 1 ? "year" : "years"}
+                </option>
+              ))}
+            </select>
+          </div>
+
+
+          <div className="flex flex-col">
+            <label htmlFor="degree" className="mb-1 text-sm font-medium text-gray-700">
+              Degree
+            </label>
+            <input
+              id="degree"
+              name="degree"
+              type="text"
+              placeholder="Degree"
+              value={doctor.degree}
+              onChange={handleChange}
+              className="pl-3 py-2 border border-gray-300 rounded-md w-full text-sm"
+            />
+          </div>
+
+
+          <div className="flex flex-col md:col-span-2">
+            <label htmlFor="about" className="mb-1 text-sm font-medium text-gray-700">
+              About
+            </label>
             <textarea
+              id="about"
               name="about"
               rows="4"
-              placeholder="About me ...."
-              onChange={handleChange}
+              placeholder="About me ..."
               value={doctor.about}
-              className="pl-3 py-2 border border-gray-300 bg-white rounded-md w-full resize-none text-sm"
-            ></textarea>
+              onChange={handleChange}
+              className="pl-3 py-2 border border-gray-300 rounded-md w-full text-sm resize-none"
+            />
           </div>
         </div>
 
         <button
           type="submit"
-          className="mt-6 py-2 px-20 mx-auto cursor-pointer  flex justify-center  text-white bg-blue-500 border hover:border-blue-600 hover:text-blue-500 hover:bg-white transition-all duration-300 rounded-md"
           disabled={isLoading}
+          className="mt-6 py-2 px-6 w-full md:w-auto mx-auto block text-white bg-blue-500 border border-blue-500 rounded-md hover:bg-white hover:text-blue-500 hover:border-blue-600 transition-all duration-300"
         >
-          Submit
+          {isLoading ? "Adding..." : "Submit"}
         </button>
       </form>
     </div>
   );
 };
 
-export default Page;
+export default page;

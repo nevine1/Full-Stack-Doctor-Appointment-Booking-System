@@ -1,24 +1,24 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const appointmentsSlice = createSlice({
-    name: 'appointments', 
+    name: "appointments",
     initialState: {
-        appointments: [], 
-        isLoading: null,
-
-    }, 
+        appointments: [],
+        isLoading: false,
+    },
     reducers: {
         setIsLoading: (state, action) => {
-            state.isLoading = action.payload
+            state.isLoading = action.payload;
         },
         setAllAppointments: (state, action) => {
-            state.appointments = action.payload; 
+            state.appointments = action.payload;
         },
         setDoctorAppointments: (state, action) => {
-            state.appointments = action.payload; //this is the appointments for each doctor
-        }
-    }
-})
+            state.appointments = action.payload;
+        },
+    },
+});
 
-export const { setAllAppointments, setIsLoading, setDoctorAppointments } = appointmentsSlice.actions;
-export default appointmentsSlice.reducer
+export const { setAllAppointments, setIsLoading, setDoctorAppointments } =
+    appointmentsSlice.actions;
+export default appointmentsSlice.reducer;

@@ -1,21 +1,20 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const usersSlice = createSlice({
-    name: 'users', 
+    name: "users",
     initialState: {
-        doctors: [], 
-        isLoading: null,
-
-    }, 
+        users: [],
+        isUserLoading: false,
+    },
     reducers: {
-        setIsLoading: (state, action) => {
-            state.isLoading = action.payload
+        setIsUserLoading: (state, action) => {
+            state.isUserLoading = action.payload;
         },
         setAllUsers: (state, action) => {
-            state.users = action.payload; 
-        }
-    }
-})
+            state.users = action.payload;
+        },
+    },
+});
 
-export const { setAllAppointments, setIsLoading } = usersSlice.actions;
-export default usersSlice.reducer
+export const { setAllUsers, setIsUserLoading } = usersSlice.actions;
+export default usersSlice.reducer;
