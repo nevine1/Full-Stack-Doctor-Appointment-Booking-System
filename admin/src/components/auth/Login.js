@@ -14,7 +14,7 @@ const Login = () => {
   const dispatch = useDispatch();
   const { isLoading } = useSelector((state) => state.admin);
 
-  const [role, setRole] = useState("Admin");
+  const [role, setRole] = useState("Admin"); // default role
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPass, setShowPass] = useState(false);
@@ -31,35 +31,33 @@ const Login = () => {
 
     try {
       if (role === "Admin") {
-        const res = await axios.post(`${backUrl}/api/admin/admin-login`, {
-          email,
-          password,
-        });
+        // Admin login
+        const res = await axios.post(`${backUrl}/api/admin/admin-login`, { email, password });
 
         if (res.data.token) {
           dispatch(updateAdminToken(res.data.token));
+          localStorage.setItem("adminToken", res.data.token);
           toast.success("Admin logged in successfully");
-          router.push("/admin/dashboard");
+          router.replace("/admin/dashboard"); // replace prevents back navigation
         } else {
-          toast.error(res.data.message || "Login failed");
+          toast.error(res.data.message || "Admin login failed");
         }
       } else {
-        const res = await axios.post(`${backUrl}/api/doctors/doctor-login`, {
-          email,
-          password,
-        });
+        // Doctor login
+        const res = await axios.post(`${backUrl}/api/doctors/doctor-login`, { email, password });
 
         if (res.data.success && res.data.token) {
           dispatch(setDoctorToken(res.data.token));
+          localStorage.setItem("doctorToken", res.data.token);
           toast.success("Doctor logged in successfully");
-          router.push("/doctor/dashboard");
+          router.replace("/doctor/dashboard");
         } else {
-          toast.error(res.data.message || "Login failed");
+          toast.error(res.data.message || "Doctor login failed");
         }
       }
     } catch (err) {
       console.error(err);
-      toast.error("Login error");
+      toast.error(err.response?.data?.message || "Login error");
     } finally {
       dispatch(setAdminLoading(false));
     }
@@ -71,12 +69,31 @@ const Login = () => {
         onSubmit={handleSubmit}
         className="w-full max-w-md bg-white border border-gray-200 shadow-lg rounded-2xl p-8 sm:p-10"
       >
+        {/* Role Switch */}
+        <div className="flex justify-center gap-4 mb-6">
+          <button
+            type="button"
+            className={`px-4 py-2 rounded-lg ${role === "Admin" ? "bg-blue-500 text-white" : "bg-gray-200"}`}
+            onClick={() => setRole("Admin")}
+          >
+            Admin
+          </button>
+          <button
+            type="button"
+            className={`px-4 py-2 rounded-lg ${role === "Doctor" ? "bg-green-500 text-white" : "bg-gray-200"}`}
+            onClick={() => setRole("Doctor")}
+          >
+            Doctor
+          </button>
+        </div>
+
         <div className="flex flex-col gap-5">
           <div className="text-center">
             <h2 className="text-2xl font-semibold text-gray-800">
               {role === "Admin" ? "Admin Login" : "Doctor Login"}
             </h2>
           </div>
+
 
           <input
             type="email"
@@ -104,10 +121,11 @@ const Login = () => {
             </div>
           </div>
 
+
           <button
             type="submit"
             disabled={isLoading}
-            className="mt-2 bg-blue-500 text-white py-2 rounded-md"
+            className="mt-2 bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition disabled:opacity-50"
           >
             {isLoading ? "Logging in..." : "Login"}
           </button>

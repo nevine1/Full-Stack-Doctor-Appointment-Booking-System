@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { setIsLoading } from '@/store/slices/adminSlice';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import Doctor from '@/components/doctor/Doctor';
+import DoctorCard from '@/components/doctor/DoctorCard';
 import Image from 'next/image';
 import { fetchAllDoctors } from '@/store/async/doctorAsync';
 const page = () => {
@@ -23,7 +23,7 @@ const page = () => {
         <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 grid-col-1 gap-8 flex justify-center">
           {doctors.map((doc, index) => (
             <div key={index} className="">
-              <Doctor doc={doc} />
+              <DoctorCard doc={doc} />
             </div>
           ))}
         </div>
