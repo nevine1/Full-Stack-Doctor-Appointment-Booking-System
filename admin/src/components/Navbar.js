@@ -28,7 +28,7 @@ const Navbar = ({ role }) => {
 
   // Navigate to frontend
   const handleFrontEnd = () => {
-    router.push("/front-end");
+    router.push("https://full-stack-doctor-appointment-booki-ten.vercel.app");
   };
 
   return (

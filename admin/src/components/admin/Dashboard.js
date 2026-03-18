@@ -49,26 +49,26 @@ const Dashboard = () => {
 
     return dashedData && (
         <div className="m-5">
-            <div className="flex flex-wrap gap-7 items-center">
-                <div className="flex items-center gap-2 bg-white p-4 min-w-52 rounded border-2 border-gray-100 cursor-pointer transition-all duration-300 hover:scale-105">
-                    <Image src={assets.doctor_icon} width={100} height={100} className="w-14" alt="doctor_icon" />
+            <div className="flex flex-wrap gap-7 items-center  ">
+                <div className="flex items-center gap-2 bg-white p-4  min-w-52 rounded border-2 border-gray-100 cursor-pointer transition-all duration-300 hover:scale-105">
+                    <Image src={assets.doctor_icon} width={100} height={100} className="w-24" alt="doctor_icon" />
                     <div>
-                        <p className="text-xl font-semibold text-gray-500">{dashedData.doctors}</p>
+                        <p className="text-2xl font-semibold text-gray-700">{dashedData.doctors}</p>
                         <p className="text-xs text-gray-400">Doctors</p>
                     </div>
                 </div>
                 <div className="flex items-center gap-2 bg-white p-4 min-w-52 rounded border-2 border-gray-100 cursor-pointer transition-all duration-300 hover:scale-105">
-                    <Image src={assets.appointment_icon} width={100} height={100} className="w-14" alt="appointments_icon" />
+                    <Image src={assets.appointment_icon} width={100} height={100} className="w-24 text-gray-400" alt="appointments_icon" />
                     <div>
-                        <p className="text-xl font-semibold text-gray-500">{dashedData.appointments}</p>
+                        <p className="text-2xl font-semibold text-gray-700">{dashedData.appointments}</p>
                         <p className="text-xs text-gray-400">Appointments</p>
                     </div>
                 </div>
                 <div className="flex items-center gap-3 bg-white p-4 min-w-52 rounded border-2 border-gray-100 cursor-pointer transition-all duration-300 hover:scale-105">
-                    <Image src={assets.patients_icon} width={100} height={100} className="w-14" alt="patients_icon" />
+                    <Image src={assets.patients_icon} width={100} height={100} className="w-24" alt="patients_icon" />
                     <div>
-                        <p className="text-xl font-semibold text-gray-500">{dashedData.patients}</p>
-                        <p className="text-xs text-gray-400">Patients</p>
+                        <p className="text-2xl font-semibold text-gray-500">{dashedData.patients}</p>
+                        <p className="text-xs text-gray-700">Patients</p>
                     </div>
                 </div>
             </div>

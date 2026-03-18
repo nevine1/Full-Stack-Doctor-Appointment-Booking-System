@@ -89,7 +89,7 @@ const DoctorDashboard = () => {
   };
 
   // Render loading state if dashboard data not ready
-  if (!dashedData?.appointments) return <p className="m-5">Loading...</p>;
+  /* if (!dashedData?.appointments) return <p className="m-5">Loading...</p>; */
 
   return (
     <div className="m-5">
