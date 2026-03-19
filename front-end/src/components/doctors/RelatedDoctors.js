@@ -69,7 +69,7 @@ const RelatedDoctors = ({ speciality, docId }) => {
 
       <Link
         href="/doctors"
-        className="mt-10 px-6 py-3 bg-blue-50 text-gray-700 border border-blue-200 rounded-full hover:bg-blue-100 transition"
+        className="mt-10 px-6 py-2 bg-blue-500 text-white border border-blue-500 rounded-full hover:bg-white hover:text-blue-5000 hover:border-blue-500 transition"
       >
         View All Doctors
       </Link>

@@ -69,7 +69,7 @@ const TopDoctors = () => {
 
             <Link
                 href="/doctors"
-                className="mt-10 px-6 py-2 bg-blue-50 text-gray-600 text-md rounded-full cursor-pointer border border-blue-200 hover:bg-blue-100 transition"
+                className="mt-10 px-6 py-2 bg-blue-500 text-white text-md rounded-full cursor-pointer border border-blue-500 hover:bg-white hover:text-blue-500 hover:border-blue-500 transition"
             >
                 More
             </Link>

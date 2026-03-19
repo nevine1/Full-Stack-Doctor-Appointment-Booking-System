@@ -3,13 +3,10 @@
 import { useEffect, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { setIsLoading } from "@/store/slices/usersSlice";
+import { setAppointments, clearAppointments } from "@/store/slices/appointmentsSlice";
 import Image from "next/image";
 import { toast } from "react-toastify";
 import axios from "axios";
-import {
-  setAppointments,
-  clearAppointments,
-} from "../../store/slices/appointmentsSlice";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 
@@ -21,83 +18,60 @@ const MyAppointments = () => {
   const canceled = searchParams.get("canceled");
   const appointmentIdFromUrl = searchParams.get("appointmentId");
 
-  const { token } = useSelector((state) => state.users);
+  const { token, isLoading } = useSelector((state) => state.users);
   const { appointments } = useSelector((state) => state.appointments);
 
   const backUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-
   const getAppointments = useCallback(async () => {
+    if (!token) return;
+
     try {
       dispatch(setIsLoading(true));
-
       const res = await axios.post(
         `${backUrl}/api/users/get-appointment`,
         {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
 
       if (res.data.success) {
         dispatch(setAppointments(res.data.data.reverse()));
+      } else {
+        toast.error(res.data.message || "Failed to fetch appointments");
       }
     } catch (err) {
-      toast.error(err.message);
+      toast.error(err.response?.data?.message || err.message || "Failed to fetch appointments");
     } finally {
       dispatch(setIsLoading(false));
     }
   }, [token, backUrl, dispatch]);
 
   useEffect(() => {
-    if (token) {
-      getAppointments();
-    }
-  }, [token, getAppointments]);
-
-
-  const groupedAppointments = appointments.reduce((acc, current) => {
-    const doctorId = current.doctorId;
-
-    if (!acc[doctorId]) {
-      acc[doctorId] = {
-        docData: current.docData,
-        appointments: [],
-      };
-    }
-
-    acc[doctorId].appointments.push(current);
-    return acc;
-  }, {});
-
+    if (!token) return router.push("/auth/login");
+    getAppointments();
+  }, [token, getAppointments, router]);
 
   const cancelDocAppointment = async (appointmentId) => {
     try {
       dispatch(setIsLoading(true));
-
       const res = await axios.post(
         `${backUrl}/api/users/cancel-appointment`,
         { appointmentId },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
 
       if (res.data.success) {
         toast.success(res.data.message);
         await getAppointments();
       } else {
-        toast.error(res.data.message);
+        toast.error(res.data.message || "Failed to cancel appointment");
       }
     } catch (err) {
-      toast.error("Failed to cancel appointment.");
+      toast.error(err.response?.data?.message || "Failed to cancel appointment");
     } finally {
       dispatch(setIsLoading(false));
     }
   };
-
 
   const payOnline = async (appointmentId) => {
     try {
@@ -108,24 +82,22 @@ const MyAppointments = () => {
       );
 
       if (res.data.success) {
-        localStorage.setItem(
-          "paymentIntentId",
-          res.data.paymentIntentId
-        );
-
+        localStorage.setItem("paymentIntentId", res.data.paymentIntentId);
         window.location.href = res.data.url;
+      } else {
+        toast.error(res.data.message || "Failed to start payment");
       }
     } catch (err) {
-      toast.error("Payment failed to start");
+      toast.error(err.response?.data?.message || "Payment failed to start");
     }
   };
 
-
   const cancelPayment = useCallback(
     async (appointmentId) => {
+      if (!appointmentId) return;
+
       try {
         dispatch(setIsLoading(true));
-
         const res = await axios.post(
           `${backUrl}/api/users/cancel-payment`,
           { appointmentId },
@@ -134,11 +106,14 @@ const MyAppointments = () => {
 
         if (res.data.success) {
           toast.warning("Payment canceled.");
+          localStorage.removeItem("paymentIntentId");
           await getAppointments();
           router.replace("/auth/myAppointments");
+        } else {
+          toast.error(res.data.message || "Failed to cancel payment");
         }
       } catch (err) {
-        toast.error("Could not cancel payment.");
+        toast.error(err.response?.data?.message || "Could not cancel payment");
       } finally {
         dispatch(setIsLoading(false));
       }
@@ -152,20 +127,41 @@ const MyAppointments = () => {
     }
   }, [canceled, appointmentIdFromUrl, cancelPayment]);
 
+  const groupedAppointments = appointments.reduce((acc, current) => {
+    const doctorId = current.doctorId;
+    if (!acc[doctorId]) {
+      acc[doctorId] = {
+        docData: current.docData,
+        appointments: [],
+      };
+    }
+    acc[doctorId].appointments.push(current);
+    return acc;
+  }, {});
 
   return (
-    <div className="min-h-screen px-4 sm:px-6 md:px-8 py-8">
+    <div className="relative min-h-screen px-4 sm:px-6 md:px-8 py-8 bg-gray-50">
+
+      {isLoading && (
+        <div className="absolute inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
+          <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent border-solid rounded-full animate-spin"></div>
+        </div>
+      )}
+
       <div className="max-w-5xl mx-auto">
         <h2 className="text-2xl sm:text-3xl font-semibold text-center mb-8">
           My Appointments
         </h2>
 
-        {Object.values(groupedAppointments).map((doctor, index) => (
+        {appointments.length === 0 && (
+          <p className="text-center text-gray-500">No appointments booked yet.</p>
+        )}
+
+        {Object.values(groupedAppointments).map((doctor) => (
           <div
-            key={index}
+            key={doctor.docData._id}
             className="mb-8 p-4 sm:p-6 bg-white border border-gray-200 rounded-2xl shadow-md"
           >
-            {/* Doctor Info */}
             <Link
               href={`/doctors/${doctor.docData._id}`}
               className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6 mb-6"
@@ -177,51 +173,32 @@ const MyAppointments = () => {
                 height={120}
                 className="w-28 h-28 sm:w-32 sm:h-32 object-cover rounded-xl bg-blue-100 shadow"
               />
-
               <div className="text-center sm:text-left">
-                <p className="text-lg sm:text-xl font-semibold">
-                  {doctor.docData.name}
-                </p>
-                <p className="text-gray-600 text-sm sm:text-base">
-                  {doctor.docData.speciality}
-                </p>
+                <p className="text-lg sm:text-xl font-semibold">{doctor.docData.name}</p>
+                <p className="text-gray-600 text-sm sm:text-base">{doctor.docData.speciality}</p>
               </div>
             </Link>
 
-            <h4 className="font-semibold text-gray-700 border-t pt-4 mb-2">
-              Booked Slots:
-            </h4>
+            <h4 className="font-semibold text-gray-700 border-t pt-4 mb-2">Booked Slots:</h4>
 
-            {doctor.appointments.map((item, i) => (
+            {doctor.appointments.map((item) => (
               <div
-                key={i}
+                key={item._id}
                 className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 py-4 border-b last:border-b-0"
               >
-                {/* Date & Time */}
                 <div className="flex flex-col sm:flex-row sm:gap-6 text-sm text-gray-600">
                   <p>
-                    <span className="font-medium text-gray-800">
-                      Date:
-                    </span>{" "}
-                    {item.slotDate}
+                    <span className="font-medium text-gray-800">Date:</span> {item.slotDate}
                   </p>
-
                   <p>
-                    <span className="font-medium text-gray-800">
-                      Time:
-                    </span>{" "}
-                    {item.slotTime}
+                    <span className="font-medium text-gray-800">Time:</span> {item.slotTime}
                   </p>
                 </div>
 
-                {/* Actions */}
                 <div className="flex flex-wrap gap-2">
                   {item.isPaid ? (
                     <>
-                      <span className="text-green-600 text-sm font-medium self-center">
-                        Payment Done
-                      </span>
-
+                      <span className="text-green-600 text-sm font-medium self-center">Payment Done</span>
                       <button
                         onClick={() => cancelPayment(item._id)}
                         className="px-4 py-1.5 text-sm border border-blue-500 text-blue-500 rounded-lg hover:bg-blue-500 hover:text-white transition"
@@ -239,9 +216,7 @@ const MyAppointments = () => {
                       </button>
 
                       <button
-                        onClick={() =>
-                          cancelDocAppointment(item._id)
-                        }
+                        onClick={() => cancelDocAppointment(item._id)}
                         className="px-4 py-1.5 text-sm border border-red-500 text-red-500 rounded-lg hover:bg-red-500 hover:text-white transition"
                       >
                         Cancel
@@ -254,22 +229,23 @@ const MyAppointments = () => {
           </div>
         ))}
 
-        {/* Bottom Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
-          <button
-            onClick={() => router.push("/doctors")}
-            className="px-6 py-2.5 border border-blue-500 text-blue-500 rounded-full hover:bg-blue-500 hover:text-white transition"
-          >
-            Book Another Appointment
-          </button>
+        {appointments.length > 0 && (
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
+            <button
+              onClick={() => router.push("/doctors")}
+              className="px-6 py-2.5 border border-blue-500 text-blue-500 rounded-full hover:bg-blue-500 hover:text-white transition"
+            >
+              Book Another Appointment
+            </button>
 
-          <button
-            onClick={() => dispatch(clearAppointments())}
-            className="px-6 py-2.5 border border-gray-400 text-gray-600 rounded-full hover:bg-gray-600 hover:text-white transition"
-          >
-            Clear All
-          </button>
-        </div>
+            <button
+              onClick={() => dispatch(clearAppointments())}
+              className="px-6 py-2.5 border border-gray-400 text-gray-600 rounded-full hover:bg-gray-600 hover:text-white transition"
+            >
+              Clear All
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

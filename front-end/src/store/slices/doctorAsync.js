@@ -1,6 +1,6 @@
 
 import axios from 'axios'
-import { setDoctors, setIsLoading } from './doctorsSlice';
+import { setDoctors, setIsDoctorLoading } from './doctorsSlice';
 
 import { toast } from 'react-toastify'
 const backUrl = process.env.NEXT_PUBLIC_BACKEND_URL
@@ -26,7 +26,7 @@ export const fetchDoctorData = async () => {
 export const fetchAllDoctors = () => {
   return async (dispatch) => {
     try {
-      dispatch(setIsLoading(true));
+      dispatch(setIsDoctorLoading(true));
 
       const res = await axios.get(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/doctors/get-doctors`, { withCredentials: true }
@@ -43,7 +43,7 @@ export const fetchAllDoctors = () => {
       toast.error(`Error getting doctors: ${err.message}`);
       console.log("Error getting doctors:", err.message);
     } finally {
-      dispatch(setIsLoading(false));
+      dispatch(setIsDoctorLoading(false));
     }
   };
 };

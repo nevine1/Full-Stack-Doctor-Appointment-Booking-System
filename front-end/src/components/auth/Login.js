@@ -31,15 +31,21 @@ const Login = () => {
     e.preventDefault();
     const { name, email, password } = userInfo;
 
+
+    if (mode === "signup" && (!name || !email || !password)) {
+      toast.error("Please fill all fields");
+      return;
+    }
+
+    if (mode === "login" && (!email || !password)) {
+      toast.error("Email or password cannot be empty");
+      return;
+    }
+
     try {
       dispatch(setIsLoading(true));
 
-      if (mode === "Sign Up") {
-        if (!name || !email || !password) {
-          toast.error("Please fill all fields");
-          return;
-        }
-
+      if (mode === "signup") {
         const res = await axios.post(`${backUrl}/api/users/register`, {
           name,
           email,
@@ -49,15 +55,11 @@ const Login = () => {
         if (res.data.success) {
           toast.success(`${name} registered successfully! Please log in.`);
           setMode("login");
+          setUserInfo({ name: "", email: "", password: "" });
         } else {
           toast.error(res.data.message || "Registration failed");
         }
       } else {
-        if (!email || !password) {
-          toast.error("Email or password cannot be empty");
-          return;
-        }
-
         const res = await axios.post(`${backUrl}/api/users/login`, {
           email,
           password,
@@ -72,7 +74,7 @@ const Login = () => {
         }
       }
     } catch (err) {
-      toast.error(err.message);
+      toast.error(err.response?.data?.message || err.message || "Something went wrong");
     } finally {
       dispatch(setIsLoading(false));
     }
@@ -86,39 +88,31 @@ const Login = () => {
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-100 to-blue-50 px-4 sm:px-6">
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-sm sm:max-w-md md:max-w-lg 
-                   bg-white shadow-xl border border-gray-200 
-                   rounded-2xl p-6 sm:p-8 md:p-10 
-                   transition-all duration-300"
+        className="w-full max-w-sm sm:max-w-md md:max-w-lg bg-white shadow-xl border border-gray-200 rounded-2xl p-6 sm:p-8 md:p-10 transition-all duration-300"
       >
         <div className="flex flex-col gap-4 sm:gap-5">
-
           <div className="text-center">
             <h2 className="text-xl sm:text-2xl font-semibold text-gray-800">
-              {mode === "Sign Up" ? "Create Account" : "Welcome Back"}
+              {mode === "signup" ? "Create Account" : "Welcome Back"}
             </h2>
             <p className="text-gray-500 mt-1 text-sm">
-              {mode === "Sign Up"
+              {mode === "signup"
                 ? "Register to book your appointment"
                 : "Login to continue"}
             </p>
           </div>
 
-
-          {mode === "Sign Up" && (
+          {mode === "signup" && (
             <input
               type="text"
               name="name"
               value={userInfo.name}
               onChange={handleChange}
               placeholder="Full Name"
-              className="w-full px-4 py-2.5 text-sm sm:text-base
-                         border border-gray-300 rounded-lg
-                         focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full px-4 py-2.5 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
               required
             />
           )}
-
 
           <input
             type="email"
@@ -126,12 +120,9 @@ const Login = () => {
             value={userInfo.email}
             onChange={handleChange}
             placeholder="Email"
-            className="w-full px-4 py-2.5 text-sm sm:text-base
-                       border border-gray-300 rounded-lg
-                       focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="w-full px-4 py-2.5 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             required
           />
-
 
           <div className="relative">
             <input
@@ -140,43 +131,39 @@ const Login = () => {
               value={userInfo.password}
               onChange={handleChange}
               placeholder="Password"
-              className="w-full px-4 py-2.5 pr-10 text-sm sm:text-base
-                         border border-gray-300 rounded-lg
-                         focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full px-4 py-2.5 pr-10 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
               required
             />
             <div
               onClick={() => setShowPass(!showPass)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 
-                         text-gray-600 cursor-pointer hover:text-blue-500"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 cursor-pointer hover:text-blue-500"
             >
               {showPass ? <FaRegEye size={18} /> : <FaRegEyeSlash size={18} />}
             </div>
           </div>
 
-
           <button
             type="submit"
             disabled={isLoading}
-            className="mt-2 w-full bg-blue-500 hover:bg-blue-600
-                       text-white font-medium py-2.5 rounded-lg
-                       transition-all duration-300 shadow-md
-                       disabled:opacity-60 disabled:cursor-not-allowed"
+            className="mt-2 w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2.5 rounded-lg transition-all duration-300 shadow-md disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {isLoading
               ? "Please wait..."
-              : mode === "Sign Up"
+              : mode === "signup"
                 ? "Create Account"
                 : "Login"}
           </button>
 
-          {/* Switch Mode */}
+
           <p className="text-center text-sm text-gray-600">
-            {mode === "Sign Up" ? (
+            {mode === "signup" ? (
               <>
                 Already have an account?{" "}
                 <span
-                  onClick={() => setMode("login")}
+                  onClick={() => {
+                    setMode("login");
+                    setUserInfo({ name: "", email: "", password: "" });
+                  }}
                   className="text-blue-600 cursor-pointer hover:underline"
                 >
                   Log In
@@ -184,9 +171,12 @@ const Login = () => {
               </>
             ) : (
               <>
-                Don’t have an account?{" "}
+                Do not have an account?{" "}
                 <span
-                  onClick={() => setMode("Sign Up")}
+                  onClick={() => {
+                    setMode("signup");
+                    setUserInfo({ name: "", email: "", password: "" });
+                  }}
                   className="text-blue-600 cursor-pointer hover:underline"
                 >
                   Sign Up
