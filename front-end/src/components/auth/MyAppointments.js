@@ -154,7 +154,14 @@ const MyAppointments = () => {
         </h2>
 
         {appointments.length === 0 && (
-          <p className="text-center text-gray-500">No appointments booked yet.</p>
+          <div className="flex flex-col gap-6 items-center">
+            <p className="text-center text-gray-600">No appointments booked yet.</p>
+            <Link
+              href="/doctors"
+              className="py-2 px-6 text-white text-semibold bg-blue-500 transition-all duration-300 
+              hover:bg-white hover:text-blue-500 border hoverborder-blue-500 rounded-md"
+            >Browse doctor&apos;s list to book your appointment</Link>
+          </div>
         )}
 
         {Object.values(groupedAppointments).map((doctor) => (
