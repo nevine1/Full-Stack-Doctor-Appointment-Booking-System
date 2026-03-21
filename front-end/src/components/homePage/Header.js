@@ -5,13 +5,14 @@ import { FaArrowRightLong } from "react-icons/fa6";
 
 const Header = () => {
   return (
-    <div className="flex flex-col md:flex-row items-center justify-between
-        bg-blue-500 rounded-2xl px-6 md:px-10 lg:px-20 py-12
-        shadow-lg">
-
+    <div
+      className="flex flex-col md:flex-row items-center justify-between
+          bg-blue-500 rounded-2xl px-6 md:px-10 lg:px-20 
+          pt-10 md:pt-12 pb-0
+          shadow-lg overflow-hidden"
+    >
 
       <div className="md:w-1/2 flex flex-col gap-6 text-center md:text-left">
-
         <h1 className="text-white font-semibold text-3xl sm:text-4xl lg:text-5xl leading-tight">
           Book Appointment <br />
           With Trusted Doctors
@@ -42,20 +43,18 @@ const Header = () => {
           Book Appointment
           <FaArrowRightLong className="text-sm" />
         </Link>
-
       </div>
 
 
-      <div className="md:w-1/2 flex justify-center mt-10 md:mt-0">
+      <div className="md:w-1/2 flex justify-center md:justify-end items-end mt-8 md:mt-0">
         <Image
           src={assets.header_img}
           alt="header image"
           width={500}
           height={500}
-          className="w-[260px] sm:w-[320px] md:w-[380px] lg:w-[450px] h-auto object-contain"
+          className="w-[220px] sm:w-[280px] md:w-[360px] lg:w-[440px] h-auto object-contain"
         />
       </div>
-
     </div>
   );
 };

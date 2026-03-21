@@ -100,7 +100,7 @@ const Navbar = () => {
             )}
           </div>
         ) : (
-          <button onClick={handleClick} className="cursor-pointer text-blue-500 bg-white px-6 rounded-md py-1 hidden md:block border border-blue-200 hover:bg-blue-100 transition-all duration-300 hover:shadow-md">
+          <button onClick={handleClick} className="cursor-pointer text-blue-500 bg-white px-6 rounded-md py-1 hidden md:block border border-blue-200 hover:bg-blue-500 hover:text-white transition-all duration-300 hover:shadow-md">
             Login
           </button>
         )}
@@ -141,7 +141,7 @@ const Navbar = () => {
           ))}
           {!token && (
             <li onClick={() => { setShowMenu(false); handleClick(); }}>
-              <p className="text-blue-500 font-medium py-2">Login / Create Account</p>
+              <p className=" font-medium py-2">Login / Create Account</p>
             </li>
           )}
         </ul>
