@@ -1,12 +1,13 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useParams , useRouter} from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import { assets } from "@/assets/assets";
 import Image from "next/image";
 import RelatedDoctors from "./RelatedDoctors";
 import { toast } from "react-toastify";
 import axios from "axios";
+import UserBookApp from "./UserBookApp";
 
 const Appointment = () => {
   const { doctors } = useSelector((state) => state.doctors);
@@ -15,10 +16,10 @@ const Appointment = () => {
   const params = useParams();
   const router = useRouter();
   const { id } = params;
-  console.log('the doctor is  is;', id)
-  const doctor = doctors.find((doc) => doc._id === id);
-  console.log('doctors detail is :', doctor)
 
+  const doctor = doctors.find((doc) => doc._id === id);
+
+  const [bookAppointment, setBookAppointment] = useState(false)
 
   return (
     <div className="flex flex-col gap-5 justify-center">
@@ -46,37 +47,52 @@ const Appointment = () => {
             </h1>
             <div className="flex flex-row gap-3 text-sm text-gray-500 font-semibold">
               <p>
-                {doctor ? doctor.degree : " "} - {doctor? doctor.speciality : ""} -
+                {doctor ? doctor.degree : " "} - {doctor ? doctor.speciality : ""} -
               </p>
               <button className="py-0.5 rounded-full px-2 border border-gray-500">
-                {doctor ?  doctor.experience : " "}
+                {doctor ? doctor.experience : " "}
               </button>
             </div>
-            <p className="text-gray-700 text-md">{doctor ?  doctor.about : ""}</p>
+            <p className="text-gray-700 text-md">{doctor ? doctor.about : ""}</p>
             <p className="font-semibold text-gray-600 text-sm mt-4">
               Appointment fees - <span>${doctor ? doctor.fees : ""}</span>
             </p>
           </div>
         </div>
       </div>
-
       {
-        token && (
-          <button
-          onClick={() => router.push(`/doctors/${doctor._id}/appointment`)}
-          className="flex items-center sm:ml-71 justify-center text-sm cursor-pointer
+        doctor.available === false ? (
+          <span className="mx-auto w-auto text-xl p-4 font-semibold">{doctor.name} is not available now, please try again later</span>
+        ) : (
+          token && (
+            <button
+              onClick={() => router.push(`/doctors/${doctor._id}/appointment`)}
+              className="flex items-center sm:ml-71 justify-center text-sm cursor-pointer
             my-7 py-3 px-14 text-white bg-blue-500 font-semibold rounded-full w-auto sm:max-w-80"
-        >Book an appointment
-      </button>
+            >Book an appointment
+            </button>
+          )
         )
       }
-      
-     
-          
-      {/* related doctors part */} 
-      
-      <div className="flex flex-col mt-8 items-center">
-      
+
+      {
+        doctor.available === true ? (
+          <>
+            <button onClick={() => setBookAppointment(true)}
+              className="flex flex-col items-center mx-auto justify-center text-sm cursor-pointer
+            py-3 px-14 text-white bg-blue-500 font-semibold rounded-full w-auto sm:max-w-80
+            hover:text-blue-500 hover:bg-white border hover:border-blue-500 transition-all duration-300
+            ">Book your appointment </button>
+
+            <span>{bookAppointment && <UserBookApp />} </span>
+          </>
+        ) : null
+      }
+
+      {/* related doctors part */}
+
+      <div className="flex flex-col mt-2 items-center">
+
         {
           doctor && (
             <RelatedDoctors
@@ -86,8 +102,8 @@ const Appointment = () => {
           )
         }
       </div>
-          
-      </div>
+
+    </div>
   );
 };
 

@@ -51,7 +51,7 @@ const Navbar = () => {
 
 
       <ul className="hidden md:flex gap-6 text-md">
-        {["Home", "About", "Doctors", "Contact"].map((item) => (
+        {["Home", "About", "Doctors", "Specialist", "Contact"].map((item) => (
           <li key={item} className="group relative">
             <Link href={`/${item === "Home" ? "" : item.toLowerCase()}`} className="text-black">
               {item}
