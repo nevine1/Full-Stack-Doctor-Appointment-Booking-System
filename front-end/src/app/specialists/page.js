@@ -1,9 +1,9 @@
 import React from 'react'
-import Specialist from '@/components/doctors/Specialist'
+import DoctorSpecialist from '@/components/doctors/DoctorSpecialist'
 const page = () => {
     return (
         <div>
-            <Specialist />
+            <DoctorSpecialist />
         </div>
     )
 }

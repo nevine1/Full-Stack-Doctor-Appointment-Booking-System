@@ -15,10 +15,12 @@ const Specialist = () => {
   const { doctors } = useSelector((state) => state.doctors)
 
   const [filterDoc, setFilterDoc] = useState([])
-  const [selectedSpecialist, setSelectedSpecialist] = useState("Dermatologist")
 
-  // get unique specialities
   const specialities = [...new Set(doctors.map((doc) => doc.speciality))]
+  const [selectedSpecialist, setSelectedSpecialist] = useState(specialities[0] || " ")
+
+
+
 
   const applyFilter = (spec) => {
 

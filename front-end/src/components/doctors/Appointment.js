@@ -103,8 +103,7 @@ const Appointment = () => {
         "-" +
         date.getFullYear();
 
-      const { data } = await axios.post(
-        `${backUrl}/api/users/book-appointment`,
+      const { data } = await axios.post(`${backUrl}/api/users/book-appointment`,
         {
           doctorId: id,
           slotDate,
@@ -219,8 +218,8 @@ const Appointment = () => {
                 key={index}
                 onClick={() => setSlotIndex(index)}
                 className={`cursor-pointer px-5 py-4 rounded-lg border min-w-[80px] text-center ${slotIndex === index
-                    ? "bg-blue-600 text-white"
-                    : "bg-white"
+                  ? "bg-blue-600 text-white"
+                  : "bg-white"
                   }`}
               >
                 <p className="text-sm">
@@ -246,8 +245,8 @@ const Appointment = () => {
               key={index}
               onClick={() => setSlotTime(item.time)}
               className={`cursor-pointer px-4 py-2 rounded-full border text-sm ${item.time === slotTime
-                  ? "bg-blue-600 text-white"
-                  : ""
+                ? "bg-blue-600 text-white"
+                : ""
                 }`}
             >
               {item.time}
