@@ -11,6 +11,7 @@ import Link from "next/link";
 const MyProfile = () => {
   const dispatch = useDispatch();
   const { token, user } = useSelector((state) => state.users);
+  const { appointments } = useSelector((state) => state.appointments);
   const [isEditable, setIsEditable] = useState(false);
   const [userData, setUserData] = useState(user || {});
   const [fileImage, setFileImage] = useState(null)
@@ -255,18 +256,27 @@ const MyProfile = () => {
           }}
             className="px-8 py-2 mb-5 text-[16px] width-auto
               rounded-full shadow  transition-all duration-500
-             bg-white text-blue-500 border border-blue-500"
+             bg-white text-blue-500 border border-blue-500 hover:bg-blue-500 hover:text-white"
           >
             {isEditable ? "Save Changes" : "Edit Profile"}
           </button>
-          <Link href={`/doctors`}
-            className="flex justify-center hover:text-blue-500 duration-300 transition-all pb-3"
-          >All doctors list
-          </Link>
-          <Link href={`/auth/myAppointments`}
-            className="flex justify-center hover:text-blue-500 duration-300 transition-all pb-5"
-          >All my appointments
-          </Link>
+
+          {
+            appointments.length > 0 ? (
+              <Link href={`/auth/myAppointments`}
+                className="flex justify-center hover:text-blue-500 duration-300 transition-all pb-3"
+              >
+                My Appointments
+              </Link>
+            ) : (
+              <div className="flex flex-col justify-center gap-4 mx-auto text-center mb-4">
+                <p>No upcoming appointments.</p>
+                <Link href={`/doctors`} className="flex justify-center hover:text-blue-500 duration-300 transition-all pb-3">
+                  Check docotors&apos;list  and book your appointment now!
+                </Link>
+              </div>
+            )
+          }
 
         </div>
       </div>

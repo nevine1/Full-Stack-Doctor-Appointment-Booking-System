@@ -12,8 +12,8 @@ const Appointment = () => {
   const { id } = useParams();
 
   const { doctors } = useSelector((state) => state.doctors);
-  const { userToken } = useSelector((state) => state.users);
-
+  const { token } = useSelector((state) => state.users);
+  console.log('user token is', token)
   const dispatch = useDispatch();
 
   const backUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
@@ -83,13 +83,17 @@ const Appointment = () => {
 
 
   const bookAppointment = async () => {
-    if (!userToken) {
+    if (!token) {
       toast.error("Please login first");
       return;
     }
 
     try {
-      const date = docSlots?.[slotIndex]?.[0]?.dateTime;
+      const selectedSlot = docSlots?.[slotIndex]?.find(
+        (slot) => slot.time === slotTime
+      );
+
+      const date = selectedSlot?.dateTime;
 
       if (!date || !slotTime) {
         toast.error("Please select slot");
@@ -105,12 +109,12 @@ const Appointment = () => {
 
       const { data } = await axios.post(`${backUrl}/api/users/book-appointment`,
         {
-          doctorId: id,
+          docId: id,
           slotDate,
           slotTime,
         },
         {
-          headers: { token: userToken },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
 

@@ -68,25 +68,11 @@ const Appointment = () => {
             <button
               onClick={() => router.push(`/doctors/${doctor._id}/appointment`)}
               className="flex items-center sm:ml-71 justify-center text-sm cursor-pointer
-            my-7 py-3 px-14 text-white bg-blue-500 font-semibold rounded-full w-auto sm:max-w-80"
+            my-4 py-3 px-14 text-white bg-blue-500 font-semibold rounded-full w-auto sm:max-w-80"
             >Book an appointment
             </button>
           )
         )
-      }
-
-      {
-        doctor.available === true ? (
-          <>
-            <button onClick={() => setBookAppointment(true)}
-              className="flex flex-col items-center mx-auto justify-center text-sm cursor-pointer
-            py-3 px-14 text-white bg-blue-500 font-semibold rounded-full w-auto sm:max-w-80
-            hover:text-blue-500 hover:bg-white border hover:border-blue-500 transition-all duration-300
-            ">Book your appointment </button>
-
-            <span>{bookAppointment && <UserBookApp />} </span>
-          </>
-        ) : null
       }
 
       {/* related doctors part */}
