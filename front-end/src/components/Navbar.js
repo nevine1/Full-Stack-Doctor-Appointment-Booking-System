@@ -204,15 +204,15 @@ const Navbar = () => {
 
         <ul className="flex flex-col gap-4 p-6 text-lg">
 
-          <li onClick={() => setShowMenu(false)}>
+          <li onClick={() => setShowMenu(false)} className="cursor-pointer py-2 px-4 rounded-md hover:text-white hover:bg-blue-500 transition-all duration-300">
             <Link href="/">Home</Link>
           </li>
 
-          <li onClick={() => setShowMenu(false)}>
+          <li onClick={() => setShowMenu(false)} className="cursor-pointer py-2 px-4 rounded-md hover:text-white hover:bg-blue-500 transition-all duration-300">
             <Link href="/about">About</Link>
           </li>
 
-          <li onClick={() => setShowMenu(false)}>
+          <li onClick={() => setShowMenu(false)} className="cursor-pointer py-2 px-4 rounded-md hover:text-white hover:bg-blue-500 transition-all duration-300">
             <Link href="/doctors">Doctors</Link>
           </li>
 
@@ -230,15 +230,21 @@ const Navbar = () => {
             </li>
           ))}
 
-          <li onClick={() => setShowMenu(false)}>
+          <li onClick={() => setShowMenu(false)} className="cursor-pointer py-2 px-4 rounded-md hover:text-white hover:bg-blue-500 transition-all duration-300">
             <Link href="/contact">Contact</Link>
           </li>
 
-          {!token && (
-            <li onClick={() => { setShowMenu(false); handleClick() }}>
+          {!token ? (
+            <li onClick={() => { setShowMenu(false); handleClick() }} className="cursor-pointer py-2 px-4 rounded-md hover:text-white hover:bg-blue-500 transition-all duration-300">
               Login / Create Account
             </li>
-          )}
+          ) : ((
+            <li onClick={() => { setShowMenu(false); router.push("/auth/profile") }} className="cursor-pointer py-2 px-4 rounded-md hover:text-white hover:bg-blue-500 transition-all duration-300">
+              My-Profile
+            </li>
+          ))
+
+          }
 
         </ul>
 
