@@ -115,169 +115,186 @@ const MyProfile = () => {
     }
   }
   return (
-    <div className="flex flex-col  items-center justify-center p-8 w-full min-h-screen">
-      {/* Profile image */}
-
-      <div className="mb-6">
-        {
-          isEditable ? (
-            <input
-              type="file"
-              onChange={handleImageChange}
-              className="w-full mt-1 p-2  outline-none bg-blue-50 border border-blue-200 focus:border-blue-200 rounded-md"
-            />
-          ) : (
-            <Image
-              src={userData?.image || assets.profile_pic}
-              alt="profile pic"
-              width={150}
-              height={150}
-              className="rounded-full shadow-lg p-2 bg-gray-100"
-            />
-          )
-        }
-
-      </div>
+    <div className="min-h-screen bg-gray-50 flex justify-center items-center p-6">
+      <div className="w-full max-w-4xl bg-white rounded-2xl shadow-xl overflow-hidden">
 
 
-      <div className="bg-gray-100 py-5 px-10 rounded-xl border border-gray-300 shadow-lg w-full max-w-md space-y-5">
-
-        <div >
-          <label className="font-bold text-gray-500">Name</label>
-          {isEditable ? (
-            <input
-              type="text"
-              name="name"
-              value={userData.name || ""}
-              onChange={handleChange}
-              className="w-full mt-1 p-2  outline-none bg-blue-50 border border-blue-200 focus:border-blue-200 rounded-md"
-            />
-          ) : (
-            <p className="text-gray-700 mt-1">{userData.name}</p>
-          )}
-        </div>
-
-
-        <div>
-          <label className="font-bold text-gray-500">Email</label>
-          {isEditable ? (
-            <input
-              type="email"
-              name="email"
-              value={userData.email || ""}
-              onChange={handleChange}
-              className="w-full mt-1 p-2  outline-none bg-blue-50 border border-blue-200 focus:border-blue-200 rounded-md"
-            />
-          ) : (
-            <p className="text-gray-700 mt-1">{userData.email}</p>
-          )}
-        </div>
-
-
-        <div>
-          <label className="font-bold text-gray-500">Address</label>
-          {isEditable ? (
-            <>
+        <div className="bg-gradient-to-r from-blue-500 to-indigo-500 p-6 flex items-center gap-6">
+          <div className="relative">
+            {isEditable ? (
               <input
-                type="text"
-                name="address.line1"
-                value={userData.address?.line1 || " "}
-                onChange={(e) =>
-                  setUserData((prev) => ({
-                    ...prev,
-                    address: { ...prev.address, line1: e.target.value },
-                  }))
-                }
-                className="w-full mt-1 p-2  outline-none bg-blue-50 border border-blue-200 focus:border-blue-200 rounded-md"
+                type="file"
+                onChange={handleImageChange}
+                className="text-sm text-white"
               />
-              <input
-                type="text"
-                value={userData.address?.line2 || ""}
-                name="address.line2"
-                onChange={(e) =>
-                  setUserData((prev) => ({
-                    ...prev,
-                    address: { ...prev.address, line2: e.target.value },
-                  }))
-                }
-                className="w-full mt-1 p-2  outline-none bg-blue-50 border border-blue-200 focus:border-blue-200 rounded-md"
+            ) : (
+              <Image
+                src={userData?.image || assets.profile_pic}
+                alt="profile"
+                width={100}
+                height={100}
+                className="rounded-full border-4 border-white shadow-md"
               />
-            </>
-          ) : (
-            <p className="text-gray-700 mt-1">
-              {userData.address?.line1}, {userData.address?.line2}
-            </p>
-          )}
+            )}
+          </div>
+
+          <div className="text-white">
+            <h2 className="text-2xl font-semibold">{userData.name}</h2>
+            <p className="text-sm opacity-90">{userData.email}</p>
+          </div>
         </div>
 
 
-        <div>
-          <label className="font-bold text-gray-500">Date of Birth</label>
-          {isEditable ? (
-            <input
-              type="date"
-              name="DOB"
-              value={userData.DOB || ""}
-              onChange={handleChange}
-              className="w-full mt-1 p-2  outline-none bg-blue-50 border border-blue-200 focus:border-blue-200 rounded-md"
-            />
-          ) : (
-            <p className="text-gray-700 mt-1">{userData.DOB}</p>
-          )}
+        <div className="p-8 grid md:grid-cols-2 gap-6">
+
+          {/* left side */}
+          <div className="space-y-5">
+            <h3 className="text-lg font-semibold text-gray-700">Personal Info</h3>
+
+
+            <div>
+              <label className="text-sm text-gray-500">Full Name</label>
+              {isEditable ? (
+                <input
+                  type="text"
+                  name="name"
+                  value={userData.name || ""}
+                  onChange={handleChange}
+                  className="input-style"
+                />
+              ) : (
+                <p className="value-style">{userData.name}</p>
+              )}
+            </div>
+
+
+            <div>
+              <label className="text-sm text-gray-500">Email</label>
+              {isEditable ? (
+                <input
+                  type="email"
+                  name="email"
+                  value={userData.email || ""}
+                  onChange={handleChange}
+                  className="input-style"
+                />
+              ) : (
+                <p className="value-style">{userData.email}</p>
+              )}
+            </div>
+
+            <div>
+              <label className="text-sm text-gray-500">Date of Birth</label>
+              {isEditable ? (
+                <input
+                  type="date"
+                  name="DOB"
+                  value={userData.DOB || ""}
+                  onChange={handleChange}
+                  className="input-style"
+                />
+              ) : (
+                <p className="value-style">{userData.DOB}</p>
+              )}
+            </div>
+
+
+            {/* <div>
+              <label className="text-sm text-gray-500">Gender</label>
+              {isEditable ? (
+                <select
+                  name="gender"
+                  value={userData.gender}
+                  onChange={handleChange}
+                  className="input-style"
+                >
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                </select>
+              ) : (
+                <p className="value-style capitalize">{userData.gender}</p>
+              )}
+            </div> */}
+          </div>
+
+          {/* -- right side ---  */}
+          <div className="space-y-5">
+            <h3 className="text-lg font-semibold text-gray-700">Address</h3>
+
+
+            <div>
+              <label className="text-sm text-gray-500">Line 1</label>
+              {isEditable ? (
+                <input
+                  type="text"
+                  value={userData.address?.line1 || ""}
+                  onChange={(e) =>
+                    setUserData((prev) => ({
+                      ...prev,
+                      address: { ...prev.address, line1: e.target.value },
+                    }))
+                  }
+                  className="input-style"
+                />
+              ) : (
+                <p className="value-style">{userData.address?.line1}</p>
+              )}
+            </div>
+
+            <div>
+              <label className="text-sm text-gray-500">Line 2</label>
+              {isEditable ? (
+                <input
+                  type="text"
+                  value={userData.address?.line2 || ""}
+                  onChange={(e) =>
+                    setUserData((prev) => ({
+                      ...prev,
+                      address: { ...prev.address, line2: e.target.value },
+                    }))
+                  }
+                  className="input-style"
+                />
+              ) : (
+                <p className="value-style">{userData.address?.line2}</p>
+              )}
+            </div>
+
+
+            <div className="pt-4">
+              {appointments.length > 0 ? (
+                <Link
+                  href="/auth/myAppointments"
+                  className="text-blue-500 hover:underline"
+                >
+                  My appointments&apos; lists
+                </Link>
+              ) : (
+                <div className="text-sm text-gray-500">
+                  No appointments yet.
+                  <Link
+                    href="/doctors"
+                    className="block text-blue-500 mt-2 hover:underline"
+                  >
+                    Book your first appointment →
+                  </Link>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
 
 
-        <div>
-          <label className="font-bold text-gray-500">Gender</label>
-          {isEditable ? (
-            <select
-              name="gender"
-              value={userData.gender}
-              onChange={handleChange}
-              className="w-full mt-1 p-2  outline-none bg-blue-50 border border-blue-200 focus:border-blue-200 rounded-md"
-            >
-              <option value="male">Male</option>
-              <option value="female">Female</option>
-            </select>
-          ) : (
-            <p className="text-gray-700 mt-1 capitalize">
-              {userData.gender}
-            </p>
-          )}
-        </div>
-
-
-        <div className="flex flex-col  pt-4">
-          <button onClick={() => {
-            if (isEditable) {
-              updateUserData();
-            }
-            setIsEditable(!isEditable);
-          }}
-            className="px-8 py-2 mb-5 text-[16px] width-auto
-              rounded-full shadow  transition-all duration-500
-             bg-white text-blue-500 border border-blue-500 hover:bg-blue-500 hover:text-white"
+        <div className="flex justify-end p-6 border-t">
+          <button
+            onClick={() => {
+              if (isEditable) updateUserData();
+              setIsEditable(!isEditable);
+            }}
+            className="px-6 py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600 transition"
           >
             {isEditable ? "Save Changes" : "Edit Profile"}
           </button>
-
-          {
-            appointments.length > 0 ? (
-              <Link href={`/auth/myAppointments`}
-                className="flex justify-center hover:text-blue-500 duration-300 transition-all pb-3"
-              >
-                My Appointments
-              </Link>
-            ) : (
-              <div className="flex flex-col justify-center gap-4 mx-auto text-center mb-4">
-                <p>No upcoming appointments.</p>
-                <Link href={`/doctors`} className="flex justify-center hover:text-blue-500 duration-300 transition-all pb-3">
-                  Check docotors&apos;list  and book your appointment now!
-                </Link>
-              </div>
-            )
-          }
-
         </div>
       </div>
     </div>

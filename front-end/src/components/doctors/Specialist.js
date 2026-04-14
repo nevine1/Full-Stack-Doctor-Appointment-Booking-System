@@ -49,7 +49,7 @@ const Specialist = () => {
       </p>
 
       <h1 className="text-center text-xl md:text-2xl font-semibold mb-6">
-        Selected Specialist: {specialist}
+        Specialist: {specialist}
       </h1>
 
 
