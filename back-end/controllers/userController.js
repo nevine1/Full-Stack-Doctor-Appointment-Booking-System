@@ -368,6 +368,25 @@ const cancelAppointment = async (req, res) => {
 };
 
 
+const removeAllAppointments = async (req, res) => {
+  try {
+    const userId = req.userId; // from auth 
+    const result = await Appointment.deleteMany({ userId });
+
+    return res.status(200).json({
+      success: true,
+      message: "All appointments removed successfully",
+      data: result
+    });
+
+  } catch (err) {
+    console.error("Error removing all appointments:", err);
+    res.status(500).json({
+      success: false,
+      message: "Server error"
+    });
+  }
+}
 
 
 export {
@@ -377,6 +396,7 @@ export {
   userDetails,
   bookAppointment,
   getUserAppointments,
-  cancelAppointment
+  cancelAppointment,
+  removeAllAppointments
 
 }

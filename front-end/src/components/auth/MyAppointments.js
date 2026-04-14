@@ -28,8 +28,7 @@ const MyAppointments = () => {
 
     try {
       dispatch(setIsLoading(true));
-      const res = await axios.post(
-        `${backUrl}/api/users/get-appointment`,
+      const res = await axios.post(`${backUrl}/api/users/get-appointment`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -54,8 +53,7 @@ const MyAppointments = () => {
   const cancelDocAppointment = async (appointmentId) => {
     try {
       dispatch(setIsLoading(true));
-      const res = await axios.post(
-        `${backUrl}/api/users/cancel-appointment`,
+      const res = await axios.post(`${backUrl}/api/users/cancel-appointment`,
         { appointmentId },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -138,6 +136,23 @@ const MyAppointments = () => {
     acc[doctorId].appointments.push(current);
     return acc;
   }, {});
+
+  const clearAllAppointments = async () => {
+
+    try {
+      const res = await axios.post(`${backUrl}/api/users/remove-all-appointments`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      if (res.data.success) {
+        toast.success(res.data.message);
+        dispatch(clearAppointments());
+      }
+
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to clear appointments");
+    }
+  }
 
   return (
     <div className="relative min-h-screen px-4 sm:px-6 md:px-8 py-8 bg-gray-50">
@@ -246,7 +261,7 @@ const MyAppointments = () => {
             </button>
 
             <button
-              onClick={() => dispatch(clearAppointments())}
+              onClick={clearAllAppointments}
               className="px-6 py-2.5 border border-gray-400 text-gray-600 rounded-full hover:bg-gray-600 hover:text-white transition"
             >
               Clear All
