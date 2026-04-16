@@ -1,11 +1,10 @@
 "use client"
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-
-import { Provider} from "react-redux";
+import { Provider } from "react-redux";
 import { ToastContainer } from 'react-toastify'
 import { PersistGate } from "redux-persist/integration/react";
-import { store , persistor } from "@/store/store";
+import { store, persistor } from "@/store/store";
 
 
 
@@ -25,16 +24,16 @@ const geistMono = Geist_Mono({
 };
  */
 export default function RootLayout({ children }) {
-  
-  
+
+
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Provider store={store}>
-         {/*  <Navbar /> */}
-            <PersistGate loading={null} persistor={persistor}>
+          {/*  <Navbar /> */}
+          <PersistGate loading={<p>Loading...</p>} persistor={persistor}>
             {children}
           </PersistGate>
 

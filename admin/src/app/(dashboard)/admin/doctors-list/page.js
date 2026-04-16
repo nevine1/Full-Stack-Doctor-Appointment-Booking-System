@@ -13,7 +13,14 @@ const page = () => {
   const { doctors } = useSelector((state) => state.doctors)
   console.log('doctors list admin token is:', adminToken)
 
+  useEffect(() => {
+    if (adminToken) {
+      if (!doctors || doctors.length === 0) {
+        dispatch(fetchAllDoctors())
+      }
 
+    }
+  }, [adminToken, doctors, dispatch])
 
   console.log('doctors list are:', doctors)
   return (

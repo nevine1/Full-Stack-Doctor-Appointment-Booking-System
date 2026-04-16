@@ -8,22 +8,23 @@ import Link from "next/link";
 export default function Home() {
   const { adminToken } = useSelector((state) => state.admin);
   useEffect(() => {
-    console.log(adminToken)
+    console.log('admin token is:', adminToken)
   })
 
   useEffect(() => {
     if (adminToken) {
-      
+      console.log('Admin token exists, redirecting to dashboard...')
     }
   }, [])
+
   return (
     <div >
       {
         adminToken ? (
           <>
             <Navbar />
-           
-            
+
+
           </>
         ) : (
           <Login />

@@ -22,7 +22,7 @@ const SideBar = () => {
     { href: '/doctor/profile', icon: assets.doctor_icon, label: "Doctor's Profile" },
   ];
 
- 
+
   const linksToRender = adminToken ? navLinks.slice(0, 4) : doctorToken ? navLinks.slice(4, 7) : [];
 
   return (
@@ -35,11 +35,10 @@ const SideBar = () => {
               <li key={href}>
                 <Link
                   href={href}
-                  className={`flex items-center gap-3 px-4 py-2 rounded-md transition-all duration-300 ${
-                    isActive
-                      ? 'bg-blue-100 text-blue-600 font-semibold'
-                      : 'text-gray-700 hover:bg-gray-100'
-                  }`}
+                  className={`flex items-center gap-3 px-4 py-2 rounded-md transition-all duration-300 ${isActive
+                    ? 'bg-blue-100 text-blue-600 font-semibold'
+                    : 'text-gray-700 hover:bg-white hover:text-gray-700'
+                    }`}
                 >
                   {/* Icon always visible */}
                   <Image src={icon} width={24} height={24} alt={`${label} icon`} />

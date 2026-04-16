@@ -11,7 +11,9 @@ const doctorsSlice = createSlice({
     initialState,
     reducers: {
         setDoctors: (state, action) => {
-            state.doctors = action.payload
+            if (action.payload && action.payload.lenght > 0) {
+                state.doctors.action.payload;
+            }
         },
 
         setIsDoctorLoading: (state, action) => {
