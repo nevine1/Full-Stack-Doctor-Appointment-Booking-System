@@ -11,6 +11,7 @@ const Appointments = () => {
   const dispatch = useDispatch();
   const { adminToken } = useSelector((state) => state.admin);
   const { appointments, isLoading } = useSelector((state) => state.appointments);
+  const [actualAppointments, setActualAppointments] = useState([]); // all appointments not cancelled 
 
   const fetchAllAppointments = async () => {
     try {
@@ -19,14 +20,22 @@ const Appointments = () => {
         headers: { Authorization: `Bearer ${adminToken}` },
       });
       if (res.data.success) {
+
+        console.log('vennnnnna Appointments fetched for admin:', res.data.data);
         dispatch(setAllAppointments(res.data.data));
+        setActualAppointments(appointments.filter((appointment) => appointment.canceled !== true))
+
       }
+
+
     } catch (err) {
       console.log(err.message);
     } finally {
       dispatch(setIsLoading(false));
     }
   };
+
+  console.log('actual appointmens is:', actualAppointments)
 
   useEffect(() => {
     if (adminToken) fetchAllAppointments();
@@ -80,8 +89,8 @@ const Appointments = () => {
         <p>Action</p>
       </div>
 
-      {appointments?.length > 0 &&
-        appointments.map((item, index) => (
+      {actualAppointments?.length > 0 &&
+        actualAppointments.map((item, index) => (
           <div
             key={index}
             className="flex flex-wrap justify-between max-sm:gap-2 sm:grid sm:grid-cols-[0.5fr_3fr_1fr_3fr_3fr_1fr_1fr] items-center text-gray-500 py-3 px-6 text-[14px] border-b border-b-gray-300 text-center"

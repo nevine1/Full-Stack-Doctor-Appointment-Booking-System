@@ -243,12 +243,14 @@ const adminDashboardData = async (req, res) => {
     const users = await User.find({});
     const appointments = await Appointment.find({})
 
+
     const dashedData = {
       doctors: doctors.length,
       patients: users.length,
       appointments: appointments.length,
       latestAppointments: appointments.reverse().slice(0, 5), //latest 5 appointments
     }
+
     console.log('admin dashed data is:', dashedData)
     return res.json({
       success: true,
