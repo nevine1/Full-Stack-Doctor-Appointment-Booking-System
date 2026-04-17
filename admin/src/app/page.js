@@ -18,7 +18,7 @@ export default function Home() {
   }, [])
 
   return (
-    <div >
+    <div className="min-h-screen flex flex-col items-center justify-center gap-8">
       {
         adminToken ? (
           <>
@@ -30,6 +30,12 @@ export default function Home() {
           <Login />
         )
       }
+      <h1 >Welcome To Admin Dashboard</h1>
+      <Link href="/admin/dashboard">
+        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+          Click here for admin Dashboard
+        </button>
+      </Link>
     </div>
   );
 }

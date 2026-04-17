@@ -10,13 +10,18 @@ const Dashboard = () => {
     const backUrl = process.env.NEXT_PUBLIC_BACKEND_URL
     const { adminToken } = useSelector((state) => state.admin)
     const [dashedData, setDashedData] = useState({});
-
+    const [actualAppointments, setActualAppointments] = useState([]); // all appointments not cancelled
     const dashboardData = async () => {
         try {
             const res = await axios.get(`${backUrl}/api/admin/dashboard-data`, {
                 headers: { Authorization: `Bearer ${adminToken}` }
             });
             if (res.data.success) setDashedData(res.data.data)
+            console.log('dahsboradkfjalsdkjfalsdjfalskdfjals df', res.data.data)
+            const data = res.data.data.latestAppointments;
+
+            setActualAppointments(data.filter((item) => item.canceled !== true));
+
         } catch (err) {
             toast.error(err.message)
         }
@@ -47,6 +52,7 @@ const Dashboard = () => {
         return `${d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", year: "numeric" })} at ${slotTime}`;
     }
 
+
     return dashedData && (
         <div className="m-5">
             <div className="flex flex-wrap gap-7 items-center  ">
@@ -60,7 +66,7 @@ const Dashboard = () => {
                 <div className="flex items-center gap-2 bg-white p-4 min-w-52 rounded border-2 border-gray-100 cursor-pointer transition-all duration-300 hover:scale-105">
                     <Image src={assets.appointment_icon} width={100} height={100} className="w-24 text-gray-400" alt="appointments_icon" />
                     <div>
-                        <p className="text-2xl font-semibold text-gray-700">{dashedData.appointments}</p>
+                        <p className="text-2xl font-semibold text-gray-700">{actualAppointments.length}</p>
                         <p className="text-xs text-gray-400">Appointments</p>
                     </div>
                 </div>
@@ -80,8 +86,9 @@ const Dashboard = () => {
                 </div>
 
                 <div className="mt-4 bg-white">
-                    {dashedData.latestAppointments?.length > 0 ? (
-                        dashedData.latestAppointments.map((item, index) => (
+                    {actualAppointments.length > 0 ? (
+
+                        actualAppointments.map((item, index) => (
                             <div key={index} className="flex items-center hover:bg-gray-100 px-4 py-5 gap-4 transition-all duration-300">
                                 <Image src={item.docData.image} alt="doctor image" width={50} height={50} className="w-10 h-10 rounded-full" />
                                 <div className="flex-1 text-sm">
