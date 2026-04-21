@@ -27,9 +27,9 @@ const Dashboard = () => {
         }
     }
 
-    useEffect(() => {
-        if (adminToken) dashboardData();
-    }, [adminToken])
+    /*  useEffect(() => {
+         if (adminToken) dashboardData();
+     }, [adminToken]) */
 
     const cancelAppointment = async (appointmentId) => {
         try {

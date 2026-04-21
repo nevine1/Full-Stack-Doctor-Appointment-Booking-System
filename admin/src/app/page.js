@@ -1,41 +1,33 @@
-"use client"
-import { useEffect } from 'react'
-import Login from "@/components/auth/Login";
-import { useSelector } from "react-redux";
-import Navbar from "@/components/Navbar";
-import SideBar from "@/components/SideBar";
+"use client";
+
 import Link from "next/link";
-export default function Home() {
-  const { adminToken } = useSelector((state) => state.admin);
-  useEffect(() => {
-    console.log('admin token is:', adminToken)
-  })
 
-  useEffect(() => {
-    if (adminToken) {
-      console.log('Admin token exists, redirecting to dashboard...')
-    }
-  }, [])
-
+const page = () => {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center gap-8">
-      {
-        adminToken ? (
-          <>
-            <Navbar />
+    <div className="min-h-screen flex flex-col items-center justify-center gap-6">
 
+      <h1 className="text-3xl font-bold">
+        Welcome to My Medical App
+      </h1>
 
-          </>
-        ) : (
-          <Login />
-        )
-      }
-      <h1 >Welcome To Admin Dashboard</h1>
-      <Link href="/admin/dashboard">
-        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-          Click here for admin Dashboard
-        </button>
-      </Link>
+      <p className="text-gray-600 text-center max-w-md">
+        This is a demo project. You can explore the dashboard freely.
+        Login is required to perform actions.
+      </p>
+
+      <div className="flex gap-4">
+        <Link href="/admin/dashboard" className="px-4 py-2 bg-blue-500 text-white rounded">
+          Admin Dashboard
+        </Link>
+
+        <Link href="/doctor/dashboard" className="px-4 py-2 bg-green-500 text-white rounded">
+          Doctor Dashboard
+        </Link>
+      </div>
+
     </div>
   );
+
+
 }
+export default page

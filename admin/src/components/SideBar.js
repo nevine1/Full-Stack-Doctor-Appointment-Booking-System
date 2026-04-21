@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -8,8 +8,9 @@ import { assets } from '@/assets/assets';
 import { usePathname } from 'next/navigation';
 
 const SideBar = () => {
-  const { adminToken } = useSelector((state) => state.admin);
-  const { doctorToken } = useSelector((state) => state.doctors);
+  /* const { adminToken } = useSelector((state) => state.admin);
+  const { doctorToken } = useSelector((state) => state.doctors); */
+
   const pathname = usePathname();
 
   const navLinks = [
@@ -23,34 +24,42 @@ const SideBar = () => {
   ];
 
 
-  const linksToRender = adminToken ? navLinks.slice(0, 4) : doctorToken ? navLinks.slice(4, 7) : [];
+  const linksToRender = navLinks.filter((link) => {
+    if (pathname.startsWith("/admin")) {
+      return link.href.startsWith("/admin");
+    }
+    if (pathname.startsWith("/doctor")) {
+      return link.href.startsWith("/doctor");
+    }
+    return false;
+  });
 
   return (
     <div>
-      {linksToRender.length > 0 && (
-        <ul className="py-4 px-5 mt-4 flex flex-col gap-4">
-          {linksToRender.map(({ href, icon, label }) => {
-            const isActive = pathname === href;
-            return (
-              <li key={href}>
-                <Link
-                  href={href}
-                  className={`flex items-center gap-3 px-4 py-2 rounded-md transition-all duration-300 ${isActive
-                    ? 'bg-blue-100 text-blue-600 font-semibold'
-                    : 'text-gray-700 hover:bg-white hover:text-gray-700'
-                    }`}
-                >
-                  {/* Icon always visible */}
-                  <Image src={icon} width={24} height={24} alt={`${label} icon`} />
 
-                  {/* Label hidden on small screens, visible on md+ */}
-                  <span className="hidden md:inline text-[13px]">{label}</span>
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      )}
+      <ul className="py-4 px-5 mt-4 flex flex-col gap-4">
+        {linksToRender.map(({ href, icon, label }) => {
+          const isActive = pathname === href;
+          return (
+            <li key={href}>
+              <Link
+                href={href}
+                className={`flex items-center gap-3 px-4 py-2 rounded-md transition-all duration-300 ${isActive
+                  ? 'bg-blue-100 text-blue-600 font-semibold'
+                  : 'text-gray-700 hover:bg-white hover:text-gray-700'
+                  }`}
+              >
+                {/* Icon always visible */}
+                <Image src={icon} width={24} height={24} alt={`${label} icon`} />
+
+                {/* Label hidden on small screens, visible on md+ */}
+                <span className="hidden md:inline text-[13px]">{label}</span>
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+
     </div>
   );
 };

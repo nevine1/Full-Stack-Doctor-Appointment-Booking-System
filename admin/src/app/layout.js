@@ -5,7 +5,8 @@ import { Provider } from "react-redux";
 import { ToastContainer } from 'react-toastify'
 import { PersistGate } from "redux-persist/integration/react";
 import { store, persistor } from "@/store/store";
-
+import Navbar from "@/components/Navbar";
+import 'react-toastify/dist/ReactToastify.css';
 
 
 const geistSans = Geist({
@@ -32,7 +33,7 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Provider store={store}>
-          {/*  <Navbar /> */}
+          <Navbar />
           <PersistGate loading={<p>Loading...</p>} persistor={persistor}>
             {children}
           </PersistGate>

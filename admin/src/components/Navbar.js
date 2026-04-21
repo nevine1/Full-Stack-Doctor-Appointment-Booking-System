@@ -6,7 +6,7 @@ import Image from "next/image";
 import { assets } from "../assets/assets";
 import { logout } from "@/store/slices/adminSlice";
 import { setDoctorToken } from "@/store/slices/doctorsSlice";
-
+import Link from "next/link";
 const Navbar = ({ role }) => {
   const dispatch = useDispatch();
   const router = useRouter();
@@ -35,7 +35,7 @@ const Navbar = ({ role }) => {
     <div className="flex flex-row items-center justify-between w-full px-6 sm:px-10 py-3 bg-white shadow-md">
 
 
-      <div className="flex flex-row items-center gap-4">
+      {/* <div className="flex flex-row items-center gap-4">
         {(role === "Admin" || role === "Doctor") && assets.admin_logo && (
           <Image
             src={assets.admin_logo}
@@ -49,23 +49,22 @@ const Navbar = ({ role }) => {
         <span className="text-sm text-gray-600 px-2 py-0.5 rounded-full bg-gray-100">
           {role}
         </span>
-      </div>
+      </div> */}
 
       <div className="flex gap-4">
-        <button
-          onClick={handleFrontEnd}
+        <Link
+          href="/doctor/dashboard"
           className="px-4 py-2 text-[12px] font-medium bg-gray-200 rounded hover:bg-gray-300 transition"
         >
-          FrontEnd
-        </button>
+          Doctor
+        </Link>
 
-        <button
-          type="button"
-          onClick={handleLogout}
+        <Link
+          href="/admin/dashboard"
           className="px-6 py-2 text-[12px] bg-blue-500 text-white rounded-lg transition-all duration-300 hover:border hover:border-blue-500 hover:text-blue-500 hover:bg-white"
         >
-          {role} Log out
-        </button>
+          Admin
+        </Link>
       </div>
     </div>
   );
