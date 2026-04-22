@@ -14,6 +14,7 @@ const page = () => {
   const backUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
   const { isLoading, adminToken } = useSelector((state) => state.admin);
   const experienceOptions = Array.from({ length: 10 }, (_, i) => i + 1);
+  const [showModal, setShowModal] = useState(false);
 
   const [doctor, setDoctor] = useState({
     name: "",
@@ -312,14 +313,61 @@ const page = () => {
           </div>
         </div>
 
+
         <button
-          type="submit"
+          type="button"
+          onClick={() => {
+            if (!adminToken) {
+              setShowModal(true);
+            } else {
+              handleSubmit();
+            }
+          }}
           disabled={isLoading}
           className="mt-6 py-2 px-6 w-full md:w-auto mx-auto block text-white bg-blue-500 border border-blue-500 rounded-md hover:bg-white hover:text-blue-500 hover:border-blue-600 transition-all duration-300"
         >
           {isLoading ? "Adding..." : "Submit"}
         </button>
+
+
+
+
       </form>
+
+      {showModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+
+          <div className="bg-white rounded-xl p-6 w-[90%] max-w-md text-center shadow-lg">
+
+            <h2 className="text-xl font-semibold mb-3">
+              Admin Access Required
+            </h2>
+
+            <p className="text-gray-600 mb-5">
+              You must be logged in as admin to perform this action.
+            </p>
+
+            <div className="flex justify-center gap-3">
+
+              <button
+                onClick={() => setShowModal(false)}
+                className="px-4 py-2 border rounded-md"
+              >
+                Cancel
+              </button>
+
+              <button
+                onClick={() => router.push("/auth/login")}
+                className="px-4 py-2 bg-blue-500 text-white rounded-md"
+              >
+                Go to Login
+              </button>
+
+            </div>
+          </div>
+
+        </div>
+      )}
     </div>
   );
 };

@@ -20,7 +20,7 @@ const page = () => {
           Admin Dashboard
         </Link>
 
-        <Link href="/doctor/dashboard" className="px-4 py-2 bg-green-500 text-white rounded">
+        <Link href="/auth/login" className="px-4 py-2 bg-green-500 text-white rounded">
           Doctor Dashboard
         </Link>
       </div>

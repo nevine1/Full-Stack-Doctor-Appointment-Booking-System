@@ -14,7 +14,7 @@ const Login = () => {
   const dispatch = useDispatch();
   const { isLoading } = useSelector((state) => state.admin);
 
-  const [role, setRole] = useState("Admin"); // default role
+  const [role, setRole] = useState("Doctor"); // default role
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPass, setShowPass] = useState(false);
