@@ -50,33 +50,71 @@ const page = () => {
       }));
     }
   };
+  const validateDoctor = () => {
+    const requiredFields = [
+      "name",
+      "email",
+      "password",
+      "degree",
+      "fees",
+      "address1",
+      "experience",
+      "speciality",
+    ];
 
+    for (let field of requiredFields) {
+      if (!doctor[field] || doctor[field].toString().trim() === "") {
+        toast.error(`Please fill ${field}`);
+        return false;
+      }
+    }
+
+    if (!doctor.image) {
+      toast.error("Please upload an image");
+      return false;
+    }
+
+    return true;
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (!adminToken) return toast.error("You are not logged in as admin.");
+
+    if (!validateDoctor()) return;
 
     dispatch(setAdminLoading(true));
 
     try {
       const formData = new FormData();
+
       Object.entries(doctor).forEach(([key, value]) => {
         if (key === "address1" || key === "address2") return;
         formData.append(key, value);
       });
+
       formData.append(
         "address",
-        JSON.stringify({ address1: doctor.address1, address2: doctor.address2 })
+        JSON.stringify({
+          address1: doctor.address1,
+          address2: doctor.address2,
+        })
       );
 
-      const res = await axios.post(`${backUrl}/api/admin/add-doctor`, formData, {
-        headers: {
-          Authorization: `Bearer ${adminToken}`,
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const res = await axios.post(
+        `${backUrl}/api/admin/add-doctor`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${adminToken}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
       if (res.data.success) {
         toast.success(`${doctor.name} added successfully`);
+
         setDoctor({
           name: "",
           email: "",
@@ -185,6 +223,7 @@ const page = () => {
               name="image"
               onChange={handleChange}
               className="pl-3 py-2 border text-sm border-gray-300 rounded-md w-full text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200"
+              required
             />
           </div>
 
@@ -293,6 +332,7 @@ const page = () => {
               value={doctor.degree}
               onChange={handleChange}
               className="pl-3 py-2 border border-gray-300 rounded-md w-full text-sm"
+              required
             />
           </div>
 
@@ -309,28 +349,31 @@ const page = () => {
               value={doctor.about}
               onChange={handleChange}
               className="pl-3 py-2 border border-gray-300 rounded-md w-full text-sm resize-none"
+              required
             />
           </div>
         </div>
 
-
-        <button
-          type="button"
-          onClick={() => {
-            if (!adminToken) {
-              setShowModal(true);
-            } else {
-              handleSubmit();
-            }
-          }}
-          disabled={isLoading}
-          className="mt-6 py-2 px-6 w-full md:w-auto mx-auto block text-white bg-blue-500 border border-blue-500 rounded-md hover:bg-white hover:text-blue-500 hover:border-blue-600 transition-all duration-300"
-        >
-          {isLoading ? "Adding..." : "Submit"}
-        </button>
-
-
-
+        {
+          adminToken ? (
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="mt-6 py-2 px-6 w-full md:w-auto mx-auto block text-white bg-blue-500 border border-blue-500 rounded-md hover:bg-white hover:text-blue-500 hover:border-blue-600 transition-all duration-300"
+            >
+              {isLoading ? "Adding..." : "Submit"}
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setShowModal(true)}
+              disabled={isLoading}
+              className="mt-6 py-2 px-6 w-full md:w-auto mx-auto block text-white bg-blue-500 border border-blue-500 rounded-md hover:bg-white hover:text-blue-500 hover:border-blue-600 transition-all duration-300"
+            >
+              {isLoading ? "Adding..." : "Submit"}
+            </button>
+          )
+        }
 
       </form>
 
