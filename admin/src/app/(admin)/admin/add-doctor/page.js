@@ -24,6 +24,7 @@ const page = () => {
     imagePreview: "",
     speciality: "General-physician",
     degree: "",
+    about: " ",
     experience: "5",
     fees: "",
     address1: "",
@@ -60,6 +61,7 @@ const page = () => {
       "address1",
       "experience",
       "speciality",
+      "about",
     ];
 
     for (let field of requiredFields) {
@@ -79,9 +81,9 @@ const page = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!adminToken) return toast.error("You are not logged in as admin.");
-
     if (!validateDoctor()) return;
+
+    if (!adminToken) return toast.error("You are not logged in as admin.");
 
     dispatch(setAdminLoading(true));
 
@@ -400,7 +402,7 @@ const page = () => {
               </button>
 
               <button
-                onClick={() => router.push("/auth/login")}
+                onClick={() => router.push("/auth")}
                 className="px-4 py-2 bg-blue-500 text-white rounded-md"
               >
                 Go to Login
