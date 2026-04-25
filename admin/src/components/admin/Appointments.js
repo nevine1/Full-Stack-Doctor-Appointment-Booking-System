@@ -5,20 +5,23 @@ import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Image from 'next/image';
 import { toast } from 'react-toastify';
+import { useRouter } from 'next/navigation'
 
 const Appointments = () => {
+  const router = useRouter();
   const backUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
   const dispatch = useDispatch();
   const { adminToken } = useSelector((state) => state.admin);
-  const { appointments, isLoading } = useSelector((state) => state.appointments);
+  const { appointments, isLoading } = useSelector((state) => state.appointments); 
   const [actualAppointments, setActualAppointments] = useState([]); // all appointments not cancelled 
 
   const fetchAllAppointments = async () => {
     try {
       dispatch(setIsLoading(true));
-      const res = await axios.get(`${backUrl}/api/admin/appointments-admin`, {
+      const res = await axios.get(`${backUrl}/api/admin/appointments-admin`/* , {
         headers: { Authorization: `Bearer ${adminToken}` },
-      });
+      } */
+    );
       if (res.data.success) {
 
         console.log('vennnnnna Appointments fetched for admin:', res.data.data);
@@ -37,10 +40,13 @@ const Appointments = () => {
 
   console.log('actual appointmens is:', actualAppointments)
 
-  useEffect(() => {
+  /* useEffect(() => {
     if (adminToken) fetchAllAppointments();
-  }, [adminToken]);
+  }, [adminToken]); */
 
+  useEffect(() => {
+    fetchAllAppointments();
+  }, [])
   const calculateAge = (dob) => {
     const today = new Date();
     const birthDate = new Date(dob);
@@ -75,11 +81,19 @@ const Appointments = () => {
     }
   };
 
+  const adminCancelAppointment = (itemId) =>{
+    if(adminToken){
+      cancelAppointment(itemId);
+    }else{
+      toast.error("You should login as admin to cancel the appoinment");
+      router.push("/admin/auth")
+    }
+  }
   return (
     <div>
-      <h1 className="text-xl font-semibold mb-4">All Appointments</h1>
+      <h1 className="text-2xl text-center mt-4 font-bold mt-8 mb-2">All Doctors' Appointments</h1>
 
-      <div className="hidden sm:grid grid-cols-[0.5fr_3fr_1fr_3fr_3fr_1fr_1fr] font-semibold py-3 px-6 shadow-md bg-gray-200 border-b border-b-gray-600 text-center text-gray-700">
+      <div className="hidden sm:grid grid-cols-[0.5fr_3fr_1fr_3fr_3fr_1fr_1fr] font-semibold py-3 px-6 shadow-md bg-gray-700 border-b border-b-gray-600 text-center text-white">
         <p>#</p>
         <p>Patient</p>
         <p>Age</p>
@@ -131,8 +145,9 @@ const Appointments = () => {
                   : (
                     <button
                       className="text-[12px] text-white px-4 py-1 rounded-md cursor-pointer bg-red-400"
-                      onClick={() => cancelAppointment(item._id)}
-                    >
+                      onClick={() => adminCancelAppointment(item._id)}
+                          
+                        >
                       Cancel
                     </button>
                   )}

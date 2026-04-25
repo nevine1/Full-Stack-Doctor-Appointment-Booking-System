@@ -64,9 +64,21 @@ const Appointment = () => {
         doctor.available === false ? (
           <span className="mx-auto w-auto text-xl p-4 font-semibold">{doctor.name} is not available now, please try again later</span>
         ) : (
-          token && (
+          token ? (
             <button
               onClick={() => router.push(`/doctors/${doctor._id}/appointment`)}
+              className="flex items-center sm:ml-71 justify-center text-sm cursor-pointer
+            my-4 py-3 px-14 text-white bg-blue-500 font-semibold rounded-full w-auto sm:max-w-80"
+            >Book an appointment
+            </button>
+          ) : (
+            <button
+              onClick={() => 
+              {
+                toast.error("You should login to can book an appointment");
+                router.push("/auth/login")
+              }
+              }
               className="flex items-center sm:ml-71 justify-center text-sm cursor-pointer
             my-4 py-3 px-14 text-white bg-blue-500 font-semibold rounded-full w-auto sm:max-w-80"
             >Book an appointment

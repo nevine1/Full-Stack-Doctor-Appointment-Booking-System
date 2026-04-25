@@ -169,6 +169,11 @@ const Navbar = () => {
             Login
           </button>
         )}
+        <button  className="cursor-pointer text-blue-500 bg-white px-6 rounded-md py-1 hidden md:block border border-blue-200 hover:bg-blue-500 hover:text-white transition-all"
+            onClick={() => router.push("https://full-stack-doctor-appointment-booki-roan.vercel.app")}
+            >
+              Addmin
+          </button>
 
         {/* mobile menu icon*/}
         <Image
@@ -230,6 +235,7 @@ const Navbar = () => {
             </li>
           ))}
 
+
           <li onClick={() => setShowMenu(false)} className="cursor-pointer py-2 px-4 rounded-md hover:text-white hover:bg-blue-500 transition-all duration-300">
             <Link href="/contact">Contact</Link>
           </li>
@@ -246,6 +252,9 @@ const Navbar = () => {
 
           }
 
+<li  className="cursor-pointer py-2 px-4 rounded-md hover:text-white hover:bg-blue-500 transition-all duration-300">
+            <Link href="https://full-stack-doctor-appointment-booki-roan.vercel.app/">Admin</Link>
+          </li>
         </ul>
 
       </div>
