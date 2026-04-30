@@ -12,7 +12,7 @@ const Appointments = () => {
   const backUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
   const dispatch = useDispatch();
   const { adminToken } = useSelector((state) => state.admin);
-  const { appointments, isLoading } = useSelector((state) => state.appointments); 
+  const { appointments, isLoading } = useSelector((state) => state.appointments);
   const [actualAppointments, setActualAppointments] = useState([]); // all appointments not cancelled 
 
   const fetchAllAppointments = async () => {
@@ -21,13 +21,21 @@ const Appointments = () => {
       const res = await axios.get(`${backUrl}/api/admin/appointments-admin`/* , {
         headers: { Authorization: `Bearer ${adminToken}` },
       } */
-    );
+      );
       if (res.data.success) {
 
         console.log('vennnnnna Appointments fetched for admin:', res.data.data);
         dispatch(setAllAppointments(res.data.data));
-        setActualAppointments(appointments.filter((appointment) => appointment.canceled !== true))
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
 
+        setActualAppointments(
+          res.data.data.filter(
+            (appointment) =>
+              !appointment.canceled &&
+              new Date(appointment.slotDate) >= today
+          )
+        );
       }
 
 
@@ -81,12 +89,12 @@ const Appointments = () => {
     }
   };
 
-  const adminCancelAppointment = (itemId) =>{
-    if(adminToken){
+  const adminCancelAppointment = (itemId) => {
+    if (adminToken) {
       cancelAppointment(itemId);
-    }else{
+    } else {
       toast.error("You should login as admin to cancel the appoinment");
-      router.push("/admin/auth")
+      router.push("/auth")
     }
   }
   return (
@@ -146,8 +154,8 @@ const Appointments = () => {
                     <button
                       className="text-[12px] text-white px-4 py-1 rounded-md cursor-pointer bg-red-400"
                       onClick={() => adminCancelAppointment(item._id)}
-                          
-                        >
+
+                    >
                       Cancel
                     </button>
                   )}

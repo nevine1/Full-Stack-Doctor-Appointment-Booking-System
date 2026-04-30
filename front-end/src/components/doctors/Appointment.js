@@ -35,7 +35,7 @@ const Appointment = () => {
 
       const dayOfWeek = currentDate.getDay(); // 0 = Sunday, 6 = Saturday
 
-      // ❌ Sunday OFF
+      //  Sunday OFF
       if (dayOfWeek === 0) {
         allSlots.push([]);
         continue;
@@ -44,12 +44,12 @@ const Appointment = () => {
       let startTime = new Date(currentDate);
       let endTime = new Date(currentDate);
 
-      // 🟡 Saturday (10:30 → 2:30)
+      //  Saturday (10:30 → 2:30)
       if (dayOfWeek === 6) {
         startTime.setHours(10, 30, 0, 0);
         endTime.setHours(14, 30, 0, 0);
       } else {
-        // 🟢 باقي الأيام
+        //  باقي الأيام
         if (i === 0) {
           startTime.setHours(startTime.getHours() + 1);
           startTime.setMinutes(startTime.getMinutes() > 30 ? 30 : 0);
@@ -68,12 +68,14 @@ const Appointment = () => {
           minute: "2-digit",
         });
 
-        const slotDate =
+        /* const slotDate =
           startTime.getDate() +
           "-" +
           (startTime.getMonth() + 1) +
           "-" +
-          startTime.getFullYear();
+          startTime.getFullYear(); */
+        const date = new Date();
+        const slotDate = new Date(date);
 
         const isSlotBooked =
           doctor.slots_booked?.[slotDate]?.includes(formattedTime);
@@ -112,18 +114,11 @@ const Appointment = () => {
         return;
       }
 
-      const slotDate =
-        date.getDate() +
-        "-" +
-        (date.getMonth() + 1) +
-        "-" +
-        date.getFullYear();
-
       const { data } = await axios.post(
         `${backUrl}/api/users/book-appointment`,
         {
           docId: id,
-          slotDate,
+          slotDate: new Date(date),
           slotTime,
         },
         {
@@ -133,19 +128,6 @@ const Appointment = () => {
 
       if (data.success) {
         toast.success(data.message);
-
-        dispatch(
-          updateDoctorDetails({
-            ...doctor,
-            slots_booked: {
-              ...doctor.slots_booked,
-              [slotDate]: [
-                ...(doctor.slots_booked?.[slotDate] || []),
-                slotTime,
-              ],
-            },
-          })
-        );
       } else {
         toast.error(data.message);
       }

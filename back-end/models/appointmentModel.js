@@ -5,48 +5,48 @@ const appointmentSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",   // if you have a User model
         required: true,
-        }, 
+    },
     doctorId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Doctor",    //  tells Mongoose to link to Doctor model
         required: true,
-        }, 
+    },
     slotDate: {
-        type: String,
-        require: true,
+        type: Date,
+        required: true,
     },
     slotTime: {
         type: String,
-        require: true,
-    }, 
+        required: true,
+    },
     userData: {
         type: Object,
-        require: true,
+        required: true,
     },
     docData: {
-        type: Object, 
-        require: true,
-    }, 
+        type: Object,
+        required: true,
+    },
     amount: {
         type: Number,
-        require: true,
-    }, 
+        required: true,
+    },
     date: {
         type: Number,
-        require: true,
-    }, 
+        required: true,
+    },
     canceled: {
         type: Boolean,
         default: false,
-    }, 
+    },
     onlinePayment: {
-        type: Boolean, 
+        type: Boolean,
         default: false,
-    }, 
+    },
     completed: {
         type: Boolean,
         default: false,
-        },
+    },
 
 })
 

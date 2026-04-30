@@ -160,21 +160,29 @@ const adminLogin = async (req, res) => {
 
 const appointmentsAdmin = async (req, res) => {
   try {
+    const now = new Date();
+    now.setHours(0, 0, 0, 0); // Set to the start of the day to include all appointments from today onwards
 
-    const appointments = await Appointment.find({});// gets all the appointments
+    const appointments = await Appointment.find({
+      canceled: { $ne: true },
+      slotDate: { $gte: now }
+    });
+
+    console.log("Found:", appointments.length);
 
     return res.json({
       success: true,
       data: appointments
-    })
+    });
+
   } catch (err) {
-    console.log('appointmnte error are', err.message)
+    console.log('appointment error', err.message);
     return res.json({
       success: false,
       message: err.message
-    })
+    });
   }
-}
+};
 
 
 
